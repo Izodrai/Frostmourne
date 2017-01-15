@@ -44,10 +44,7 @@ namespace XtbDataRetriever
                     log.Fatal(err.MessageError);
                     return;
                 }
-
-                log.Info("");
-                log.Info("60s remaining before next update");
-                Thread.Sleep(15000);
+                
                 log.Info("45s remaining before next update");
                 Thread.Sleep(15000);
                 log.Info("30s remaining before next update");

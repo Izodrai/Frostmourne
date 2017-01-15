@@ -11,7 +11,14 @@ namespace XtbDataRetriever.Configurations
     class Configuration
     {
 
-        public static Error LoadConnectorSettings(ref string _login, ref string _pwd, ref string _server)
+        public static Error LoadConnectorSettings(
+            ref string _login, 
+            ref string _pwd, 
+            ref string _server, 
+            ref string _mysql_server, 
+            ref string _mysql_database,
+            ref string _mysql_login,
+            ref string _mysql_password)
         {
             //////////////////////////////////////////////////
             // Load de l'id de l'utilisateur
@@ -21,7 +28,7 @@ namespace XtbDataRetriever.Configurations
 
             try
             {
-                _login = appSettings["UserId"];
+                _login = appSettings["XtbUserId"];
             }
             catch (ConfigurationErrorsException)
             {
@@ -33,7 +40,7 @@ namespace XtbDataRetriever.Configurations
             //////////////////////////////////////////////////
             try
             {
-                _pwd = appSettings["UserPwd"];
+                _pwd = appSettings["XtbUserPwd"];
             }
             catch (ConfigurationErrorsException)
             {
@@ -46,7 +53,7 @@ namespace XtbDataRetriever.Configurations
             //////////////////////////////////////////////////
             try
             {
-                switch (appSettings["Server"])
+                switch (appSettings["XtbServer"])
                 {
                     case "demo":
                         _server = "demo";
@@ -61,6 +68,42 @@ namespace XtbDataRetriever.Configurations
             catch (ConfigurationErrorsException)
             {
                 return new Error(true, "Error reading app settings Server");
+            }
+
+            try
+            {
+                _mysql_server = appSettings["MysqlServer"];
+            }
+            catch (ConfigurationErrorsException)
+            {
+                return new Error(true, "Error reading app settings MysqlServer");
+            }
+
+            try
+            {
+                _mysql_database = appSettings["MysqlDatabase"];
+            }
+            catch (ConfigurationErrorsException)
+            {
+                return new Error(true, "Error reading app settings MysqlDatabase");
+            }
+
+            try
+            {
+                _mysql_login = appSettings["MysqlLogin"];
+            }
+            catch (ConfigurationErrorsException)
+            {
+                return new Error(true, "Error reading app settings MysqlLogin");
+            }
+
+            try
+            {
+                _mysql_password = appSettings["MysqlPassword"];
+            }
+            catch (ConfigurationErrorsException)
+            {
+                return new Error(true, "Error reading app settings MysqlPassword");
             }
 
             return new Error(false, "App setting loaded!");

@@ -29,6 +29,11 @@ namespace XtbDataRetriever.Jobs.XtbConnector
 
         protected Server Server { get; set; }
 
+        protected string MySQLServer { get; set; }
+        protected string MySQLDatabase { get; set; }
+        protected string MySQLLogin { get; set; }
+        protected string MySQLPassword { get; set; }
+
         protected List<Symbol> Symbols { get; set; }
 
         protected SyncAPIConnector APIConnector { get; set; }
@@ -50,13 +55,19 @@ namespace XtbDataRetriever.Jobs.XtbConnector
             string _login = "";
             string _pwd = "";
             string _server = "";
+
+            string _mysql_server = "";
+            string _mysql_database = "";
+            string _mysql_login = "";
+            string _mysql_password = "";
+
             List<string> _currencies = new List<string>();
 
             //////////////////////////////////////////////////
             // Load de la configuration pour l'utilisateur
             //////////////////////////////////////////////////
 
-            err = Configuration.LoadConnectorSettings(ref _login, ref _pwd, ref _server);
+            err = Configuration.LoadConnectorSettings(ref _login, ref _pwd, ref _server, ref _mysql_server, ref _mysql_database, ref _mysql_login, ref _mysql_password);
             if (err.IsAnError)
             {
                 return err;
@@ -75,6 +86,11 @@ namespace XtbDataRetriever.Jobs.XtbConnector
             this.Login = _login;
             this.Pwd = _pwd;
 
+            this.MySQLServer = _mysql_server;
+            this.MySQLDatabase = _mysql_database;
+            this.MySQLLogin = _mysql_login;
+            this.MySQLPassword = _mysql_password;
+
             return new Error(false, "Connector Configuration downloaded !");
         }
 
@@ -86,7 +102,7 @@ namespace XtbDataRetriever.Jobs.XtbConnector
         {
             this.MyDBConnector = new Mysql();
 
-            if (this.MyDBConnector.Connect().IsAnError)
+            if (this.MyDBConnector.Connect(this.MySQLServer, this.MySQLDatabase, this.MySQLLogin, this.MySQLPassword).IsAnError)
             {
                 return err;
             }
@@ -221,7 +237,7 @@ namespace XtbDataRetriever.Jobs.XtbConnector
             log.Info("");
             log.Info("");
 
-            log.Info("I will retrieve " + this.Symbols.Count.ToString() + " symbols :");
+            log.Info("Retrieve " + this.Symbols.Count.ToString() + " symbols :");
 
             foreach (Symbol s in this.Symbols)
             {
@@ -366,6 +382,7 @@ namespace XtbDataRetriever.Jobs.XtbConnector
                     return err;
 
                 log.Info("Data retrieved for this symbols : " + symbol.Name);
+                log.Info("");
             }
             return new Error(false, "data updated");
         }

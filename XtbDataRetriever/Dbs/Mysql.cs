@@ -18,16 +18,11 @@ namespace XtbDataRetriever.Dbs
         /// Init la connexion à la base de données mysql
         /// </summary>
         /// <returns></returns>
-        public Error Connect()
+        public Error Connect(string _server, string _database, string _login, string _password)
         {
             try
             {
-                string server = "localhost";
-                string user_id = "market_user";
-                string database = "market";
-                string password = "azerty";
-
-                this.MysqlConnector = new MySqlConnection("server=" + server + ";database = " + database + "; user id = " + user_id + "; password = " + password);
+                this.MysqlConnector = new MySqlConnection("server=" + _server + ";database = " + _database + "; user id = " + _login + "; password = " + _password);
                 this.MysqlConnector.Open();
 
                 return new Error(false, "Mysql Database connected");
