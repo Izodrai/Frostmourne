@@ -259,7 +259,11 @@ namespace XtbDataRetriever.Jobs.XtbConnector
             return Tool.LongUnixTimeStampToDateTime(APICommandFactory.ExecuteServerTimeCommand(APIConnector, true).Time);
         }
 
-
+        /// <summary>
+        /// Fonction pour récupérer les dernières valeurs d'un symbol chez xtb
+        /// et update ou ajouter en base si c'est différent ou inexistant
+        /// </summary>
+        /// <returns></returns>
         public Error RetrieveSymbolsAndAddOrUpdate()
         {
             foreach (Symbol symbol in this.Symbols)
