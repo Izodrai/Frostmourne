@@ -16,16 +16,16 @@ namespace XtbDataRetriever.Jobs.Bids
 
         public DateTime Bid_at { get; set; }
 
-        public Double Bid_value { get; set; }
+        public double Bid_value { get; set; }
 
-        public Bid(int _symbol_id, DateTime _bid_at, Double _bid_value)
+        public Bid(int _symbol_id, DateTime _bid_at, double _bid_value)
         {
             this.Symbol_id = _symbol_id;
             this.Bid_at = _bid_at;
             this.Bid_value = _bid_value;
         }
 
-        public Bid(int _id, int _symbol_id, string _symbol_name, DateTime _bid_at, Double _bid_value)
+        public Bid(int _id, int _symbol_id, string _symbol_name, DateTime _bid_at, double _bid_value)
         {
             this.Id = _id;
             this.Symbol_id = _symbol_id;
