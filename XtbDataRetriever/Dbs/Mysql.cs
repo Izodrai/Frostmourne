@@ -164,7 +164,6 @@ namespace XtbDataRetriever.Dbs
 
                 foreach (Bid b in bids_in_db_to_update)
                 {
-                    Console.WriteLine(b.Id.ToString() + " - " + b.Start_bid_value.ToString() + " - " + b.Bid_at.ToString());
                     cmd.Parameters["@new_start_bid_value"].Value = b.Start_bid_value;
                     cmd.Parameters["@new_last_bid_value"].Value = b.Last_bid_value;
                     cmd.Parameters["@bid_id"].Value = b.Id;
