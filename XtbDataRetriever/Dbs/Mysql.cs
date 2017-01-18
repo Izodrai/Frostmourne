@@ -121,7 +121,7 @@ namespace XtbDataRetriever.Dbs
             {
                 MySqlCommand cmd = new MySqlCommand("", this.MysqlConnector);
 
-                cmd.CommandText = "SELECT id, bid_at, bid_value FROM stock_values WHERE symbol_id = @symbol_id AND bid_at > @from";
+                cmd.CommandText = "SELECT id, bid_at, start_bid_value, last_bid_value FROM stock_values WHERE symbol_id = @symbol_id AND bid_at > @from";
                 cmd.Parameters.Clear();
                 cmd.Parameters.AddWithValue("symbol_id", _symbol_id);
                 cmd.Parameters.AddWithValue("from", _from_d.ToString("yyyy-MM-dd HH:mm:ss"));
@@ -132,7 +132,7 @@ namespace XtbDataRetriever.Dbs
                     {
                         object[] values = new object[reader.FieldCount];
                         reader.GetValues(values);
-                        _bids.Add(new Bid(Convert.ToInt32(values[0]), _symbol_id, _symbol_name, DateTime.Parse(Convert.ToString(values[1])), Convert.ToDouble(values[2])));
+                        _bids.Add(new Bid(Convert.ToInt32(values[0]), _symbol_id, _symbol_name, DateTime.Parse(Convert.ToString(values[1])), Convert.ToDouble(values[2]), Convert.ToDouble(values[3])));
                     }
 
                 }
@@ -155,16 +155,18 @@ namespace XtbDataRetriever.Dbs
             {
                 MySqlCommand cmd = new MySqlCommand("", this.MysqlConnector);
 
-                cmd.CommandText = "UPDATE stock_values SET bid_value = @new_bid_value, updated_at = CURRENT_TIMESTAMP WHERE id = @bid_id";
+                cmd.CommandText = "UPDATE stock_values SET start_bid_value = @new_start_bid_value, last_bid_value = @new_last_bid_value, updated_at = CURRENT_TIMESTAMP WHERE id = @bid_id";
                 cmd.Prepare();
 
-                cmd.Parameters.AddWithValue("@new_bid_value", 1);
+                cmd.Parameters.AddWithValue("@new_start_bid_value", 1);
+                cmd.Parameters.AddWithValue("@new_last_bid_value", 1);
                 cmd.Parameters.AddWithValue("@bid_id", 1);
 
                 foreach (Bid b in bids_in_db_to_update)
                 {
-                    Console.WriteLine(b.Id.ToString() + " - " + b.Bid_value.ToString() + " - " + b.Bid_at.ToString());
-                    cmd.Parameters["@new_bid_value"].Value = b.Bid_value;
+                    Console.WriteLine(b.Id.ToString() + " - " + b.Start_bid_value.ToString() + " - " + b.Bid_at.ToString());
+                    cmd.Parameters["@new_start_bid_value"].Value = b.Start_bid_value;
+                    cmd.Parameters["@new_last_bid_value"].Value = b.Last_bid_value;
                     cmd.Parameters["@bid_id"].Value = b.Id;
                     cmd.ExecuteNonQuery();
                 }
@@ -182,18 +184,22 @@ namespace XtbDataRetriever.Dbs
             {
                 MySqlCommand cmd = new MySqlCommand("", this.MysqlConnector);
 
-                cmd.CommandText = "INSERT INTO stock_values (symbol_id, bid_at, bid_value) VALUES (@symbol_id, @bid_at, @bid_value)";
+                cmd.CommandText = "INSERT INTO stock_values (symbol_id, bid_at, start_bid_value, last_bid_value, json_calculation) VALUES (@symbol_id, @bid_at, @start_bid_value, @last_bid_value, @json)";
                 cmd.Prepare();
 
                 cmd.Parameters.AddWithValue("@symbol_id", 1);
-                cmd.Parameters.AddWithValue("@bid_value", 1);
+                cmd.Parameters.AddWithValue("@start_bid_value", 1);
+                cmd.Parameters.AddWithValue("@last_bid_value", 1);
                 cmd.Parameters.AddWithValue("@bid_at", "One");
+                cmd.Parameters.AddWithValue("@json", "{}");
 
                 foreach (Bid b in bids_to_add)
                 {
                     cmd.Parameters["@symbol_id"].Value = b.Symbol_id;
-                    cmd.Parameters["@bid_value"].Value = b.Bid_value;
+                    cmd.Parameters["@start_bid_value"].Value = b.Start_bid_value;
+                    cmd.Parameters["@last_bid_value"].Value = b.Last_bid_value;
                     cmd.Parameters["@bid_at"].Value = b.Bid_at.ToString("yyyy-MM-dd HH:mm:ss");
+                    cmd.Parameters["@json"].Value = b.GetCalculationString();
                     cmd.ExecuteNonQuery();
                 }
                 return new Error(false, "bids added");
