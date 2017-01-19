@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using NLog;
 using XtbDataRetriever.Dbs;
 using XtbDataRetriever.Jobs.Symbols;
 using XtbDataRetriever.Jobs.Bids;
@@ -14,13 +10,13 @@ using xAPI.Sync;
 using xAPI.Commands;
 using xAPI.Responses;
 using xAPI.Records;
+using XtbDataRetriever.Logs;
+using System.Timers;
 
 namespace XtbDataRetriever.Jobs.XtbConnector
 {
     class XtbConnector
     {
-        protected Logger log { get; set; }
-
         protected Error err { get; set; }
 
         protected string Login { get; set; }
@@ -152,7 +148,7 @@ namespace XtbDataRetriever.Jobs.XtbConnector
                 Symbol sc = temporary_currencies.Find(s2 => s2.Name == s.Name);
 
                 if (sc == null)
-                    log.Warn("This currency doesn't exist -> " + s.Name);
+                    Log.Warn("This currency doesn't exist -> " + s.Name);
             }
 
             this.Symbols = temporary_currencies;
@@ -166,15 +162,11 @@ namespace XtbDataRetriever.Jobs.XtbConnector
         }
 
         /// <summary>
-        /// Fonction de connexion au serveur xtb et de check de la configuration du logiciel
+        /// Fonction de connexion au serveur xtb et de check de la configuration du Logiciel
         /// </summary>
-        /// <param name="_log"></param>
         /// <returns></returns>
-        public Error ConnectAndCheck(Logger _log)
+        public Error ConnectAndCheck()
         {
-
-            this.log = _log;
-
             ////////////////
             // Load de la configuration pour l'utilisateur
             ////////////////
@@ -184,7 +176,7 @@ namespace XtbDataRetriever.Jobs.XtbConnector
                 return err;
             }
 
-            log.Info("Configuration loaded...");
+            Log.Info("Configuration loaded...");
 
             ////////////////
             // Test de connexion aux serveurs xtb
@@ -199,7 +191,7 @@ namespace XtbDataRetriever.Jobs.XtbConnector
                 return new Error(true, "Unable to connect to server !");
             }
 
-            log.Info("Server online...");
+            Log.Info("Server online...");
 
             ////////////////
             // Feed des Credentials    
@@ -220,13 +212,13 @@ namespace XtbDataRetriever.Jobs.XtbConnector
                 return new Error(true, "Bad credentials !!");
             }
 
-            log.Info("Server connected...");
+            Log.Info("Server connected...");
 
             ////////////////
             // Vérification de la configuration (les devises)
             ////////////////
 
-            log.Info("Configuration checking...");
+            Log.Info("Configuration checking...");
 
             err = this.CheckSymbols();
             if (err.IsAnError)
@@ -234,18 +226,18 @@ namespace XtbDataRetriever.Jobs.XtbConnector
                 return err;
             }
 
-            log.Info("");
-            log.Info("");
+            Log.Info("");
+            Log.Info("");
 
-            log.Info("Retrieve " + this.Symbols.Count.ToString() + " symbols :");
+            Log.CyanInfo("Retrieve " + this.Symbols.Count.ToString() + " symbols :");
 
             foreach (Symbol s in this.Symbols)
             {
-                log.Info("  > " + s.Name + " ( " + s.Id.ToString() + " )");
+                Log.WhiteInfo("  > " + s.Name + " ( " + s.Id.ToString() + " )");
             }
 
-            log.Info("");
-            log.Info("");
+            Log.Info("");
+            Log.Info("");
 
             return new Error(false, "The system is ready !");
         }
@@ -268,7 +260,7 @@ namespace XtbDataRetriever.Jobs.XtbConnector
         {
             foreach (Symbol symbol in this.Symbols)
             {
-                log.Info("Retrieve data for this symbols : " + symbol.Name);
+                Log.Info("Retrieve data for this symbols : " + symbol.Name);
 
                 DateTime tLastInsert = new DateTime();
                 DateTime tStart = new DateTime();
@@ -287,7 +279,7 @@ namespace XtbDataRetriever.Jobs.XtbConnector
 
                 tStart = tLastInsert.AddHours(-1);
 
-                log.Info("Last Insert -> " + tLastInsert.ToString("yyyy-MM-dd HH:mm:ss") + " ||| retrieve data from -> " + tStart.ToString("yyyy-MM-dd HH:mm:ss"));
+                Log.Info("Last Insert -> " + tLastInsert.ToString("yyyy-MM-dd HH:mm:ss") + " ||| retrieve data from -> " + tStart.ToString("yyyy-MM-dd HH:mm:ss"));
 
                 ////////////////
                 // Récupération des dernières données en base pour ce symbol
@@ -333,9 +325,13 @@ namespace XtbDataRetriever.Jobs.XtbConnector
                             continue;
                         }
 
-                        if (Convert.ToDouble(v.Open) != b.Bid_value)
+                        double open = Convert.ToDouble(v.Open);
+                        double close = Convert.ToDouble(v.Open) + Convert.ToDouble(v.Close);
+
+                        if (open != b.Start_bid_value || close != b.Last_bid_value)
                         {
-                            b.Bid_value = Convert.ToDouble(v.Open);
+                            b.Start_bid_value = open;
+                            b.Last_bid_value = close;
                             bids_in_db_to_update.Add(b);
                         }
                     }
@@ -349,7 +345,10 @@ namespace XtbDataRetriever.Jobs.XtbConnector
                 {
                     if (bids_in_db.Count == 0)
                     {
-                        bids_to_add.Add(new Bid(symbol.Id, Tool.LongUnixTimeStampToDateTime(v.Ctm), Convert.ToDouble(v.Open)));
+                        double open = Convert.ToDouble(v.Open);
+                        double close = Convert.ToDouble(v.Open) + Convert.ToDouble(v.Close);
+
+                        bids_to_add.Add(new Bid(symbol.Id, Tool.LongUnixTimeStampToDateTime(v.Ctm), open, close));
                         continue;
                     }
                     
@@ -366,7 +365,12 @@ namespace XtbDataRetriever.Jobs.XtbConnector
                     }
 
                     if (symbol_id != 0)
-                        bids_to_add.Add(new Bid(symbol_id, Tool.LongUnixTimeStampToDateTime(v.Ctm), Convert.ToDouble(v.Open)));
+                    {
+                        double open = Convert.ToDouble(v.Open);
+                        double close = Convert.ToDouble(v.Open) + Convert.ToDouble(v.Close);
+
+                        bids_to_add.Add(new Bid(symbol_id, Tool.LongUnixTimeStampToDateTime(v.Ctm), open, close));
+                    }
                 }
 
                 ////////////////
@@ -385,10 +389,48 @@ namespace XtbDataRetriever.Jobs.XtbConnector
                 if (err.IsAnError)
                     return err;
 
-                log.Info("Data retrieved for this symbols : " + symbol.Name);
-                log.Info("");
+                Log.Info("Data retrieved for this symbols : " + symbol.Name);
+                Log.Info("");
             }
             return new Error(false, "data updated");
+        }
+
+        public Error LoopDataRetrieveAndCalculation()
+        {
+            try
+            {
+                // Création d'un timer de 30s pour la récupération des données
+                Timer dataTimer = new Timer(30000);
+                // Hook up the Elapsed event for the timer. 
+                dataTimer.Elapsed += ProcessDataRetrievingAndCalculation;
+                dataTimer.AutoReset = true;
+                dataTimer.Enabled = true;
+
+                Log.WhiteInfo("Press the Enter key to exit the application...");
+                Log.Info("");
+
+                Console.ReadLine();
+
+                dataTimer.Stop();
+                dataTimer.Dispose();
+
+                return new Error(false, "The application has been quit !!!");
+            }
+            catch (Exception ex)
+            {
+                return new Error(true, ex.Message);
+            }
+
+        }
+
+        private void ProcessDataRetrievingAndCalculation(Object source, ElapsedEventArgs e)
+        {
+            err = RetrieveSymbolsAndAddOrUpdate();
+            if (err.IsAnError)
+            {
+                Log.Error(err.MessageError);
+                return;
+            }
         }
     }
 }

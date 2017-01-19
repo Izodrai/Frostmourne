@@ -1,58 +1,48 @@
-﻿using NLog;
-using System.Threading;
-using XtbDataRetriever.Errors;
+﻿using XtbDataRetriever.Errors;
 using XtbDataRetriever.Logs;
 using XtbDataRetriever.Jobs.XtbConnector;
+using System;
 
 namespace XtbDataRetriever
 {
     class Program
-    {
+    {        
+
         static void Main(string[] args)
-        {
-            Logger log = Log.InitLog();
+        {        
             Error err = new Error();
             XtbConnector conn = new XtbConnector();
 
-            log.Info("Launch System...");
+            Log.MagentaInfo("The system started at " + DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"));
 
             //////////////////////////////////////////////////
             // Connexion aux serveurs xtb
             //////////////////////////////////////////////////
-            err = conn.ConnectAndCheck(log);
+            err = conn.ConnectAndCheck();
             if (err.IsAnError)
             {
-                log.Fatal(err.MessageError);
+                Log.Error(err.MessageError);
                 return;
             }
-            log.Info(err.MessageError);
+            Log.GreenInfo(err.MessageError);
+            Log.Info("");
 
-            log.Info("Server time : " + conn.GetServerTime().ToString("yyyy-MM-dd HH:mm:ss"));
+            Log.Info("XTB server time : " + conn.GetServerTime().ToString("yyyy-MM-dd HH:mm:ss"));
 
             //////////////////////////////////////////////////
             // Opération de récupération des données
             //////////////////////////////////////////////////
-            log.Info("Running data retrieving...");
-
-            log.Info("");
-
-            while (true)
+            Log.Info("Running data retrieving...");
+            
+            err = conn.LoopDataRetrieveAndCalculation();
+            if (err.IsAnError)
             {
-                err = conn.RetrieveSymbolsAndAddOrUpdate();
-                if (err.IsAnError)
-                {
-                    log.Fatal(err.MessageError);
-                    return;
-                }
-                
-                log.Info("45s remaining before next update");
-                Thread.Sleep(15000);
-                log.Info("30s remaining before next update");
-                Thread.Sleep(15000);
-                log.Info("15s remaining before next update");
-                Thread.Sleep(15000);
-                log.Info("");
+                Log.Error(err.MessageError);
+                return;
             }
+
+            Log.Warning(err.MessageError);
         }
+        
     }
 }
