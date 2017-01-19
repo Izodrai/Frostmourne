@@ -12,6 +12,7 @@ using xAPI.Responses;
 using xAPI.Records;
 using XtbDataRetriever.Logs;
 using System.Timers;
+using XtbDataRetriever.Jobs.Calculations;
 
 namespace XtbDataRetriever.Jobs.XtbConnector
 {
@@ -407,6 +408,12 @@ namespace XtbDataRetriever.Jobs.XtbConnector
                 return err;
             }
 
+            err = CalculateLastBids();
+            if (err.IsAnError)
+            {
+                return err;
+            }
+
             try
             {
                 // Création d'un timer de 30s pour la récupération des données
@@ -441,6 +448,60 @@ namespace XtbDataRetriever.Jobs.XtbConnector
                 Log.Error(err.MessageError);
                 return;
             }
+
+            err = CalculateLastBids();
+            if (err.IsAnError)
+            {
+                Log.Error(err.MessageError);
+                return;
+            }
+        }
+
+        /// <summary>
+        /// Fonction pour calculer les divers outils mathématique sur les derniers bids
+        /// </summary>
+        /// <returns></returns>
+        private Error CalculateLastBids()
+        {
+            foreach (Symbol symbol in this.Symbols)
+            {
+
+                ////////////////
+                // Récupération des dernières données en base pour ce symbol
+                ////////////////
+
+                List<Bid> bids_in_db = new List<Bid>();
+
+                err = this.MyDB_Connector.Load_last_250_bid_values_for_one_symbol(ref bids_in_db, symbol.Id, symbol.Name);
+                if (err.IsAnError)
+                    return err;
+
+                ////////////////
+                // Calcul des moyennes mobiles
+                ////////////////
+
+                err = Calculation.MM(ref bids_in_db);
+                if (err.IsAnError)
+                    return err;
+
+
+
+
+                foreach (Bid b in bids_in_db)
+                {
+                    Console.WriteLine(b.Id + " - " + b.Bid_at.ToString("yyyy-MM-dd HH:mm:ss") + " - " + b.Start_bid_value +" - " + b.Last_bid_value);
+                    Console.WriteLine(b.Calculation);
+                    /*
+                    Console.WriteLine("mmc : " + b.Calculation.Mm_c);
+                    Console.WriteLine("mml : " + b.Calculation.Mm_l);
+                    */
+                    Console.WriteLine("############");
+                }
+
+            }
+
+
+            return new Error(false, "");
         }
     }
 }

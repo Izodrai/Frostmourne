@@ -218,8 +218,41 @@ namespace XtbDataRetriever.Dbs
             }
         }
 
+        /// <summary>
+        /// Load les 250 valeurs des bids pour les recalculer
+        /// </summary>
+        /// <param name="_bids"></param>
+        /// <param name="_symbol_id"></param>
+        /// <param name="_symbol_name"></param>
+        /// <returns></returns>
+        public Error Load_last_250_bid_values_for_one_symbol(ref List<Bid> _bids, int _symbol_id, string _symbol_name)
+        {
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand("", this.MysqlConnector);
 
+                cmd.CommandText = "(SELECT id, bid_at, start_bid_value, last_bid_value, json_calculation FROM stock_values WHERE symbol_id = @symbol_id ORDER BY id DESC LIMIT 250) ORDER BY id ASC";
+                
+                cmd.Parameters.Clear();
+                cmd.Parameters.AddWithValue("symbol_id", _symbol_id);
 
+                using (MySqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        object[] values = new object[reader.FieldCount];
+                        reader.GetValues(values);
+                        _bids.Add(new Bid(Convert.ToInt32(values[0]), _symbol_id, _symbol_name, DateTime.Parse(Convert.ToString(values[1])), Convert.ToDouble(values[2]), Convert.ToDouble(values[3]), Convert.ToString(values[4])));
+                    }
+
+                }
+                return new Error(false, "last rows loaded");
+            }
+            catch (MySql.Data.MySqlClient.MySqlException ex)
+            {
+                return new Error(true, ex.Message);
+            }
+        }
     }
 }
 

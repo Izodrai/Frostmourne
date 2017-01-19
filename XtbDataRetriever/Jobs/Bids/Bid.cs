@@ -42,6 +42,19 @@ namespace XtbDataRetriever.Jobs.Bids
             this.Last_bid_value = _last_bid_value;
         }
 
+        public Bid(int _id, int _symbol_id, string _symbol_name, DateTime _bid_at, double _start_bid_value, double _last_bid_value, string _calculation)
+        {
+            this.Id = _id;
+            this.Symbol_id = _symbol_id;
+            this.Symbol_name = _symbol_name;
+            this.Bid_at = _bid_at;
+            this.Start_bid_value = _start_bid_value;
+            this.Last_bid_value = _last_bid_value;
+            this.Calculation = JsonConvert.DeserializeObject<Calculation>(_calculation);
+        }
+
+
+
         public string GetCalculationString()
         {
             return JsonConvert.SerializeObject(this.Calculation);
