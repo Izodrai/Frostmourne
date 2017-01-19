@@ -27,14 +27,15 @@ CREATE TABLE `stock_values` (
  	`bid_at` 			DATETIME 	NOT NULL,
  	`start_bid_value` 	MEDIUMINT 	UNSIGNED NOT NULL,
  	`last_bid_value` 	MEDIUMINT 	UNSIGNED NOT NULL,
-	`json_calculation`	JSON		NOT NULL,
- 	`created_at` 		TIMESTAMP 	NOT NULL DEFAULT CURRENT_TIMESTAMP,
- 	`updated_at` 		TIMESTAMP 	NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	`json_calculation`	TEXT,
+ 	`created_at` 		DATETIME 	NOT NULL,
+ 	`updated_at` 		DATETIME 	NOT NULL,
  	PRIMARY KEY (`id`),
 	CONSTRAINT stock_values_symbol_types_reference FOREIGN KEY symbol_id(symbol_id) REFERENCES symbols (id),
  	UNIQUE KEY `symbol` (`symbol_id`,`bid_at`),
  	KEY `bid_at` (`bid_at`)
 );
+
 /*
 CREATE TABLE `stock_analyse` (
 	`id` INT UNSIGNED NOT NULL AUTO_INCREMENT,

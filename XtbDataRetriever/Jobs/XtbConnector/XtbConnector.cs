@@ -400,6 +400,13 @@ namespace XtbDataRetriever.Jobs.XtbConnector
 
         public Error LoopDataRetrieveAndCalculation()
         {
+
+            err = RetrieveSymbolsAndAddOrUpdate();
+            if (err.IsAnError)
+            {
+                return err;
+            }
+
             try
             {
                 // Création d'un timer de 30s pour la récupération des données

@@ -177,13 +177,18 @@ namespace XtbDataRetriever.Dbs
             }
         }
 
+        /// <summary>
+        /// Ajoute les bid que l'on a pas en base par rapport a été récupéré chez xtb
+        /// </summary>
+        /// <param name="bids_to_add"></param>
+        /// <returns></returns>
         public Error Add_bid_values(List<Bid> bids_to_add)
         {
             try
             {
                 MySqlCommand cmd = new MySqlCommand("", this.MysqlConnector);
 
-                cmd.CommandText = "INSERT INTO stock_values (symbol_id, bid_at, start_bid_value, last_bid_value, json_calculation) VALUES (@symbol_id, @bid_at, @start_bid_value, @last_bid_value, @json)";
+                cmd.CommandText = "INSERT INTO stock_values (symbol_id, bid_at, start_bid_value, last_bid_value, json_calculation, created_at, updated_at) VALUES (@symbol_id, @bid_at, @start_bid_value, @last_bid_value, @json, @created_at, @updated_at)";
                 cmd.Prepare();
 
                 cmd.Parameters.AddWithValue("@symbol_id", 1);
@@ -191,7 +196,9 @@ namespace XtbDataRetriever.Dbs
                 cmd.Parameters.AddWithValue("@last_bid_value", 1);
                 cmd.Parameters.AddWithValue("@bid_at", "One");
                 cmd.Parameters.AddWithValue("@json", "{}");
-
+                cmd.Parameters.AddWithValue("@created_at", "One");
+                cmd.Parameters.AddWithValue("@updated_at", "One");
+                
                 foreach (Bid b in bids_to_add)
                 {
                     cmd.Parameters["@symbol_id"].Value = b.Symbol_id;
@@ -199,6 +206,8 @@ namespace XtbDataRetriever.Dbs
                     cmd.Parameters["@last_bid_value"].Value = b.Last_bid_value;
                     cmd.Parameters["@bid_at"].Value = b.Bid_at.ToString("yyyy-MM-dd HH:mm:ss");
                     cmd.Parameters["@json"].Value = b.GetCalculationString();
+                    cmd.Parameters["@created_at"].Value = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                    cmd.Parameters["@updated_at"].Value = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
                     cmd.ExecuteNonQuery();
                 }
                 return new Error(false, "bids added");
@@ -208,6 +217,9 @@ namespace XtbDataRetriever.Dbs
                 return new Error(true, ex.Message);
             }
         }
+
+
+
     }
 }
 
