@@ -1,41 +1,62 @@
-﻿using NLog;
-using NLog.Targets;
-using NLog.Config;
+﻿using System;
 
 namespace XtbDataRetriever.Logs
 {
     class Log
     {
-        /*
-        log.Trace("trace log message");
-        log.Debug("debug log message");
-        log.Info("info log message");
-        log.Warn("warn log message");
-        log.Error("error log message");
-        log.Fatal("fatal log message");
-        */
-
-        public static Logger InitLog()
+        static public void Info(string text_to_print)
         {
-            // Step 1. Create configuration object 
-            var config = new LoggingConfiguration();
-
-            // Step 2. Create targets and add them to the configuration 
-            var consoleTarget = new ColoredConsoleTarget();
-            config.AddTarget("console", consoleTarget);
-
-            // Step 3. Set target properties 
-            consoleTarget.Layout = @"${date:format=yyyy\-MM\-dd HH\:mm\:ss} ${level} ->> ${message}";
-
-            // Step 4. Define rules
-            var rule1 = new LoggingRule("*", LogLevel.Debug, consoleTarget);
-            config.LoggingRules.Add(rule1);
-
-            // Step 5. Activate the configuration
-            LogManager.Configuration = config;
-
-            // usage
-            return LogManager.GetLogger("");
+            Console.WriteLine("INFO     {0:yyyy/MM/dd HH:mm:ss} {1}", DateTime.Now, text_to_print);
         }
+        static public void WhiteInfo(string text_to_print)
+        {
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine("INFO     {0:yyyy/MM/dd HH:mm:ss} {1}", DateTime.Now, text_to_print);
+            Console.ResetColor();
+        }
+        static public void BlueInfo(string text_to_print)
+        {
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.WriteLine("INFO     {0:yyyy/MM/dd HH:mm:ss} {1}", DateTime.Now, text_to_print);
+            Console.ResetColor();
+        }
+        static public void CyanInfo(string text_to_print)
+        {
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("INFO     {0:yyyy/MM/dd HH:mm:ss} {1}", DateTime.Now, text_to_print);
+            Console.ResetColor();
+        }
+        static public void MagentaInfo(string text_to_print)
+        {
+            Console.ForegroundColor = ConsoleColor.Magenta;
+            Console.WriteLine("INFO     {0:yyyy/MM/dd HH:mm:ss} {1}", DateTime.Now, text_to_print);
+            Console.ResetColor();
+        }
+        static public void GreenInfo(string text_to_print)
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("INFO     {0:yyyy/MM/dd HH:mm:ss} {1}", DateTime.Now, text_to_print);
+            Console.ResetColor();
+        }
+        static public void YellowInfo(string text_to_print)
+        {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("INFO     {0:yyyy/MM/dd HH:mm:ss} {1}", DateTime.Now, text_to_print);
+            Console.ResetColor();
+        }
+
+        static public void Warning(string text_to_print)
+        {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("WARNING  {0:yyyy/MM/dd HH:mm:ss} {1}", DateTime.Now, text_to_print);
+            Console.ResetColor();
+        }
+        static public void Error(string text_to_print)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("ERROR    {0:yyyy/MM/dd HH:mm:ss} {1}", DateTime.Now, text_to_print);
+            Console.ResetColor();
+        }
+        
     }
 }

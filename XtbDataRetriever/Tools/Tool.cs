@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace XtbDataRetriever.Tools
 {
@@ -35,6 +34,6 @@ namespace XtbDataRetriever.Tools
             var epoch = new DateTime(1970, 1, 1, 1, 0, 0, DateTimeKind.Utc);
             return (date.ToUniversalTime() - epoch).TotalSeconds;
         }
-
+        
     }
 }
