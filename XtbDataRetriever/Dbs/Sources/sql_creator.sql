@@ -27,7 +27,6 @@ CREATE TABLE `stock_values` (
  	`bid_at` 			DATETIME 	NOT NULL,
  	`start_bid_value` 	MEDIUMINT 	UNSIGNED NOT NULL,
  	`last_bid_value` 	MEDIUMINT 	UNSIGNED NOT NULL,
-	`json_calculation`	TEXT,
  	`created_at` 		DATETIME 	NOT NULL,
  	`updated_at` 		DATETIME 	NOT NULL,
  	PRIMARY KEY (`id`),
@@ -36,7 +35,6 @@ CREATE TABLE `stock_values` (
  	KEY `bid_at` (`bid_at`)
 );
 
-/*
 CREATE TABLE `stock_analyse` (
 	`id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
 	`stock_value_id` INT UNSIGNED NOT NULL,
@@ -51,21 +49,26 @@ CREATE TABLE `stock_analyse` (
 	CONSTRAINT stock_values_id_reference FOREIGN KEY stock_value_id(stock_value_id) REFERENCES stock_values (id),
  	UNIQUE KEY `stock_value` (`stock_value_id`)
 );
-*/
 
 CREATE OR REPLACE VIEW `v_last_2_days_stock_values`
-AS SELECT `sv`.`bid_at`, `s`.`reference`, `sv`.`start_bid_value`, `sv`.`last_bid_value`
-FROM `stock_values` AS sv
-JOIN symbols AS s ON `s`.`id` = `sv`.`symbol_id`
-WHERE `sv`.`bid_at` >= DATE_ADD(NOW(), INTERVAL -2 DAY)
-ORDER BY `sv`.`bid_at` DESC;
+AS SELECT 
+`sv`.`id` AS `sv_id`, `sv`.`bid_at`, `sv`.`start_bid_value`, `sv`.`last_bid_value`, 
+`s`.`id` AS `s_id`, `s`.`reference`, 
+`sa`.`mm_c`, `sa`.`mm_l`
+FROM `stock_values` AS `sv`
+JOIN `symbols` AS `s` ON `s`.`id` = `sv`.`symbol_id`
+LEFT  JOIN `stock_analyse` AS `sa` ON `s`.`id` = `sa`.`stock_value_id`
+WHERE `sv`.`bid_at` >= DATE_ADD(NOW(), INTERVAL -2 DAY);
 
 CREATE OR REPLACE VIEW `v_last_10_days_stock_values`
-AS SELECT `sv`.`bid_at`, `s`.`reference`, `sv`.`start_bid_value`, `sv`.`last_bid_value`
-FROM `stock_values` AS sv
-JOIN symbols AS s ON `s`.`id` = `sv`.`symbol_id`
-WHERE `sv`.`bid_at` >= DATE_ADD(NOW(), INTERVAL -10 DAY)
-ORDER BY `sv`.`bid_at` DESC;
+AS SELECT 
+`sv`.`id` AS `sv_id`, `sv`.`bid_at`, `sv`.`start_bid_value`, `sv`.`last_bid_value`, 
+`s`.`id` AS `s_id`, `s`.`reference`, 
+`sa`.`mm_c`, `sa`.`mm_l`
+FROM `stock_values` AS `sv`
+JOIN `symbols` AS `s` ON `s`.`id` = `sv`.`symbol_id`
+LEFT  JOIN `stock_analyse` AS `sa` ON `s`.`id` = `sa`.`stock_value_id`
+WHERE `sv`.`bid_at` >= DATE_ADD(NOW(), INTERVAL -10 DAY);
 
 CREATE TABLE `days` (
 	`id`	TINYINT UNSIGNED NOT NULL,
