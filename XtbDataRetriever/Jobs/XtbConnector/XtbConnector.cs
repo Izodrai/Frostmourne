@@ -408,7 +408,7 @@ namespace XtbDataRetriever.Jobs.XtbConnector
                 return err;
             }
 
-            err = CalculateLastBids();
+            err = CalculateBids();
             if (err.IsAnError)
             {
                 return err;
@@ -448,20 +448,21 @@ namespace XtbDataRetriever.Jobs.XtbConnector
                 Log.Error(err.MessageError);
                 return;
             }
-
+            /*
             err = CalculateLastBids();
             if (err.IsAnError)
             {
                 Log.Error(err.MessageError);
                 return;
             }
+            */
         }
 
         /// <summary>
         /// Fonction pour calculer les divers outils mathématique sur les derniers bids
         /// </summary>
         /// <returns></returns>
-        private Error CalculateLastBids()
+        private Error CalculateBids()
         {
             foreach (Symbol symbol in this.Symbols)
             {
@@ -472,7 +473,7 @@ namespace XtbDataRetriever.Jobs.XtbConnector
 
                 List<Bid> bids_in_db = new List<Bid>();
 
-                err = this.MyDB_Connector.Load_last_250_bid_values_for_one_symbol(ref bids_in_db, symbol.Id, symbol.Name);
+                err = this.MyDB_Connector.Load_last_2_days_bid_values_for_one_symbol(ref bids_in_db, symbol.Id, symbol.Name);
                 if (err.IsAnError)
                     return err;
 
@@ -486,18 +487,16 @@ namespace XtbDataRetriever.Jobs.XtbConnector
 
 
 
-
+                /*
                 foreach (Bid b in bids_in_db)
                 {
                     Console.WriteLine(b.Id + " - " + b.Bid_at.ToString("yyyy-MM-dd HH:mm:ss") + " - " + b.Start_bid_value +" - " + b.Last_bid_value);
-                    Console.WriteLine(b.Calculation);
-                    /*
+
                     Console.WriteLine("mmc : " + b.Calculation.Mm_c);
                     Console.WriteLine("mml : " + b.Calculation.Mm_l);
-                    */
-                    Console.WriteLine("############");
-                }
 
+                    Console.WriteLine("############");
+                }*/
             }
 
 

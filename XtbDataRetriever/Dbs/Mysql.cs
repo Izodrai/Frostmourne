@@ -188,14 +188,13 @@ namespace XtbDataRetriever.Dbs
             {
                 MySqlCommand cmd = new MySqlCommand("", this.MysqlConnector);
 
-                cmd.CommandText = "INSERT INTO stock_values (symbol_id, bid_at, start_bid_value, last_bid_value, json_calculation, created_at, updated_at) VALUES (@symbol_id, @bid_at, @start_bid_value, @last_bid_value, @json, @created_at, @updated_at)";
+                cmd.CommandText = "INSERT INTO stock_values (symbol_id, bid_at, start_bid_value, last_bid_value, created_at, updated_at) VALUES (@symbol_id, @bid_at, @start_bid_value, @last_bid_value, @created_at, @updated_at)";
                 cmd.Prepare();
 
                 cmd.Parameters.AddWithValue("@symbol_id", 1);
                 cmd.Parameters.AddWithValue("@start_bid_value", 1);
                 cmd.Parameters.AddWithValue("@last_bid_value", 1);
                 cmd.Parameters.AddWithValue("@bid_at", "One");
-                cmd.Parameters.AddWithValue("@json", "{}");
                 cmd.Parameters.AddWithValue("@created_at", "One");
                 cmd.Parameters.AddWithValue("@updated_at", "One");
                 
@@ -205,7 +204,6 @@ namespace XtbDataRetriever.Dbs
                     cmd.Parameters["@start_bid_value"].Value = b.Start_bid_value;
                     cmd.Parameters["@last_bid_value"].Value = b.Last_bid_value;
                     cmd.Parameters["@bid_at"].Value = b.Bid_at.ToString("yyyy-MM-dd HH:mm:ss");
-                    cmd.Parameters["@json"].Value = b.GetCalculationString();
                     cmd.Parameters["@created_at"].Value = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
                     cmd.Parameters["@updated_at"].Value = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
                     cmd.ExecuteNonQuery();
@@ -225,14 +223,13 @@ namespace XtbDataRetriever.Dbs
         /// <param name="_symbol_id"></param>
         /// <param name="_symbol_name"></param>
         /// <returns></returns>
-        public Error Load_last_250_bid_values_for_one_symbol(ref List<Bid> _bids, int _symbol_id, string _symbol_name)
+        public Error Load_last_2_days_bid_values_for_one_symbol(ref List<Bid> _bids, int _symbol_id, string _symbol_name)
         {
             try
             {
                 MySqlCommand cmd = new MySqlCommand("", this.MysqlConnector);
 
-                cmd.CommandText = "(SELECT id, bid_at, start_bid_value, last_bid_value, json_calculation FROM stock_values WHERE symbol_id = @symbol_id ORDER BY id DESC LIMIT 250) ORDER BY id ASC";
-                
+                cmd.CommandText = "SELECT sv_id, bid_at, start_bid_value, last_bid_value, mm_c, mm_l FROM `v_last_2_days_stock_values` WHERE s_id = @symbol_id";
                 cmd.Parameters.Clear();
                 cmd.Parameters.AddWithValue("symbol_id", _symbol_id);
 
@@ -242,7 +239,33 @@ namespace XtbDataRetriever.Dbs
                     {
                         object[] values = new object[reader.FieldCount];
                         reader.GetValues(values);
-                        _bids.Add(new Bid(Convert.ToInt32(values[0]), _symbol_id, _symbol_name, DateTime.Parse(Convert.ToString(values[1])), Convert.ToDouble(values[2]), Convert.ToDouble(values[3]), Convert.ToString(values[4])));
+
+                        int sv_id = Convert.ToInt32(values[0]);
+                        DateTime bid_at = DateTime.Parse(Convert.ToString(values[1]));
+                        double start_value = Convert.ToDouble(values[2]);
+                        double last_value = Convert.ToDouble(values[3]);
+                        double mm_c = 0;
+                        double mm_l = 0;
+                        double mme_c = 0;
+                        double mme_l = 0;
+
+                        if (Convert.ToString(values[4]) != "")
+                            mm_c = Convert.ToDouble(values[4]);
+
+                        if (Convert.ToString(values[5]) != "")
+                            mm_l = (Convert.ToDouble(values[5]));
+
+                        /*
+                        if (Convert.ToString(values[4]) != "")
+                            mm_c = Convert.ToDouble(values[4]);
+
+                        if (Convert.ToString(values[5]) != "")
+                            mm_l = (Convert.ToDouble(values[5]));
+                        */
+
+                        Bid b = new Bid(sv_id, _symbol_id, _symbol_name, bid_at, start_value, last_value, mm_c, mm_l, mme_c, mme_l);
+
+                        _bids.Add(b);
                     }
 
                 }

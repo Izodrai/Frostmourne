@@ -27,13 +27,11 @@ namespace XtbDataRetriever.Jobs.Calculations
 
         public static Error MM(ref List<Bid> _last_bids)
         {
-            /*
             foreach (Bid b in _last_bids)
             {
                 b.Calculation.Mme_c = 0;
                 b.Calculation.Mme_l = 0;
             }
-            */
 
              return new Error(false, "work in progress");
         }
