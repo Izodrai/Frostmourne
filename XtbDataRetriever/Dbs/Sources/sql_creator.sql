@@ -38,10 +38,10 @@ CREATE TABLE `stock_values` (
 CREATE TABLE `stock_analyse` (
 	`id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
 	`stock_value_id` INT UNSIGNED NOT NULL,
-	`mm_c` DECIMAL(14,7) UNSIGNED NOT NULL,
-	`mm_l` DECIMAL(14,7) UNSIGNED NOT NULL,
-	`mme_c` DECIMAL(14,7) UNSIGNED NOT NULL,
-	`mme_l` DECIMAL(14,7) UNSIGNED NOT NULL,
+	`sma_c` DECIMAL(14,7) UNSIGNED NOT NULL,
+	`sma_l` DECIMAL(14,7) UNSIGNED NOT NULL,
+	`ema_c` DECIMAL(14,7) UNSIGNED NOT NULL,
+	`ema_l` DECIMAL(14,7) UNSIGNED NOT NULL,
 	`macd_value` DECIMAL(14,7) UNSIGNED NOT NULL,
 	`macd_trigger`  DECIMAL(14,7) UNSIGNED NOT NULL,
 	`macd_signal`  DECIMAL(14,7) UNSIGNED NOT NULL,
@@ -54,7 +54,7 @@ CREATE OR REPLACE VIEW `v_last_2_days_stock_values`
 AS SELECT 
 `sv`.`id` AS `sv_id`, `sv`.`bid_at`, `sv`.`start_bid_value`, `sv`.`last_bid_value`, 
 `s`.`id` AS `s_id`, `s`.`reference`, 
-`sa`.`mm_c`, `sa`.`mm_l`
+`sa`.`id` AS `sa_id`, `sa`.`sma_c`, `sa`.`sma_l`, `sa`.`ema_c`, `sa`.`ema_l`
 FROM `stock_values` AS `sv`
 JOIN `symbols` AS `s` ON `s`.`id` = `sv`.`symbol_id`
 LEFT  JOIN `stock_analyse` AS `sa` ON `s`.`id` = `sa`.`stock_value_id`

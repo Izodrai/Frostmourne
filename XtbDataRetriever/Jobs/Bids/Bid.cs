@@ -42,7 +42,7 @@ namespace XtbDataRetriever.Jobs.Bids
             this.Last_bid_value = _last_bid_value;
         }
         
-        public Bid(int _id, int _symbol_id, string _symbol_name, DateTime _bid_at, double _start_bid_value, double _last_bid_value, double _mm_c, double _mm_l, double _mme_c, double _mme_l)
+        public Bid(int _id, int _symbol_id, string _symbol_name, DateTime _bid_at, double _start_bid_value, double _last_bid_value, double _sma_c, double _sma_l, double _ema_c, double _ema_l, int _sa_id)
         {
             this.Id = _id;
             this.Symbol_id = _symbol_id;
@@ -50,18 +50,7 @@ namespace XtbDataRetriever.Jobs.Bids
             this.Bid_at = _bid_at;
             this.Start_bid_value = _start_bid_value;
             this.Last_bid_value = _last_bid_value;
-
-            this.Calculation = new Calculation();
-
-            this.Calculation.Mm_c = _mm_c;
-            this.Calculation.Mm_l = _mm_l;
-            this.Calculation.Mme_c = _mme_c;
-            this.Calculation.Mme_l = _mme_l;
-        }
-
-        public string GetCalculationString()
-        {
-            return JsonConvert.SerializeObject(this.Calculation);
+            this.Calculation = new Calculation(_sa_id, _sma_c, _sma_l, _ema_c, _ema_l);
         }
     }
 }

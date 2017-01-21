@@ -217,7 +217,7 @@ namespace XtbDataRetriever.Dbs
         }
 
         /// <summary>
-        /// Load les 250 valeurs des bids pour les recalculer
+        /// Load les valeurs des bids sur les deux derniers jours pour les analyser
         /// </summary>
         /// <param name="_bids"></param>
         /// <param name="_symbol_id"></param>
@@ -229,7 +229,7 @@ namespace XtbDataRetriever.Dbs
             {
                 MySqlCommand cmd = new MySqlCommand("", this.MysqlConnector);
 
-                cmd.CommandText = "SELECT sv_id, bid_at, start_bid_value, last_bid_value, mm_c, mm_l FROM `v_last_2_days_stock_values` WHERE s_id = @symbol_id";
+                cmd.CommandText = "SELECT sv_id, bid_at, start_bid_value, last_bid_value, sma_c, sma_l, ema_c, ema_l, sa_id FROM `v_last_2_days_stock_values` WHERE s_id = @symbol_id";
                 cmd.Parameters.Clear();
                 cmd.Parameters.AddWithValue("symbol_id", _symbol_id);
 
@@ -244,26 +244,32 @@ namespace XtbDataRetriever.Dbs
                         DateTime bid_at = DateTime.Parse(Convert.ToString(values[1]));
                         double start_value = Convert.ToDouble(values[2]);
                         double last_value = Convert.ToDouble(values[3]);
-                        double mm_c = 0;
-                        double mm_l = 0;
-                        double mme_c = 0;
-                        double mme_l = 0;
+                        int sa_id = 0;
+                        double sma_c = 0;
+                        double sma_l = 0;
+                        double ema_c = 0;
+                        double ema_l = 0;
 
                         if (Convert.ToString(values[4]) != "")
-                            mm_c = Convert.ToDouble(values[4]);
+                            sma_c = Convert.ToDouble(values[4]);
 
-                        if (Convert.ToString(values[5]) != "")
-                            mm_l = (Convert.ToDouble(values[5]));
-
-                        /*
                         if (Convert.ToString(values[4]) != "")
-                            mm_c = Convert.ToDouble(values[4]);
+                            sma_c = Convert.ToDouble(values[4]);
 
                         if (Convert.ToString(values[5]) != "")
-                            mm_l = (Convert.ToDouble(values[5]));
-                        */
+                            sma_l = (Convert.ToDouble(values[5]));
+                        
+                        if (Convert.ToString(values[4]) != "")
+                            ema_c = Convert.ToDouble(values[4]);
 
-                        Bid b = new Bid(sv_id, _symbol_id, _symbol_name, bid_at, start_value, last_value, mm_c, mm_l, mme_c, mme_l);
+                        if (Convert.ToString(values[5]) != "")
+                            ema_l = (Convert.ToDouble(values[5]));
+
+                        if (Convert.ToString(values[6]) != "")
+                            sa_id = (Convert.ToInt32(values[6]));
+
+
+                        Bid b = new Bid(sv_id, _symbol_id, _symbol_name, bid_at, start_value, last_value, sma_c, sma_l, ema_c, ema_l, sa_id);
 
                         _bids.Add(b);
                     }

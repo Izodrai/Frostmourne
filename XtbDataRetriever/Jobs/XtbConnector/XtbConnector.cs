@@ -471,32 +471,36 @@ namespace XtbDataRetriever.Jobs.XtbConnector
                 // Récupération des dernières données en base pour ce symbol
                 ////////////////
 
-                List<Bid> bids_in_db = new List<Bid>();
+                List<Bid> bids_to_calculate = new List<Bid>();
 
-                err = this.MyDB_Connector.Load_last_2_days_bid_values_for_one_symbol(ref bids_in_db, symbol.Id, symbol.Name);
+                err = this.MyDB_Connector.Load_last_2_days_bid_values_for_one_symbol(ref bids_to_calculate, symbol.Id, symbol.Name);
                 if (err.IsAnError)
                     return err;
 
                 ////////////////
-                // Calcul des moyennes mobiles
+                // Calcul des moyennes mobiles simple (SMA)
                 ////////////////
 
-                err = Calculation.MM(ref bids_in_db);
+                err = Calculation.SMA(ref bids_to_calculate);
                 if (err.IsAnError)
                     return err;
 
+                ////////////////
+                // Calcul des moyennes mobiles exponentielles (SMA)
+                ////////////////
 
-
-                /*
-                foreach (Bid b in bids_in_db)
+                err = Calculation.EMA(ref bids_to_calculate);
+                if (err.IsAnError)
+                    return err;
+                
+                
+                foreach (Bid b in bids_to_calculate)
                 {
-                    Console.WriteLine(b.Id + " - " + b.Bid_at.ToString("yyyy-MM-dd HH:mm:ss") + " - " + b.Start_bid_value +" - " + b.Last_bid_value);
-
-                    Console.WriteLine("mmc : " + b.Calculation.Mm_c);
-                    Console.WriteLine("mml : " + b.Calculation.Mm_l);
-
+                    Console.WriteLine(b.Bid_at.ToString("yyyy-MM-dd HH:mm:ss") + " - " + b.Last_bid_value + " - Ema_c - " + b.Calculation.Ema_c.ToString() + " - Ema_l - " + b.Calculation.Ema_l.ToString());
                     Console.WriteLine("############");
-                }*/
+                }
+
+                Environment.Exit(0);
             }
 
 
