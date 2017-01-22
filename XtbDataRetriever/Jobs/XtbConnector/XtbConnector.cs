@@ -492,11 +492,19 @@ namespace XtbDataRetriever.Jobs.XtbConnector
                 err = Calculation.EMA(ref bids_to_calculate);
                 if (err.IsAnError)
                     return err;
-                
-                
+
+                ////////////////
+                // Calcul des indicateurs du MACD
+                ////////////////
+
+                err = Calculation.MACD(ref bids_to_calculate);
+                if (err.IsAnError)
+                    return err;
+
+
                 foreach (Bid b in bids_to_calculate)
                 {
-                    Console.WriteLine(b.Bid_at.ToString("yyyy-MM-dd HH:mm:ss") + " - " + b.Last_bid_value + " - Ema_c - " + b.Calculation.Ema_c.ToString() + " - Ema_l - " + b.Calculation.Ema_l.ToString());
+                    Console.WriteLine(b.Bid_at.ToString("yyyy-MM-dd HH:mm:ss") + " - " + b.Last_bid_value + " - Ema_c - " + b.Calculation.Ema_c.ToString() + " - Ema_l - " + b.Calculation.Ema_l.ToString() + " - Macd_value - " + b.Calculation.Macd_value.ToString() + " - Macd_trigger - " + b.Calculation.Macd_trigger.ToString() + " - Macd_signal - " + b.Calculation.Macd_signal.ToString());
                     Console.WriteLine("############");
                 }
 

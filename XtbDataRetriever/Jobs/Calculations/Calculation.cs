@@ -108,9 +108,8 @@ namespace XtbDataRetriever.Jobs.Calculations
             
             foreach (Bid b in _bids_to_calculate)
             {
-                
                 double v_c = last_value_c + ((b.Last_bid_value - last_value_c) * (2 / (c + 1)));
-                double v_c_r = Math.Round(v_c, 0);
+                double v_c_r = Math.Round(v_c, 2);
                 last_value_c = v_c;
                 
                 if (v_c_r != b.Calculation.Ema_c)
@@ -120,13 +119,43 @@ namespace XtbDataRetriever.Jobs.Calculations
                 }
                 
                 double v_l = last_value_l + ((b.Last_bid_value - last_value_l) * (2 / (l + 1)));
-                double v_l_r = Math.Round(v_l, 0);
+                double v_l_r = Math.Round(v_l, 2);
                 last_value_l = v_l;
 
                 if (v_l_r != b.Calculation.Ema_l)
                 {
                     b.Calculation.Data_to_update = true;
                     b.Calculation.Ema_l = v_l_r;
+                }
+            }
+
+            return new Error(false, "EMAs calculated");
+        }
+
+        /// <summary>
+        /// Calcul des indécateurs du MACD
+        /// </summary>
+        /// <param name="_bids_to_calculate"></param>
+        /// <returns></returns>
+        public static Error MACD(ref List<Bid> _bids_to_calculate)
+        {
+            double d = 9;
+            double last_value_d = 0;
+
+            foreach (Bid b in _bids_to_calculate)
+            {
+                double v_macd = b.Calculation.Ema_c - b.Calculation.Ema_l;
+                double v_macd_r = Math.Round(b.Calculation.Ema_c - b.Calculation.Ema_l,2);
+                double v_trigger = last_value_d + ((v_macd - last_value_d) * (2 / (d + 1)));
+                double v_trigger_r = Math.Round(v_trigger, 2);
+                last_value_d = v_trigger;
+
+                if (v_trigger_r != b.Calculation.Macd_trigger || v_macd_r != b.Calculation.Macd_value)
+                {
+                    b.Calculation.Data_to_update = true;
+                    b.Calculation.Macd_value = v_macd_r;
+                    b.Calculation.Macd_trigger = v_trigger_r;
+                    b.Calculation.Macd_signal = Math.Round(v_macd_r - v_trigger_r, 2);
                 }
             }
 
