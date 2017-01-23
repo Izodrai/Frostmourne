@@ -29,13 +29,16 @@ namespace XtbDataRetriever.Jobs.Calculations
 
         public bool Data_to_update { get; set; }
 
-        public Calculation(int _id, double _sma_c, double _sma_l, double _ema_c, double _ema_l)
+        public Calculation(int _id, double _sma_c, double _sma_l, double _ema_c, double _ema_l, double _macd_value, double _macd_trigger, double _macd_signal)
         {
             this.Id = _id;
             this.Sma_c = _sma_c;
             this.Sma_l = _sma_l;
             this.Ema_c = _ema_c;
             this.Ema_l = _ema_l;
+            this.Macd_value = _macd_value;
+            this.Macd_trigger = _macd_trigger;
+            this.Macd_signal = _macd_signal;
         }
 
         /// <summary>

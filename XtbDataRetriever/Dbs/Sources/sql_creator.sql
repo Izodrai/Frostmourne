@@ -38,26 +38,25 @@ CREATE TABLE `stock_values` (
 CREATE TABLE `stock_analyse` (
 	`id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
 	`stock_value_id` INT UNSIGNED NOT NULL,
-	`sma_c` DECIMAL(14,7) UNSIGNED NOT NULL,
-	`sma_l` DECIMAL(14,7) UNSIGNED NOT NULL,
-	`ema_c` DECIMAL(14,7) UNSIGNED NOT NULL,
-	`ema_l` DECIMAL(14,7) UNSIGNED NOT NULL,
-	`macd_value` DECIMAL(14,7) UNSIGNED NOT NULL,
-	`macd_trigger`  DECIMAL(14,7) UNSIGNED NOT NULL,
-	`macd_signal`  DECIMAL(14,7) UNSIGNED NOT NULL,
+	`sma_c` DECIMAL(14,4) NOT NULL,
+	`sma_l` DECIMAL(14,4) NOT NULL,
+	`ema_c` DECIMAL(14,4) NOT NULL,
+	`ema_l` DECIMAL(14,4) NOT NULL,
+	`macd_value` DECIMAL(14,4) NOT NULL,
+	`macd_trigger`  DECIMAL(14,4) NOT NULL,
+	`macd_signal`  DECIMAL(14,4) NOT NULL,
  	PRIMARY KEY (`id`),
-	CONSTRAINT stock_values_id_reference FOREIGN KEY stock_value_id(stock_value_id) REFERENCES stock_values (id),
- 	UNIQUE KEY `stock_value` (`stock_value_id`)
+	CONSTRAINT stock_values_id_reference FOREIGN KEY stock_value_id(stock_value_id) REFERENCES stock_values (id)
 );
 
 CREATE OR REPLACE VIEW `v_last_2_days_stock_values`
 AS SELECT 
 `sv`.`id` AS `sv_id`, `sv`.`bid_at`, `sv`.`start_bid_value`, `sv`.`last_bid_value`, 
 `s`.`id` AS `s_id`, `s`.`reference`, 
-`sa`.`id` AS `sa_id`, `sa`.`sma_c`, `sa`.`sma_l`, `sa`.`ema_c`, `sa`.`ema_l`
+`sa`.`id` AS `sa_id`, `sa`.`sma_c`, `sa`.`sma_l`, `sa`.`ema_c`, `sa`.`ema_l`, `sa`.`macd_value`, `sa`.`macd_trigger`, `sa`.`macd_signal`
 FROM `stock_values` AS `sv`
 JOIN `symbols` AS `s` ON `s`.`id` = `sv`.`symbol_id`
-LEFT  JOIN `stock_analyse` AS `sa` ON `s`.`id` = `sa`.`stock_value_id`
+LEFT  JOIN `stock_analyse` AS `sa` ON `sv`.`id` = `sa`.`stock_value_id`
 WHERE `sv`.`bid_at` >= DATE_ADD(NOW(), INTERVAL -2 DAY);
 
 CREATE OR REPLACE VIEW `v_last_10_days_stock_values`
@@ -67,7 +66,7 @@ AS SELECT
 `sa`.`mm_c`, `sa`.`mm_l`
 FROM `stock_values` AS `sv`
 JOIN `symbols` AS `s` ON `s`.`id` = `sv`.`symbol_id`
-LEFT  JOIN `stock_analyse` AS `sa` ON `s`.`id` = `sa`.`stock_value_id`
+LEFT  JOIN `stock_analyse` AS `sa` ON `sv`.`id` = `sa`.`stock_value_id`
 WHERE `sv`.`bid_at` >= DATE_ADD(NOW(), INTERVAL -10 DAY);
 
 CREATE TABLE `days` (

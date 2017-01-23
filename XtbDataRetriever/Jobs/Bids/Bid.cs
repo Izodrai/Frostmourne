@@ -24,6 +24,8 @@ namespace XtbDataRetriever.Jobs.Bids
 
         public Calculation Calculation { get; set; }
 
+        public Bid() { }
+
         public Bid(int _symbol_id, DateTime _bid_at, double _start_bid_value, double _last_bid_value)
         {
             this.Symbol_id = _symbol_id;
@@ -42,7 +44,7 @@ namespace XtbDataRetriever.Jobs.Bids
             this.Last_bid_value = _last_bid_value;
         }
         
-        public Bid(int _id, int _symbol_id, string _symbol_name, DateTime _bid_at, double _start_bid_value, double _last_bid_value, double _sma_c, double _sma_l, double _ema_c, double _ema_l, int _sa_id)
+        public Bid(int _id, int _symbol_id, string _symbol_name, DateTime _bid_at, double _start_bid_value, double _last_bid_value, double _sma_c, double _sma_l, double _ema_c, double _ema_l, int _sa_id, double _macd_value, double _macd_trigger, double _macd_signal)
         {
             this.Id = _id;
             this.Symbol_id = _symbol_id;
@@ -50,7 +52,7 @@ namespace XtbDataRetriever.Jobs.Bids
             this.Bid_at = _bid_at;
             this.Start_bid_value = _start_bid_value;
             this.Last_bid_value = _last_bid_value;
-            this.Calculation = new Calculation(_sa_id, _sma_c, _sma_l, _ema_c, _ema_l);
+            this.Calculation = new Calculation(_sa_id, _sma_c, _sma_l, _ema_c, _ema_l, _macd_value, _macd_trigger, _macd_signal);
         }
     }
 }

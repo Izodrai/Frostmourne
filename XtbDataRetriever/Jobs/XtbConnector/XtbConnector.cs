@@ -448,14 +448,13 @@ namespace XtbDataRetriever.Jobs.XtbConnector
                 Log.Error(err.MessageError);
                 return;
             }
-            /*
-            err = CalculateLastBids();
+
+            err = CalculateBids();
             if (err.IsAnError)
             {
                 Log.Error(err.MessageError);
                 return;
             }
-            */
         }
 
         /// <summary>
@@ -476,7 +475,7 @@ namespace XtbDataRetriever.Jobs.XtbConnector
                 err = this.MyDB_Connector.Load_last_2_days_bid_values_for_one_symbol(ref bids_to_calculate, symbol.Id, symbol.Name);
                 if (err.IsAnError)
                     return err;
-
+                
                 ////////////////
                 // Calcul des moyennes mobiles simple (SMA)
                 ////////////////
@@ -501,18 +500,30 @@ namespace XtbDataRetriever.Jobs.XtbConnector
                 if (err.IsAnError)
                     return err;
 
+                ////////////////
+                // Ajout et update des calculs sur les bids
+                ////////////////
 
                 foreach (Bid b in bids_to_calculate)
                 {
-                    Console.WriteLine(b.Bid_at.ToString("yyyy-MM-dd HH:mm:ss") + " - " + b.Last_bid_value + " - Ema_c - " + b.Calculation.Ema_c.ToString() + " - Ema_l - " + b.Calculation.Ema_l.ToString() + " - Macd_value - " + b.Calculation.Macd_value.ToString() + " - Macd_trigger - " + b.Calculation.Macd_trigger.ToString() + " - Macd_signal - " + b.Calculation.Macd_signal.ToString());
-                    Console.WriteLine("############");
+                    if (b.Calculation.Id == 0) {
+                        err = this.MyDB_Connector.Add_stock_analyse(b);
+                        if (err.IsAnError)
+                            return err;
+                        continue;
+                    }
+
+                    if (b.Calculation.Data_to_update)
+                    {
+                        err = this.MyDB_Connector.Update_stock_analyse(b);
+                        if (err.IsAnError)
+                            return err;
+                        continue;
+                    }
                 }
-
-                Environment.Exit(0);
             }
-
-
-            return new Error(false, "");
+            
+            return new Error(false, "Calculations down");
         }
     }
 }
