@@ -12,6 +12,7 @@ using xAPI.Responses;
 using xAPI.Records;
 using XtbDataRetriever.Logs;
 using System.Timers;
+using XtbDataRetriever.Jobs.Calculations;
 
 namespace XtbDataRetriever.Jobs.XtbConnector
 {
@@ -25,18 +26,21 @@ namespace XtbDataRetriever.Jobs.XtbConnector
 
         protected Server Server { get; set; }
 
-        protected string MySQLServer { get; set; }
-        protected string MySQLDatabase { get; set; }
-        protected string MySQLLogin { get; set; }
-        protected string MySQLPassword { get; set; }
+        protected string MySQL_Server { get; set; }
+
+        protected string MySQL_Database { get; set; }
+
+        protected string MySQL_Login { get; set; }
+
+        protected string MySQL_Password { get; set; }
 
         protected List<Symbol> Symbols { get; set; }
 
-        protected SyncAPIConnector APIConnector { get; set; }
+        protected SyncAPIConnector API_Connector { get; set; }
 
         protected Credentials Credentials { get; set; }
 
-        protected Mysql MyDBConnector { get; set; }
+        protected Mysql MyDB_Connector { get; set; }
 
         ///////////////////////////////////
         // Séparation entre les variables et les fonctions
@@ -82,10 +86,10 @@ namespace XtbDataRetriever.Jobs.XtbConnector
             this.Login = _login;
             this.Pwd = _pwd;
 
-            this.MySQLServer = _mysql_server;
-            this.MySQLDatabase = _mysql_database;
-            this.MySQLLogin = _mysql_login;
-            this.MySQLPassword = _mysql_password;
+            this.MySQL_Server = _mysql_server;
+            this.MySQL_Database = _mysql_database;
+            this.MySQL_Login = _mysql_login;
+            this.MySQL_Password = _mysql_password;
 
             return new Error(false, "Connector Configuration downloaded !");
         }
@@ -96,16 +100,16 @@ namespace XtbDataRetriever.Jobs.XtbConnector
         /// <returns></returns>
         protected Error CheckSymbols()
         {
-            this.MyDBConnector = new Mysql();
+            this.MyDB_Connector = new Mysql();
 
-            if (this.MyDBConnector.Connect(this.MySQLServer, this.MySQLDatabase, this.MySQLLogin, this.MySQLPassword).IsAnError)
+            if (this.MyDB_Connector.Connect(this.MySQL_Server, this.MySQL_Database, this.MySQL_Login, this.MySQL_Password).IsAnError)
             {
                 return err;
             }
 
             List<Symbol> ss = new List<Symbol>();
 
-            err = this.MyDBConnector.Load_symbols(ref ss);
+            err = this.MyDB_Connector.Load_symbols(ref ss);
             if (err.IsAnError)
             {
                 return err;
@@ -184,7 +188,7 @@ namespace XtbDataRetriever.Jobs.XtbConnector
 
             try
             {
-                this.APIConnector = new SyncAPIConnector(Server);
+                this.API_Connector = new SyncAPIConnector(Server);
             }
             catch
             {
@@ -205,7 +209,7 @@ namespace XtbDataRetriever.Jobs.XtbConnector
 
             try
             {
-                APICommandFactory.ExecuteLoginCommand(this.APIConnector, this.Credentials);
+                APICommandFactory.ExecuteLoginCommand(this.API_Connector, this.Credentials);
             }
             catch
             {
@@ -248,7 +252,7 @@ namespace XtbDataRetriever.Jobs.XtbConnector
         /// <returns></returns>
         public DateTime GetServerTime()
         {
-            return Tool.LongUnixTimeStampToDateTime(APICommandFactory.ExecuteServerTimeCommand(APIConnector, true).Time);
+            return Tool.LongUnixTimeStampToDateTime(APICommandFactory.ExecuteServerTimeCommand(API_Connector, true).Time);
         }
 
         /// <summary>
@@ -269,7 +273,7 @@ namespace XtbDataRetriever.Jobs.XtbConnector
                 // Récupération de la date du dernier insert (ou de l'absence en cas de setup du symbol)
                 ////////////////
 
-                err = this.MyDBConnector.Search_last_insert_for_this_value(ref tLastInsert, symbol.Id);
+                err = this.MyDB_Connector.Search_last_insert_for_this_value(ref tLastInsert, symbol.Id);
                 if (err.IsAnError)
                     return err;
                 
@@ -287,7 +291,7 @@ namespace XtbDataRetriever.Jobs.XtbConnector
 
                 List<Bid> bids_in_db = new List<Bid>();
 
-                err = this.MyDBConnector.Load_bid_values_for_one_symbol(ref bids_in_db, tStart, symbol.Id, symbol.Name);
+                err = this.MyDB_Connector.Load_bid_values_for_one_symbol(ref bids_in_db, tStart, symbol.Id, symbol.Name);
                 if (err.IsAnError)
                     return err;
 
@@ -297,7 +301,7 @@ namespace XtbDataRetriever.Jobs.XtbConnector
 
                 long? timeTStart = Tool.LongDateTimeToUnixTimeStamp(tStart);
 
-                ChartLastResponse resp = APICommandFactory.ExecuteChartLastCommand(APIConnector, symbol.Name, xAPI.Codes.PERIOD_CODE.PERIOD_M5, timeTStart);
+                ChartLastResponse resp = APICommandFactory.ExecuteChartLastCommand(API_Connector, symbol.Name, xAPI.Codes.PERIOD_CODE.PERIOD_M5, timeTStart);
 
                 RateInfoRecord[] infos = new RateInfoRecord[resp.RateInfos.Count];
 
@@ -377,7 +381,7 @@ namespace XtbDataRetriever.Jobs.XtbConnector
                 //Update des bids
                 ////////////////
                 
-                err = this.MyDBConnector.Update_bid_values(bids_in_db_to_update);
+                err = this.MyDB_Connector.Update_bid_values(bids_in_db_to_update);
                 if (err.IsAnError)
                     return err;
 
@@ -385,7 +389,7 @@ namespace XtbDataRetriever.Jobs.XtbConnector
                 // Ajout des bids
                 ////////////////
                 
-                err = this.MyDBConnector.Add_bid_values(bids_to_add);
+                err = this.MyDB_Connector.Add_bid_values(bids_to_add);
                 if (err.IsAnError)
                     return err;
 
@@ -397,6 +401,19 @@ namespace XtbDataRetriever.Jobs.XtbConnector
 
         public Error LoopDataRetrieveAndCalculation()
         {
+
+            err = RetrieveSymbolsAndAddOrUpdate();
+            if (err.IsAnError)
+            {
+                return err;
+            }
+
+            err = CalculateBids();
+            if (err.IsAnError)
+            {
+                return err;
+            }
+
             try
             {
                 // Création d'un timer de 30s pour la récupération des données
@@ -431,6 +448,82 @@ namespace XtbDataRetriever.Jobs.XtbConnector
                 Log.Error(err.MessageError);
                 return;
             }
+
+            err = CalculateBids();
+            if (err.IsAnError)
+            {
+                Log.Error(err.MessageError);
+                return;
+            }
+        }
+
+        /// <summary>
+        /// Fonction pour calculer les divers outils mathématique sur les derniers bids
+        /// </summary>
+        /// <returns></returns>
+        private Error CalculateBids()
+        {
+            foreach (Symbol symbol in this.Symbols)
+            {
+
+                ////////////////
+                // Récupération des dernières données en base pour ce symbol
+                ////////////////
+
+                List<Bid> bids_to_calculate = new List<Bid>();
+
+                err = this.MyDB_Connector.Load_last_2_days_bid_values_for_one_symbol(ref bids_to_calculate, symbol.Id, symbol.Name);
+                if (err.IsAnError)
+                    return err;
+                
+                ////////////////
+                // Calcul des moyennes mobiles simple (SMA)
+                ////////////////
+
+                err = Calculation.SMA(ref bids_to_calculate);
+                if (err.IsAnError)
+                    return err;
+
+                ////////////////
+                // Calcul des moyennes mobiles exponentielles (SMA)
+                ////////////////
+
+                err = Calculation.EMA(ref bids_to_calculate);
+                if (err.IsAnError)
+                    return err;
+
+                ////////////////
+                // Calcul des indicateurs du MACD
+                ////////////////
+
+                err = Calculation.MACD(ref bids_to_calculate);
+                if (err.IsAnError)
+                    return err;
+
+                ////////////////
+                // Ajout et update des calculs sur les bids
+                ////////////////
+
+                foreach (Bid b in bids_to_calculate)
+                {
+                    if (b.Calculation.Id == 0) {
+                        err = this.MyDB_Connector.Add_stock_analyse(b);
+                        if (err.IsAnError)
+                            return err;
+                        continue;
+                    }
+
+                    if (b.Calculation.Data_to_update)
+                    {
+                        err = this.MyDB_Connector.Update_stock_analyse(b);
+                        if (err.IsAnError)
+                            return err;
+                        continue;
+                    }
+                }
+            }
+            
+            return new Error(false, "Calculations down");
         }
     }
 }
