@@ -100,9 +100,9 @@ namespace DataRetriever.Jobs.XtbConnector
         /// <returns></returns>
         protected Error CheckSymbols()
         {
-            this.MyDB_Connector = new Mysql();
+            this.MyDB_Connector = new Mysql(this.MySQL_Server, this.MySQL_Database, this.MySQL_Login, this.MySQL_Password);
 
-            if (this.MyDB_Connector.Connect(this.MySQL_Server, this.MySQL_Database, this.MySQL_Login, this.MySQL_Password).IsAnError)
+            if (this.MyDB_Connector.Connect().IsAnError)
             {
                 return err;
             }
@@ -213,7 +213,7 @@ namespace DataRetriever.Jobs.XtbConnector
             }
             catch
             {
-                return new Error(true, "Bad credentials !!");
+                return new Error(true, "Pbs with the credentials or the connection !");
             }
 
             Log.Info("Server connected...");
