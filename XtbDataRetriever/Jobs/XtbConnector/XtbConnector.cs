@@ -1,20 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using XtbDataRetriever.Dbs;
-using XtbDataRetriever.Jobs.Symbols;
-using XtbDataRetriever.Jobs.Bids;
-using XtbDataRetriever.Errors;
-using XtbDataRetriever.Configurations;
-using XtbDataRetriever.Tools;
+using DataRetriever.Dbs;
+using DataRetriever.Jobs.Symbols;
+using DataRetriever.Jobs.Bids;
+using DataRetriever.Errors;
+using DataRetriever.Configurations;
+using DataRetriever.Tools;
 using xAPI.Sync;
 using xAPI.Commands;
 using xAPI.Responses;
 using xAPI.Records;
-using XtbDataRetriever.Logs;
+using DataRetriever.Logs;
 using System.Timers;
-using XtbDataRetriever.Jobs.Calculations;
+using DataRetriever.Jobs.Calculations;
 
-namespace XtbDataRetriever.Jobs.XtbConnector
+namespace DataRetriever.Jobs.XtbConnector
 {
     class XtbConnector
     {

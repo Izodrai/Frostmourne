@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
-using XtbDataRetriever.Errors;
-using XtbDataRetriever.Jobs.Symbols;
-using XtbDataRetriever.Jobs.Bids;
+using DataRetriever.Errors;
+using DataRetriever.Jobs.Symbols;
+using DataRetriever.Jobs.Bids;
 
-namespace XtbDataRetriever.Dbs
+namespace DataRetriever.Dbs
 {
     class Mysql
     {

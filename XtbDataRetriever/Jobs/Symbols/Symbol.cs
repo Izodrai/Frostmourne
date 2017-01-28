@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace XtbDataRetriever.Jobs.Symbols
+namespace DataRetriever.Jobs.Symbols
 {
     class Symbol
     {

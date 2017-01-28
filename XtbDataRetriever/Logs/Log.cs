@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace XtbDataRetriever.Logs
+namespace DataRetriever.Logs
 {
     class Log
     {

@@ -4,9 +4,9 @@ using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using XtbDataRetriever.Errors;
+using DataRetriever.Errors;
 
-namespace XtbDataRetriever.Configurations
+namespace DataRetriever.Configurations
 {
     class Configuration
     {

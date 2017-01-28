@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using XtbDataRetriever.Errors;
-using XtbDataRetriever.Jobs.Bids;
-using XtbDataRetriever.Logs;
+using DataRetriever.Errors;
+using DataRetriever.Jobs.Bids;
+using DataRetriever.Logs;
 
-namespace XtbDataRetriever.Jobs.Calculations
+namespace DataRetriever.Jobs.Calculations
 {
     class Calculation
     {

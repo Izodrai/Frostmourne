@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using XtbDataRetriever.Jobs.Calculations;
+using DataRetriever.Jobs.Calculations;
 
-namespace XtbDataRetriever.Jobs.Bids
+namespace DataRetriever.Jobs.Bids
 {
     class Bid
     {

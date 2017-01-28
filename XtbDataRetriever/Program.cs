@@ -1,9 +1,9 @@
-﻿using XtbDataRetriever.Errors;
-using XtbDataRetriever.Logs;
-using XtbDataRetriever.Jobs.XtbConnector;
+﻿using DataRetriever.Errors;
+using DataRetriever.Logs;
+using DataRetriever.Jobs.XtbConnector;
 using System;
 
-namespace XtbDataRetriever
+namespace DataRetriever
 {
     class Program
     {        

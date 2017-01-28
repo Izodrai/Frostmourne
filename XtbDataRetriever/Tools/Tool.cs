@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace XtbDataRetriever.Tools
+namespace DataRetriever.Tools
 {
     class Tool
     {

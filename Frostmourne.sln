@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XtbDataRetriever", "XtbDataRetriever\XtbDataRetriever.csproj", "{292D139E-1131-4F3A-8234-ABCE7778DB6E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataRetriever", "XtbDataRetriever\DataRetriever.csproj", "{292D139E-1131-4F3A-8234-ABCE7778DB6E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataManager", "DataManager\DataManager.csproj", "{68920180-E648-4DCE-A3C5-8066AB175CD2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{292D139E-1131-4F3A-8234-ABCE7778DB6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{292D139E-1131-4F3A-8234-ABCE7778DB6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{292D139E-1131-4F3A-8234-ABCE7778DB6E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{68920180-E648-4DCE-A3C5-8066AB175CD2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{68920180-E648-4DCE-A3C5-8066AB175CD2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{68920180-E648-4DCE-A3C5-8066AB175CD2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{68920180-E648-4DCE-A3C5-8066AB175CD2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
