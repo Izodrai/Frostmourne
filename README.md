@@ -25,6 +25,8 @@ I want to know if it's possible to analyse the market with these tools and follo
 Frostmourne/XtbDataRetriever/Dbs/Sources/sql_creator.sql
 - When this three last steps are done you will be update the App.config and add next parameters :
 
+
+```
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
     <startup> 
@@ -41,6 +43,7 @@ Frostmourne/XtbDataRetriever/Dbs/Sources/sql_creator.sql
       <add key="MysqlPassword" value="<your_mysql_user_pwd>"/>
     </appSettings>
 </configuration>
+```
 
 After that you can build and execute the project, normaly it will retrieve the data of the last month for the symbol EUR/USD.
 
