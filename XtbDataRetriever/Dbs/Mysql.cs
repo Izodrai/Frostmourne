@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
 using DataRetriever.Errors;
 using DataRetriever.Jobs.Symbols;
@@ -28,8 +25,6 @@ namespace DataRetriever.Dbs
             this.Database = _database;
             this.Login = _login;
             this.Pwd = _password;
-
-            Console.WriteLine("server=" + this.Server + ";database = " + this.Database + "; user id = " + this.Login + "; password = " + this.Pwd);
         }
         /// <summary>
         /// Init la connexion à la base de données mysql
