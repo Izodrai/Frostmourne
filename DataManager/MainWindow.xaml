@@ -6,15 +6,31 @@
         xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         xmlns:local="clr-namespace:DataManager"
         mc:Ignorable="d"
-        Title="Data Manager" Height="544.851" Width="749.068">
+        Title="Data Manager" Height="900" Width="1200">
     <Grid>
-        <lvc:CartesianChart Series="{Binding SeriesCollection}" LegendLocation="Right" >
-            <lvc:CartesianChart.AxisY>
-                <lvc:Axis Title="Sales" LabelFormatter="{Binding YFormatter}"></lvc:Axis>
-            </lvc:CartesianChart.AxisY>
-            <lvc:CartesianChart.AxisX>
-                <lvc:Axis Title="Month" Labels="{Binding Labels}"></lvc:Axis>
-            </lvc:CartesianChart.AxisX>
-        </lvc:CartesianChart>
+        <Menu x:Name="menu" Height="21" VerticalAlignment="Top">
+            <MenuItem Header="_General">
+                <MenuItem Header="_Configuration" Click="gen_configuration_Click"/>
+                <Separator />
+                <MenuItem Header="_Exit" Click="gen_exit_Click"/>
+            </MenuItem>
+            <MenuItem Header="_Analyse">
+                <MenuItem Header="_Globale" Click="ana_global_Click"/>
+                <MenuItem Header="_SMA" Click="ana_sma_Click"/>
+                <MenuItem Header="_EMA" Click="ana_ema_Click"/>
+                <MenuItem Header="_MACD" Click="ana_macd_Click"/>
+            </MenuItem>
+            <MenuItem Header="_Reporting">
+
+            </MenuItem>
+            <MenuItem Header="_Fonctionnement">
+                <MenuItem Header="_Activation" Click="func_activation_Click"/>
+                <MenuItem Header="_Veille" Click="func_eve_Click"/>
+                <MenuItem Header="_Arrêt" Click="func_stop_Click"/>
+            </MenuItem>
+        </Menu>
+        <Frame x:Name="frame" Content="" HorizontalAlignment="Left" Height="848" Margin="0,21,0,0" VerticalAlignment="Top" Width="1185"/>
+
     </Grid>
+
 </Window>
