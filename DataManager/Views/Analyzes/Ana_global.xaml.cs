@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace DataManager
+namespace DataManager.Views.Analyzes
 {
     /// <summary>
-    /// Logique d'interaction pour Page2.xaml
+    /// Logique d'interaction pour Ana_global.xaml
     /// </summary>
-    public partial class Page2 : Page
+    public partial class Ana_global : Page
     {
-        public Page2()
+        public Ana_global()
         {
             InitializeComponent();
         }

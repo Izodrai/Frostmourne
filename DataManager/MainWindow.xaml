@@ -10,7 +10,7 @@
     <Grid>
         <Menu x:Name="menu" Height="21" VerticalAlignment="Top">
             <MenuItem Header="_General">
-                <MenuItem Header="_Configuration" Click="gen_configuration_Click"/>
+                <MenuItem Header="_Informations" Click="gen_informations_Click"/>
                 <Separator />
                 <MenuItem Header="_Exit" Click="gen_exit_Click"/>
             </MenuItem>
