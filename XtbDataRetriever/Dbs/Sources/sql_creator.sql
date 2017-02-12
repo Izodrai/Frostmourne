@@ -22,13 +22,13 @@ WHERE `s`.`active`
 ORDER BY `s`.`id` ASC;
 
 CREATE TABLE `stock_values` (
- 	`id` 				INT 		UNSIGNED NOT NULL AUTO_INCREMENT,
- 	`symbol_id` 		TINYINT 	UNSIGNED  NOT NULL,
- 	`bid_at` 			DATETIME 	NOT NULL,
- 	`start_bid_value` 	MEDIUMINT 	UNSIGNED NOT NULL,
- 	`last_bid_value` 	MEDIUMINT 	UNSIGNED NOT NULL,
- 	`created_at` 		DATETIME 	NOT NULL,
- 	`updated_at` 		DATETIME 	NOT NULL,
+ 	`id`			INT 		UNSIGNED NOT NULL AUTO_INCREMENT,
+ 	`symbol_id`		TINYINT 	UNSIGNED  NOT NULL,
+ 	`bid_at`		DATETIME 	NOT NULL,
+ 	`start_bid` 	MEDIUMINT 	UNSIGNED NOT NULL,
+ 	`last_bid`		MEDIUMINT 	UNSIGNED NOT NULL,
+ 	`created_at`	DATETIME 	NOT NULL,
+ 	`updated_at`	DATETIME 	NOT NULL,
  	PRIMARY KEY (`id`),
 	CONSTRAINT stock_values_symbol_types_reference FOREIGN KEY symbol_id(symbol_id) REFERENCES symbols (id),
  	UNIQUE KEY `symbol` (`symbol_id`,`bid_at`),
@@ -36,34 +36,36 @@ CREATE TABLE `stock_values` (
 );
 
 CREATE TABLE `stock_analyse` (
-	`id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-	`stock_value_id` INT UNSIGNED NOT NULL,
-	`sma_c` DECIMAL(14,4) NOT NULL,
-	`sma_l` DECIMAL(14,4) NOT NULL,
-	`ema_c` DECIMAL(14,4) NOT NULL,
-	`ema_l` DECIMAL(14,4) NOT NULL,
-	`macd_value` DECIMAL(14,4) NOT NULL,
-	`macd_trigger`  DECIMAL(14,4) NOT NULL,
-	`macd_signal`  DECIMAL(14,4) NOT NULL,
+	`id`						INT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`stock_value_id`			INT UNSIGNED NOT NULL,
+	`sma_c`						DECIMAL(14,4) NOT NULL,
+	`sma_l`						DECIMAL(14,4) NOT NULL,
+	`ema_c`						DECIMAL(14,4) NOT NULL,
+	`ema_l`						DECIMAL(14,4) NOT NULL,
+	`macd_value`				DECIMAL(14,4) NOT NULL,
+	`macd_trigger`				DECIMAL(14,4) NOT NULL,
+	`macd_signal`				DECIMAL(14,4) NOT NULL,
+	`macd_absol_max_signal` 	DECIMAL(14,4) NOT NULL,
+	`macd_absol_trigger_signal`	DECIMAL(14,4) NOT NULL,
  	PRIMARY KEY (`id`),
 	CONSTRAINT stock_values_id_reference FOREIGN KEY stock_value_id(stock_value_id) REFERENCES stock_values (id)
 );
 
-CREATE OR REPLACE VIEW `v_last_2_days_stock_values`
+CREATE OR REPLACE VIEW `v_last_5_days_stock_values`
 AS SELECT 
-`sv`.`id` AS `sv_id`, `sv`.`bid_at`, `sv`.`start_bid_value`, `sv`.`last_bid_value`, 
+`sv`.`id` AS `sv_id`, `sv`.`bid_at`, `sv`.`start_bid`, `sv`.`last_bid`, 
 `s`.`id` AS `s_id`, `s`.`reference`, 
-`sa`.`id` AS `sa_id`, `sa`.`sma_c`, `sa`.`sma_l`, `sa`.`ema_c`, `sa`.`ema_l`, `sa`.`macd_value`, `sa`.`macd_trigger`, `sa`.`macd_signal`
+`sa`.`id` AS `sa_id`, `sa`.`sma_c`, `sa`.`sma_l`, `sa`.`ema_c`, `sa`.`ema_l`, `sa`.`macd_value`, `sa`.`macd_trigger`, `sa`.`macd_signal`, `sa`.`macd_absol_max_signal`, `sa`.`macd_absol_trigger_signal`
 FROM `stock_values` AS `sv`
 JOIN `symbols` AS `s` ON `s`.`id` = `sv`.`symbol_id`
 LEFT  JOIN `stock_analyse` AS `sa` ON `sv`.`id` = `sa`.`stock_value_id`
-WHERE `sv`.`bid_at` >= DATE_ADD(NOW(), INTERVAL -2 DAY);
+WHERE `sv`.`bid_at` >= DATE_ADD(NOW(), INTERVAL -5 DAY);
 
 CREATE OR REPLACE VIEW `v_last_10_days_stock_values`
 AS SELECT 
-`sv`.`id` AS `sv_id`, `sv`.`bid_at`, `sv`.`start_bid_value`, `sv`.`last_bid_value`, 
+`sv`.`id` AS `sv_id`, `sv`.`bid_at`, `sv`.`start_bid`, `sv`.`last_bid`, 
 `s`.`id` AS `s_id`, `s`.`reference`, 
-`sa`.`mm_c`, `sa`.`mm_l`
+`sa`.`id` AS `sa_id`, `sa`.`sma_c`, `sa`.`sma_l`, `sa`.`ema_c`, `sa`.`ema_l`, `sa`.`macd_value`, `sa`.`macd_trigger`, `sa`.`macd_signal`, `sa`.`macd_absol_max_signal`, `sa`.`macd_absol_trigger_signal`
 FROM `stock_values` AS `sv`
 JOIN `symbols` AS `s` ON `s`.`id` = `sv`.`symbol_id`
 LEFT  JOIN `stock_analyse` AS `sa` ON `sv`.`id` = `sa`.`stock_value_id`

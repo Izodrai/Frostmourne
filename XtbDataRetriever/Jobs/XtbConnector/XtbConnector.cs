@@ -332,10 +332,10 @@ namespace DataRetriever.Jobs.XtbConnector
                         double open = Convert.ToDouble(v.Open);
                         double close = Convert.ToDouble(v.Open) + Convert.ToDouble(v.Close);
 
-                        if (open != b.Start_bid_value || close != b.Last_bid_value)
+                        if (open != b.Start_bid || close != b.Last_bid)
                         {
-                            b.Start_bid_value = open;
-                            b.Last_bid_value = close;
+                            b.Start_bid = open;
+                            b.Last_bid = close;
                             bids_in_db_to_update.Add(b);
                         }
                     }
@@ -503,9 +503,11 @@ namespace DataRetriever.Jobs.XtbConnector
                 ////////////////
                 // Ajout et update des calculs sur les bids
                 ////////////////
-
+                
                 foreach (Bid b in bids_to_calculate)
                 {
+                    Console.WriteLine(b.Bid_at.ToString()+ " | Start_bid -> " + b.Start_bid+ " | Last_bid -> " + b.Last_bid+ " | Macd_signal -> " + b.Calculation.Macd_signal + " | Macd_absol_max_signal -> " + b.Calculation.Macd_absol_max_signal + " | Macd_absol_trigger_signal -> " + b.Calculation.Macd_absol_trigger_signal);
+                    
                     if (b.Calculation.Id == 0) {
                         err = this.MyDB_Connector.Add_stock_analyse(b);
                         if (err.IsAnError)

@@ -27,9 +27,13 @@ namespace DataRetriever.Jobs.Calculations
 
         public double Macd_signal { get; set; }
 
+        public double Macd_absol_max_signal { get; set; }
+
+        public double Macd_absol_trigger_signal { get; set; }
+
         public bool Data_to_update { get; set; }
 
-        public Calculation(int _id, double _sma_c, double _sma_l, double _ema_c, double _ema_l, double _macd_value, double _macd_trigger, double _macd_signal)
+        public Calculation(int _id, double _sma_c, double _sma_l, double _ema_c, double _ema_l, double _macd_value, double _macd_trigger, double _macd_signal, double _macd_absol_max_signal, double _macd_absol_trigger_signal)
         {
             this.Id = _id;
             this.Sma_c = _sma_c;
@@ -39,6 +43,8 @@ namespace DataRetriever.Jobs.Calculations
             this.Macd_value = _macd_value;
             this.Macd_trigger = _macd_trigger;
             this.Macd_signal = _macd_signal;
+            this.Macd_absol_max_signal = _macd_absol_max_signal;
+            this.Macd_absol_trigger_signal = _macd_absol_trigger_signal;
         }
 
         /// <summary>
@@ -56,8 +62,8 @@ namespace DataRetriever.Jobs.Calculations
 
             foreach (Bid b in _bids_to_calculate)
             {
-                range_c.Add(b.Last_bid_value);
-                range_l.Add(b.Last_bid_value);
+                range_c.Add(b.Last_bid);
+                range_l.Add(b.Last_bid);
 
                 if (range_c.Count() > c)
                     range_c.RemoveAt(0);
@@ -111,7 +117,13 @@ namespace DataRetriever.Jobs.Calculations
             
             foreach (Bid b in _bids_to_calculate)
             {
-                double v_c = last_value_c + ((b.Last_bid_value - last_value_c) * (2 / (c + 1)));
+                if (last_value_c == 0 && last_value_l == 0)
+                {
+                    last_value_c = b.Last_bid;
+                    last_value_l = b.Last_bid;
+                }
+
+                double v_c = last_value_c + ((b.Last_bid - last_value_c) * (2 / (c + 1)));
                 double v_c_r = Math.Round(v_c, 2);
                 last_value_c = v_c;
                 
@@ -121,7 +133,7 @@ namespace DataRetriever.Jobs.Calculations
                     b.Calculation.Ema_c = v_c_r;
                 }
                 
-                double v_l = last_value_l + ((b.Last_bid_value - last_value_l) * (2 / (l + 1)));
+                double v_l = last_value_l + ((b.Last_bid - last_value_l) * (2 / (l + 1)));
                 double v_l_r = Math.Round(v_l, 2);
                 last_value_l = v_l;
 
@@ -143,7 +155,11 @@ namespace DataRetriever.Jobs.Calculations
         public static Error MACD(ref List<Bid> _bids_to_calculate)
         {
             double d = 9;
-            double last_value_d = 0;
+            double last_value_d = 0.0;
+            
+            int i = 0;
+            double trigger = 30;
+            double last_absol_max = 0.0;
 
             foreach (Bid b in _bids_to_calculate)
             {
@@ -152,13 +168,65 @@ namespace DataRetriever.Jobs.Calculations
                 double v_trigger = last_value_d + ((v_macd - last_value_d) * (2 / (d + 1)));
                 double v_trigger_r = Math.Round(v_trigger, 2);
                 last_value_d = v_trigger;
-
+                
                 if (v_trigger_r != b.Calculation.Macd_trigger || v_macd_r != b.Calculation.Macd_value)
                 {
                     b.Calculation.Data_to_update = true;
                     b.Calculation.Macd_value = v_macd_r;
                     b.Calculation.Macd_trigger = v_trigger_r;
                     b.Calculation.Macd_signal = Math.Round(v_macd_r - v_trigger_r, 2);
+                }
+
+                
+                //////////////////////////////
+                // 
+                //////////////////////////////
+
+                if (i == 0)
+                {
+
+                    if (b.Calculation.Macd_absol_max_signal == 0)
+                    {
+                        b.Calculation.Data_to_update = true;
+                        last_absol_max = Math.Abs(b.Calculation.Macd_signal);
+                        b.Calculation.Macd_absol_max_signal = last_absol_max;
+                        b.Calculation.Macd_absol_trigger_signal = (b.Calculation.Macd_absol_max_signal * trigger) / (double)100;
+                    }
+                    else
+                    {
+                        last_absol_max = b.Calculation.Macd_absol_max_signal;
+                    }
+                    i++;
+                    continue;
+                }
+                
+                //////////////////////////////
+                // 
+                //////////////////////////////
+                
+                if (b.Calculation.Macd_absol_max_signal == 0)
+                {
+                    b.Calculation.Data_to_update = true;
+
+                    if (Math.Abs(b.Calculation.Macd_signal) > last_absol_max)
+                        last_absol_max = Math.Abs(b.Calculation.Macd_signal);
+
+                    b.Calculation.Macd_absol_max_signal = last_absol_max;
+                    b.Calculation.Macd_absol_trigger_signal = (b.Calculation.Macd_absol_max_signal * trigger) / (double)100;
+                }
+                else
+                {
+                    if (Math.Abs(b.Calculation.Macd_signal) > last_absol_max)
+                    {
+                        last_absol_max = Math.Abs(b.Calculation.Macd_signal);
+
+                        if (b.Calculation.Macd_absol_max_signal != last_absol_max)
+                        {
+                            b.Calculation.Data_to_update = true;
+                            b.Calculation.Macd_absol_max_signal = last_absol_max;
+                            b.Calculation.Macd_absol_trigger_signal = (b.Calculation.Macd_absol_max_signal * trigger) / (double)100;
+                        }
+                    }
                 }
             }
 

@@ -133,7 +133,7 @@ namespace DataRetriever.Dbs
             {
                 MySqlCommand cmd = new MySqlCommand("", this.MysqlConnector);
 
-                cmd.CommandText = "SELECT id, bid_at, start_bid_value, last_bid_value FROM stock_values WHERE symbol_id = @symbol_id AND bid_at > @from";
+                cmd.CommandText = "SELECT id, bid_at, start_bid, last_bid FROM stock_values WHERE symbol_id = @symbol_id AND bid_at > @from";
                 cmd.Parameters.Clear();
                 cmd.Parameters.AddWithValue("symbol_id", _symbol_id);
                 cmd.Parameters.AddWithValue("from", _from_d.ToString("yyyy-MM-dd HH:mm:ss"));
@@ -167,17 +167,17 @@ namespace DataRetriever.Dbs
             {
                 MySqlCommand cmd = new MySqlCommand("", this.MysqlConnector);
 
-                cmd.CommandText = "UPDATE stock_values SET start_bid_value = @new_start_bid_value, last_bid_value = @new_last_bid_value, updated_at = CURRENT_TIMESTAMP WHERE id = @bid_id";
+                cmd.CommandText = "UPDATE stock_values SET start_bid = @new_start_bid, last_bid = @new_last_bid, updated_at = CURRENT_TIMESTAMP WHERE id = @bid_id";
                 cmd.Prepare();
 
-                cmd.Parameters.AddWithValue("@new_start_bid_value", 1);
-                cmd.Parameters.AddWithValue("@new_last_bid_value", 1);
+                cmd.Parameters.AddWithValue("@new_start_bid", 1);
+                cmd.Parameters.AddWithValue("@new_last_bid", 1);
                 cmd.Parameters.AddWithValue("@bid_id", 1);
 
                 foreach (Bid b in bids_in_db_to_update)
                 {
-                    cmd.Parameters["@new_start_bid_value"].Value = b.Start_bid_value;
-                    cmd.Parameters["@new_last_bid_value"].Value = b.Last_bid_value;
+                    cmd.Parameters["@new_start_bid"].Value = b.Start_bid;
+                    cmd.Parameters["@new_last_bid"].Value = b.Last_bid;
                     cmd.Parameters["@bid_id"].Value = b.Id;
                     cmd.ExecuteNonQuery();
                 }
@@ -200,12 +200,12 @@ namespace DataRetriever.Dbs
             {
                 MySqlCommand cmd = new MySqlCommand("", this.MysqlConnector);
 
-                cmd.CommandText = "INSERT INTO stock_values (symbol_id, bid_at, start_bid_value, last_bid_value, created_at, updated_at) VALUES (@symbol_id, @bid_at, @start_bid_value, @last_bid_value, @created_at, @updated_at)";
+                cmd.CommandText = "INSERT INTO stock_values (symbol_id, bid_at, start_bid, last_bid, created_at, updated_at) VALUES (@symbol_id, @bid_at, @start_bid, @last_bid, @created_at, @updated_at)";
                 cmd.Prepare();
 
                 cmd.Parameters.AddWithValue("@symbol_id", 1);
-                cmd.Parameters.AddWithValue("@start_bid_value", 1);
-                cmd.Parameters.AddWithValue("@last_bid_value", 1);
+                cmd.Parameters.AddWithValue("@start_bid", 1);
+                cmd.Parameters.AddWithValue("@last_bid", 1);
                 cmd.Parameters.AddWithValue("@bid_at", "One");
                 cmd.Parameters.AddWithValue("@created_at", "One");
                 cmd.Parameters.AddWithValue("@updated_at", "One");
@@ -213,8 +213,8 @@ namespace DataRetriever.Dbs
                 foreach (Bid b in bids_to_add)
                 {
                     cmd.Parameters["@symbol_id"].Value = b.Symbol_id;
-                    cmd.Parameters["@start_bid_value"].Value = b.Start_bid_value;
-                    cmd.Parameters["@last_bid_value"].Value = b.Last_bid_value;
+                    cmd.Parameters["@start_bid"].Value = b.Start_bid;
+                    cmd.Parameters["@last_bid"].Value = b.Last_bid;
                     cmd.Parameters["@bid_at"].Value = b.Bid_at.ToString("yyyy-MM-dd HH:mm:ss");
                     cmd.Parameters["@created_at"].Value = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
                     cmd.Parameters["@updated_at"].Value = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
@@ -241,7 +241,8 @@ namespace DataRetriever.Dbs
             {
                 MySqlCommand cmd = new MySqlCommand("", this.MysqlConnector);
 
-                cmd.CommandText = "SELECT sv_id, bid_at, start_bid_value, last_bid_value, sma_c, sma_l, ema_c, ema_l, sa_id, macd_value, macd_trigger, macd_signal FROM `v_last_2_days_stock_values` WHERE s_id = @symbol_id";
+                cmd.CommandText = "SELECT sv_id, bid_at, start_bid, last_bid, sma_c, sma_l, ema_c, ema_l, sa_id, macd_value, macd_trigger, macd_signal, macd_absol_max_signal, macd_absol_trigger_signal";
+                cmd.CommandText += " FROM `v_last_5_days_stock_values` WHERE s_id = @symbol_id";
                 cmd.Parameters.Clear();
                 cmd.Parameters.AddWithValue("symbol_id", _symbol_id);
 
@@ -264,6 +265,8 @@ namespace DataRetriever.Dbs
                         double macd_value = 0.0;
                         double macd_trigger = 0.0;
                         double macd_signal = 0.0;
+                        double macd_absol_max_signal = 0.0;
+                        double macd_absol_trigger_signal = 0.0;
 
                         if (Convert.ToString(values[4]) != "")
                             sma_c = Convert.ToDouble(values[4]);
@@ -288,9 +291,14 @@ namespace DataRetriever.Dbs
 
                         if (Convert.ToString(values[11]) != "")
                             macd_signal = (Convert.ToDouble(values[11]));
-                        
-                        Bid b = new Bid(sv_id, _symbol_id, _symbol_name, bid_at, start_value, last_value, sma_c, sma_l, ema_c, ema_l, sa_id, macd_value, macd_trigger, macd_signal);
 
+                        if (Convert.ToString(values[12]) != "")
+                            macd_absol_max_signal = (Convert.ToDouble(values[12]));
+
+                        if (Convert.ToString(values[13]) != "")
+                            macd_absol_trigger_signal = (Convert.ToDouble(values[13]));
+
+                        Bid b = new Bid(sv_id, _symbol_id, _symbol_name, bid_at, start_value, last_value, sma_c, sma_l, ema_c, ema_l, sa_id, macd_value, macd_trigger, macd_signal, macd_absol_max_signal, macd_absol_trigger_signal);
                         _bids.Add(b);
                     }
 
@@ -313,18 +321,13 @@ namespace DataRetriever.Dbs
 
             if (b.Calculation.Id != 0)
                 return new Error(true, "error with the id to add");
-
-            if (
-                b.Calculation.Sma_c == 0 || b.Calculation.Sma_l == 0 || 
-                b.Calculation.Ema_c == 0 || b.Calculation.Ema_l == 0 ||
-                b.Calculation.Macd_signal == 0 || b.Calculation.Macd_trigger == 0 || b.Calculation.Macd_value == 0)
-                return new Error(true, "error with the data to add");
-
+            
             try
             {
                 MySqlCommand cmd = new MySqlCommand("", this.MysqlConnector);
 
-                cmd.CommandText = "INSERT INTO stock_analyse (stock_value_id, sma_c, sma_l, ema_c, ema_l, macd_value, macd_trigger, macd_signal) VALUES (@stock_value_id, @sma_c, @sma_l, @ema_c, @ema_l, @macd_value, @macd_trigger, @macd_signal)";
+                cmd.CommandText = "INSERT INTO stock_analyse(stock_value_id, sma_c, sma_l, ema_c, ema_l, macd_value, macd_trigger, macd_signal, macd_absol_max_signal, macd_absol_trigger_signal)";
+                 cmd.CommandText += "VALUES(@stock_value_id, @sma_c, @sma_l, @ema_c, @ema_l, @macd_value, @macd_trigger, @macd_signal, @macd_absol_max_signal, @macd_absol_trigger_signal)";
                 cmd.Prepare();
 
                 cmd.Parameters.AddWithValue("@sma_c", 1.5);
@@ -335,6 +338,8 @@ namespace DataRetriever.Dbs
                 cmd.Parameters.AddWithValue("@macd_trigger", 1.5);
                 cmd.Parameters.AddWithValue("@macd_signal", 1.5);
                 cmd.Parameters.AddWithValue("@stock_value_id", 1.5);
+                cmd.Parameters.AddWithValue("@macd_absol_max_signal", 1.5);
+                cmd.Parameters.AddWithValue("@macd_absol_trigger_signal", 1.5);
 
                 cmd.Parameters["@sma_c"].Value = b.Calculation.Sma_c;
                 cmd.Parameters["@sma_l"].Value = b.Calculation.Sma_l;
@@ -343,6 +348,8 @@ namespace DataRetriever.Dbs
                 cmd.Parameters["@macd_value"].Value = b.Calculation.Macd_value;
                 cmd.Parameters["@macd_trigger"].Value = b.Calculation.Macd_trigger;
                 cmd.Parameters["@macd_signal"].Value = b.Calculation.Macd_signal;
+                cmd.Parameters["@macd_absol_max_signal"].Value = b.Calculation.Macd_absol_max_signal;
+                cmd.Parameters["@macd_absol_trigger_signal"].Value = b.Calculation.Macd_absol_trigger_signal;
                 cmd.Parameters["@stock_value_id"].Value = b.Id;
                 cmd.ExecuteNonQuery();
 
@@ -370,18 +377,13 @@ namespace DataRetriever.Dbs
             {
                 return new Error(true, "error with the id to update");
             }
-
-            if (
-                b.Calculation.Sma_c == 0 || b.Calculation.Sma_l == 0 ||
-                b.Calculation.Ema_c == 0 || b.Calculation.Ema_l == 0 ||
-                b.Calculation.Macd_signal == 0 || b.Calculation.Macd_trigger == 0 || b.Calculation.Macd_value == 0)
-                return new Error(true, "error with the data to update");
-
+            
             try
             {
                 MySqlCommand cmd = new MySqlCommand("", this.MysqlConnector);
 
-                cmd.CommandText = "UPDATE stock_analyse SET sma_c = @sma_c, sma_l = @sma_l, ema_c = @ema_c, ema_l = @ema_l, macd_value = @macd_value, macd_trigger = @macd_trigger, macd_signal = @macd_signal WHERE id = @analyse_id";
+                cmd.CommandText = "UPDATE stock_analyse SET sma_c = @sma_c, sma_l = @sma_l, ema_c = @ema_c, ema_l = @ema_l, macd_value = @macd_value, macd_trigger = @macd_trigger, macd_signal = @macd_signal, ";
+                cmd.CommandText += "macd_absol_max_signal = @macd_absol_max_signal, macd_absol_trigger_signal = @macd_absol_trigger_signal WHERE id = @analyse_id";
                 cmd.Prepare();
 
                 cmd.Parameters.AddWithValue("@sma_c", 1.5);
@@ -392,7 +394,9 @@ namespace DataRetriever.Dbs
                 cmd.Parameters.AddWithValue("@macd_trigger", 1.5);
                 cmd.Parameters.AddWithValue("@macd_signal", 1.5);
                 cmd.Parameters.AddWithValue("@analyse_id", 1.5);
-                
+                cmd.Parameters.AddWithValue("@macd_absol_max_signal", 1.5);
+                cmd.Parameters.AddWithValue("@macd_absol_trigger_signal", 1.5);
+
                 cmd.Parameters["@sma_c"].Value = b.Calculation.Sma_c;
                 cmd.Parameters["@sma_l"].Value = b.Calculation.Sma_l;
                 cmd.Parameters["@ema_c"].Value = b.Calculation.Ema_c;
@@ -400,6 +404,8 @@ namespace DataRetriever.Dbs
                 cmd.Parameters["@macd_value"].Value = b.Calculation.Macd_value;
                 cmd.Parameters["@macd_trigger"].Value = b.Calculation.Macd_trigger;
                 cmd.Parameters["@macd_signal"].Value = b.Calculation.Macd_signal;
+                cmd.Parameters["@macd_absol_max_signal"].Value = b.Calculation.Macd_absol_max_signal;
+                cmd.Parameters["@macd_absol_trigger_signal"].Value = b.Calculation.Macd_absol_trigger_signal;
                 cmd.Parameters["@analyse_id"].Value = b.Calculation.Id;
                 cmd.ExecuteNonQuery();
 
