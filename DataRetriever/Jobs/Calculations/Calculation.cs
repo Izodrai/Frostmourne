@@ -158,7 +158,7 @@ namespace DataRetriever.Jobs.Calculations
             double last_value_d = 0.0;
             
             int i = 0;
-            double trigger = 30;
+            double trigger = 15;
             double last_absol_max = 0.0;
 
             foreach (Bid b in _bids_to_calculate)
@@ -216,6 +216,7 @@ namespace DataRetriever.Jobs.Calculations
                 }
                 else
                 {
+                    //TODO, dans le cas ou macd_absol_max_signal est différent (typiquement en cas de changement du pourcentage de déclenchement (variable trigger)
                     if (Math.Abs(b.Calculation.Macd_signal) > last_absol_max)
                     {
                         last_absol_max = Math.Abs(b.Calculation.Macd_signal);
