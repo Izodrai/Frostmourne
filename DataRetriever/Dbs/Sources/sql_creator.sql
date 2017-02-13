@@ -46,6 +46,7 @@ CREATE TABLE `stock_analyse` (
 	`macd_trigger`				DECIMAL(14,4) NOT NULL,
 	`macd_signal`				DECIMAL(14,4) NOT NULL,
 	`macd_absol_max_signal` 	DECIMAL(14,4) NOT NULL,
+	`macd_trigger_percent`		TINYINT UNSIGNED NOT NULL,
 	`macd_absol_trigger_signal`	DECIMAL(14,4) NOT NULL,
  	PRIMARY KEY (`id`),
 	CONSTRAINT stock_values_id_reference FOREIGN KEY stock_value_id(stock_value_id) REFERENCES stock_values (id)
@@ -55,7 +56,7 @@ CREATE OR REPLACE VIEW `v_last_5_days_stock_values`
 AS SELECT 
 `sv`.`id` AS `sv_id`, `sv`.`bid_at`, `sv`.`start_bid`, `sv`.`last_bid`, 
 `s`.`id` AS `s_id`, `s`.`reference`, 
-`sa`.`id` AS `sa_id`, `sa`.`sma_c`, `sa`.`sma_l`, `sa`.`ema_c`, `sa`.`ema_l`, `sa`.`macd_value`, `sa`.`macd_trigger`, `sa`.`macd_signal`, `sa`.`macd_absol_max_signal`, `sa`.`macd_absol_trigger_signal`
+`sa`.`id` AS `sa_id`, `sa`.`sma_c`, `sa`.`sma_l`, `sa`.`ema_c`, `sa`.`ema_l`, `sa`.`macd_value`, `sa`.`macd_trigger`, `sa`.`macd_signal`, `sa`.`macd_absol_max_signal`, `sa`.`macd_trigger_percent`, `sa`.`macd_absol_trigger_signal`
 FROM `stock_values` AS `sv`
 JOIN `symbols` AS `s` ON `s`.`id` = `sv`.`symbol_id`
 LEFT  JOIN `stock_analyse` AS `sa` ON `sv`.`id` = `sa`.`stock_value_id`
@@ -65,7 +66,7 @@ CREATE OR REPLACE VIEW `v_last_10_days_stock_values`
 AS SELECT 
 `sv`.`id` AS `sv_id`, `sv`.`bid_at`, `sv`.`start_bid`, `sv`.`last_bid`, 
 `s`.`id` AS `s_id`, `s`.`reference`, 
-`sa`.`id` AS `sa_id`, `sa`.`sma_c`, `sa`.`sma_l`, `sa`.`ema_c`, `sa`.`ema_l`, `sa`.`macd_value`, `sa`.`macd_trigger`, `sa`.`macd_signal`, `sa`.`macd_absol_max_signal`, `sa`.`macd_absol_trigger_signal`
+`sa`.`id` AS `sa_id`, `sa`.`sma_c`, `sa`.`sma_l`, `sa`.`ema_c`, `sa`.`ema_l`, `sa`.`macd_value`, `sa`.`macd_trigger`, `sa`.`macd_signal`, `sa`.`macd_absol_max_signal`, `sa`.`macd_trigger_percent`, `sa`.`macd_absol_trigger_signal`
 FROM `stock_values` AS `sv`
 JOIN `symbols` AS `s` ON `s`.`id` = `sv`.`symbol_id`
 LEFT  JOIN `stock_analyse` AS `sa` ON `sv`.`id` = `sa`.`stock_value_id`

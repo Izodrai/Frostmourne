@@ -152,13 +152,12 @@ namespace DataRetriever.Jobs.Calculations
         /// </summary>
         /// <param name="_bids_to_calculate"></param>
         /// <returns></returns>
-        public static Error MACD(ref List<Bid> _bids_to_calculate)
+        public static Error MACD(ref List<Bid> _bids_to_calculate, double trigger)
         {
             double d = 9;
             double last_value_d = 0.0;
             
             int i = 0;
-            double trigger = 15;
             double last_absol_max = 0.0;
 
             foreach (Bid b in _bids_to_calculate)
@@ -184,7 +183,6 @@ namespace DataRetriever.Jobs.Calculations
 
                 if (i == 0)
                 {
-
                     if (b.Calculation.Macd_absol_max_signal == 0)
                     {
                         b.Calculation.Data_to_update = true;
@@ -216,7 +214,6 @@ namespace DataRetriever.Jobs.Calculations
                 }
                 else
                 {
-                    //TODO, dans le cas ou macd_absol_max_signal est différent (typiquement en cas de changement du pourcentage de déclenchement (variable trigger)
                     if (Math.Abs(b.Calculation.Macd_signal) > last_absol_max)
                     {
                         last_absol_max = Math.Abs(b.Calculation.Macd_signal);

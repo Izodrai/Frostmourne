@@ -235,7 +235,7 @@ namespace DataRetriever.Dbs
         /// <param name="_symbol_id"></param>
         /// <param name="_symbol_name"></param>
         /// <returns></returns>
-        public Error Load_last_2_days_bid_values_for_one_symbol(ref List<Bid> _bids, int _symbol_id, string _symbol_name)
+        public Error Load_last_5_days_bid_values_for_one_symbol(ref List<Bid> _bids, int _symbol_id, string _symbol_name)
         {
             try
             {
@@ -316,7 +316,7 @@ namespace DataRetriever.Dbs
         /// </summary>
         /// <param name="b"></param>
         /// <returns></returns>
-        public Error Add_stock_analyse(Bid b)
+        public Error Add_stock_analyse(Bid b, double trigger)
         {
 
             if (b.Calculation.Id != 0)
@@ -326,8 +326,8 @@ namespace DataRetriever.Dbs
             {
                 MySqlCommand cmd = new MySqlCommand("", this.MysqlConnector);
 
-                cmd.CommandText = "INSERT INTO stock_analyse(stock_value_id, sma_c, sma_l, ema_c, ema_l, macd_value, macd_trigger, macd_signal, macd_absol_max_signal, macd_absol_trigger_signal)";
-                 cmd.CommandText += "VALUES(@stock_value_id, @sma_c, @sma_l, @ema_c, @ema_l, @macd_value, @macd_trigger, @macd_signal, @macd_absol_max_signal, @macd_absol_trigger_signal)";
+                cmd.CommandText = "INSERT INTO stock_analyse(stock_value_id, sma_c, sma_l, ema_c, ema_l, macd_value, macd_trigger, macd_signal, macd_absol_max_signal, macd_trigger_percent, macd_absol_trigger_signal)";
+                 cmd.CommandText += "VALUES(@stock_value_id, @sma_c, @sma_l, @ema_c, @ema_l, @macd_value, @macd_trigger, @macd_signal, @macd_absol_max_signal, @macd_trigger_percent, @macd_absol_trigger_signal)";
                 cmd.Prepare();
 
                 cmd.Parameters.AddWithValue("@sma_c", 1.5);
@@ -340,7 +340,8 @@ namespace DataRetriever.Dbs
                 cmd.Parameters.AddWithValue("@stock_value_id", 1.5);
                 cmd.Parameters.AddWithValue("@macd_absol_max_signal", 1.5);
                 cmd.Parameters.AddWithValue("@macd_absol_trigger_signal", 1.5);
-
+                cmd.Parameters.AddWithValue("@macd_trigger_percent", 1.5);
+                
                 cmd.Parameters["@sma_c"].Value = b.Calculation.Sma_c;
                 cmd.Parameters["@sma_l"].Value = b.Calculation.Sma_l;
                 cmd.Parameters["@ema_c"].Value = b.Calculation.Ema_c;
@@ -350,6 +351,7 @@ namespace DataRetriever.Dbs
                 cmd.Parameters["@macd_signal"].Value = b.Calculation.Macd_signal;
                 cmd.Parameters["@macd_absol_max_signal"].Value = b.Calculation.Macd_absol_max_signal;
                 cmd.Parameters["@macd_absol_trigger_signal"].Value = b.Calculation.Macd_absol_trigger_signal;
+                cmd.Parameters["@macd_trigger_percent"].Value = trigger;
                 cmd.Parameters["@stock_value_id"].Value = b.Id;
                 cmd.ExecuteNonQuery();
 
@@ -366,7 +368,7 @@ namespace DataRetriever.Dbs
         /// </summary>
         /// <param name="b"></param>
         /// <returns></returns>
-        public Error Update_stock_analyse(Bid b)
+        public Error Update_stock_analyse(Bid b, double trigger)
         {
             if (!b.Calculation.Data_to_update)
             {
@@ -383,7 +385,7 @@ namespace DataRetriever.Dbs
                 MySqlCommand cmd = new MySqlCommand("", this.MysqlConnector);
 
                 cmd.CommandText = "UPDATE stock_analyse SET sma_c = @sma_c, sma_l = @sma_l, ema_c = @ema_c, ema_l = @ema_l, macd_value = @macd_value, macd_trigger = @macd_trigger, macd_signal = @macd_signal, ";
-                cmd.CommandText += "macd_absol_max_signal = @macd_absol_max_signal, macd_absol_trigger_signal = @macd_absol_trigger_signal WHERE id = @analyse_id";
+                cmd.CommandText += "macd_absol_max_signal = @macd_absol_max_signal, macd_absol_trigger_signal = @macd_absol_trigger_signal, macd_trigger_percent = @macd_trigger_percent WHERE id = @analyse_id";
                 cmd.Prepare();
 
                 cmd.Parameters.AddWithValue("@sma_c", 1.5);
@@ -396,7 +398,8 @@ namespace DataRetriever.Dbs
                 cmd.Parameters.AddWithValue("@analyse_id", 1.5);
                 cmd.Parameters.AddWithValue("@macd_absol_max_signal", 1.5);
                 cmd.Parameters.AddWithValue("@macd_absol_trigger_signal", 1.5);
-
+                cmd.Parameters.AddWithValue("@macd_trigger_percent", 1.5);
+                
                 cmd.Parameters["@sma_c"].Value = b.Calculation.Sma_c;
                 cmd.Parameters["@sma_l"].Value = b.Calculation.Sma_l;
                 cmd.Parameters["@ema_c"].Value = b.Calculation.Ema_c;
@@ -406,6 +409,7 @@ namespace DataRetriever.Dbs
                 cmd.Parameters["@macd_signal"].Value = b.Calculation.Macd_signal;
                 cmd.Parameters["@macd_absol_max_signal"].Value = b.Calculation.Macd_absol_max_signal;
                 cmd.Parameters["@macd_absol_trigger_signal"].Value = b.Calculation.Macd_absol_trigger_signal;
+                cmd.Parameters["@macd_trigger_percent"].Value = trigger;
                 cmd.Parameters["@analyse_id"].Value = b.Calculation.Id;
                 cmd.ExecuteNonQuery();
 
