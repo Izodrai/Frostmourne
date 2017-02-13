@@ -1,0 +1,62 @@
+﻿<Page
+    x:Class="DataVisualization.Pages.Market"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:DataVisualization.Pages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <RelativePanel>
+            <Button Name="SMA_Btn" 
+                RelativePanel.AlignLeftWithPanel="True"
+                FontSize="24" 
+                Content="SMA" 
+                Click="SMA_Click"
+                Margin="20,10,0,10"/>
+            
+            <Button Name="EMA_Btn" 
+                RelativePanel.RightOf="SMA_Btn"
+                FontSize="24" 
+                Content="EMA" 
+                Click="EMA_Click"
+                Margin="20,10,0,10" />
+
+            <Button Name="MACD_Btn" 
+                RelativePanel.RightOf="EMA_Btn"
+                FontSize="24" 
+                Content="MACD" 
+                Click="MACD_Click"
+                Margin="20,10,0,10" />
+        </RelativePanel>
+
+
+        <RelativePanel Grid.Row="1">
+            <TextBlock  Text="Affiche actuel :" 
+                        Name="MyComboBox"  
+                        FontSize="24" 
+                        VerticalAlignment="Center" 
+                        Margin="20,10,0,10" />
+
+            <StackPanel Orientation="Horizontal" 
+                        Margin="20,10,0,10"
+                        RelativePanel.RightOf="MyComboBox" >
+                <ComboBox SelectionChanged="ComboBox_SelectionChanged" Margin="0,3,0,3">
+                    <ComboBoxItem Content="Fourth" />
+                    <ComboBoxItem Content="Fifth" />
+                    <ComboBoxItem Content="Sixth" IsSelected="True" />
+                </ComboBox>
+            </StackPanel>
+        </RelativePanel>
+
+        
+
+    </Grid>
+</Page>

@@ -25,6 +25,38 @@ namespace DataVisualization
         public MainPage()
         {
             this.InitializeComponent();
+            MyFrame.Navigate(typeof(Pages.Home));
+            TitleTextBlock.Text = "Home";
+            Home.IsSelected = true;
+        }
+
+        private void HamburgerButton_Click(object sender, RoutedEventArgs e)
+        {
+            MySplitView.IsPaneOpen = !MySplitView.IsPaneOpen;
+        }
+
+        private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (Home.IsSelected)
+            {
+                MyFrame.Navigate(typeof(Pages.Home));
+                TitleTextBlock.Text = "Home";
+            }
+            else if (Market.IsSelected)
+            {
+                MyFrame.Navigate(typeof(Pages.Market));
+                TitleTextBlock.Text = "Market";
+            }
+            else if (Report.IsSelected)
+            {
+                MyFrame.Navigate(typeof(Pages.Report));
+                TitleTextBlock.Text = "Report";
+            }
+            else if (Settings.IsSelected)
+            {
+                MyFrame.Navigate(typeof(Pages.Settings));
+                TitleTextBlock.Text = "Settings";
+            }
         }
     }
 }
