@@ -496,7 +496,7 @@ namespace DataRetriever.Jobs.XtbConnector
                 // Calcul des indicateurs du MACD
                 ////////////////
 
-                double trigger = 15;
+                int trigger = 30;
 
                 err = Calculation.MACD(ref bids_to_calculate, trigger);
                 if (err.IsAnError)
@@ -508,10 +508,10 @@ namespace DataRetriever.Jobs.XtbConnector
                 
                 foreach (Bid b in bids_to_calculate)
                 {
-                    Console.WriteLine(b.Bid_at.ToString()+ " | Start_bid -> " + b.Start_bid+ " | Last_bid -> " + b.Last_bid+ " | Macd_signal -> " + b.Calculation.Macd_signal + " | Macd_absol_max_signal -> " + b.Calculation.Macd_absol_max_signal + " | Macd_absol_trigger_signal -> " + b.Calculation.Macd_absol_trigger_signal);
+                    // Console.WriteLine(b.Bid_at.ToString()+ " | Start_bid -> " + b.Start_bid+ " | Last_bid -> " + b.Last_bid+ " | Macd_signal -> " + b.Calculation.Macd_signal + " | Macd_absol_max_signal -> " + b.Calculation.Macd_absol_max_signal + " | Macd_absol_trigger_signal -> " + b.Calculation.Macd_absol_trigger_signal);
                     
                     if (b.Calculation.Id == 0) {
-                        err = this.MyDB_Connector.Add_stock_analyse(b, trigger);
+                        err = this.MyDB_Connector.Add_stock_analyse(b);
                         if (err.IsAnError)
                             return err;
                         continue;
@@ -519,7 +519,7 @@ namespace DataRetriever.Jobs.XtbConnector
 
                     if (b.Calculation.Data_to_update)
                     {
-                        err = this.MyDB_Connector.Update_stock_analyse(b, trigger);
+                        err = this.MyDB_Connector.Update_stock_analyse(b);
                         if (err.IsAnError)
                             return err;
                         continue;

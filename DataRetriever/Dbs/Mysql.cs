@@ -241,7 +241,7 @@ namespace DataRetriever.Dbs
             {
                 MySqlCommand cmd = new MySqlCommand("", this.MysqlConnector);
 
-                cmd.CommandText = "SELECT sv_id, bid_at, start_bid, last_bid, sma_c, sma_l, ema_c, ema_l, sa_id, macd_value, macd_trigger, macd_signal, macd_absol_max_signal, macd_absol_trigger_signal";
+                cmd.CommandText = "SELECT sv_id, bid_at, start_bid, last_bid, sma_c, sma_l, ema_c, ema_l, sa_id, macd_value, macd_trigger, macd_signal, macd_absol_max_signal, macd_absol_trigger_signal, macd_trigger_percent";
                 cmd.CommandText += " FROM `v_last_5_days_stock_values` WHERE s_id = @symbol_id";
                 cmd.Parameters.Clear();
                 cmd.Parameters.AddWithValue("symbol_id", _symbol_id);
@@ -267,6 +267,7 @@ namespace DataRetriever.Dbs
                         double macd_signal = 0.0;
                         double macd_absol_max_signal = 0.0;
                         double macd_absol_trigger_signal = 0.0;
+                        int macd_trigger_percent = 0;
 
                         if (Convert.ToString(values[4]) != "")
                             sma_c = Convert.ToDouble(values[4]);
@@ -298,7 +299,12 @@ namespace DataRetriever.Dbs
                         if (Convert.ToString(values[13]) != "")
                             macd_absol_trigger_signal = (Convert.ToDouble(values[13]));
 
-                        Bid b = new Bid(sv_id, _symbol_id, _symbol_name, bid_at, start_value, last_value, sma_c, sma_l, ema_c, ema_l, sa_id, macd_value, macd_trigger, macd_signal, macd_absol_max_signal, macd_absol_trigger_signal);
+                        if (Convert.ToString(values[14]) != "")
+                        {
+                            macd_trigger_percent = (Convert.ToInt32(values[14]));
+                        }
+
+                        Bid b = new Bid(sv_id, _symbol_id, _symbol_name, bid_at, start_value, last_value, sma_c, sma_l, ema_c, ema_l, sa_id, macd_value, macd_trigger, macd_signal, macd_absol_max_signal, macd_absol_trigger_signal, macd_trigger_percent);
                         _bids.Add(b);
                     }
 
@@ -316,7 +322,7 @@ namespace DataRetriever.Dbs
         /// </summary>
         /// <param name="b"></param>
         /// <returns></returns>
-        public Error Add_stock_analyse(Bid b, double trigger)
+        public Error Add_stock_analyse(Bid b)
         {
 
             if (b.Calculation.Id != 0)
@@ -351,7 +357,7 @@ namespace DataRetriever.Dbs
                 cmd.Parameters["@macd_signal"].Value = b.Calculation.Macd_signal;
                 cmd.Parameters["@macd_absol_max_signal"].Value = b.Calculation.Macd_absol_max_signal;
                 cmd.Parameters["@macd_absol_trigger_signal"].Value = b.Calculation.Macd_absol_trigger_signal;
-                cmd.Parameters["@macd_trigger_percent"].Value = trigger;
+                cmd.Parameters["@macd_trigger_percent"].Value = b.Calculation.Macd_trigger_percent;
                 cmd.Parameters["@stock_value_id"].Value = b.Id;
                 cmd.ExecuteNonQuery();
 
@@ -368,7 +374,7 @@ namespace DataRetriever.Dbs
         /// </summary>
         /// <param name="b"></param>
         /// <returns></returns>
-        public Error Update_stock_analyse(Bid b, double trigger)
+        public Error Update_stock_analyse(Bid b)
         {
             if (!b.Calculation.Data_to_update)
             {
@@ -409,7 +415,7 @@ namespace DataRetriever.Dbs
                 cmd.Parameters["@macd_signal"].Value = b.Calculation.Macd_signal;
                 cmd.Parameters["@macd_absol_max_signal"].Value = b.Calculation.Macd_absol_max_signal;
                 cmd.Parameters["@macd_absol_trigger_signal"].Value = b.Calculation.Macd_absol_trigger_signal;
-                cmd.Parameters["@macd_trigger_percent"].Value = trigger;
+                cmd.Parameters["@macd_trigger_percent"].Value = b.Calculation.Macd_trigger_percent;
                 cmd.Parameters["@analyse_id"].Value = b.Calculation.Id;
                 cmd.ExecuteNonQuery();
 

@@ -44,7 +44,7 @@ namespace DataRetriever.Jobs.Bids
             this.Last_bid = _last_bid;
         }
         
-        public Bid(int _id, int _symbol_id, string _symbol_name, DateTime _bid_at, double _start_bid, double _last_bid, double _sma_c, double _sma_l, double _ema_c, double _ema_l, int _sa_id, double _macd_value, double _macd_trigger, double _macd_signal, double _macd_absol_max_signal, double _macd_absol_trigger_signal)
+        public Bid(int _id, int _symbol_id, string _symbol_name, DateTime _bid_at, double _start_bid, double _last_bid, double _sma_c, double _sma_l, double _ema_c, double _ema_l, int _sa_id, double _macd_value, double _macd_trigger, double _macd_signal, double _macd_absol_max_signal, double _macd_absol_trigger_signal, int _macd_trigger_percent)
         {
             this.Id = _id;
             this.Symbol_id = _symbol_id;
@@ -52,7 +52,7 @@ namespace DataRetriever.Jobs.Bids
             this.Bid_at = _bid_at;
             this.Start_bid = _start_bid;
             this.Last_bid = _last_bid;
-            this.Calculation = new Calculation(_sa_id, _sma_c, _sma_l, _ema_c, _ema_l, _macd_value, _macd_trigger, _macd_signal, _macd_absol_max_signal, _macd_absol_trigger_signal);
+            this.Calculation = new Calculation(_sa_id, _sma_c, _sma_l, _ema_c, _ema_l, _macd_value, _macd_trigger, _macd_signal, _macd_absol_max_signal, _macd_absol_trigger_signal, _macd_trigger_percent);
         }
     }
 }
