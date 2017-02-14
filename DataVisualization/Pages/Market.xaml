@@ -50,17 +50,17 @@
                         Margin="20,10,0,10"
                         RelativePanel.RightOf="MyComboBox" >
                 <ComboBox SelectionChanged="ComboBox_SelectionChanged" Margin="0,3,0,3">
-                    <ComboBoxItem Content="Green" />
-                    <ComboBoxItem Content="Blue" />
-                    <ComboBoxItem Content="Red" IsSelected="True" />
+                    <ComboBoxItem Content="darky" />
+                    <ComboBoxItem Content="bat" />
+                    <ComboBoxItem Content="super" IsSelected="True" />
                 </ComboBox>
             </StackPanel>
         </RelativePanel>
 
         <RelativePanel Grid.Row="2">
-            <Rectangle Name="Blue" Fill="Blue" Width="900" Height="200" Visibility="Collapsed"></Rectangle>
-            <Rectangle Name="Green" Fill="Green" Width="900" Height="200" Visibility="Collapsed"></Rectangle>
-            <Rectangle Name="Red" Fill="Red" Width="900" Height="200"></Rectangle>
+            <Image Name="darky" Source="../Assets/darky.jpg" Visibility="Collapsed"/>
+            <Image Name="bat" Source="../Assets/bat.jpg" Visibility="Collapsed"/>
+            <Image Name="super" Source="../Assets/super_hero.jpg" />
         </RelativePanel>
 
     </Grid>

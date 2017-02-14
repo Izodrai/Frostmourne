@@ -49,23 +49,23 @@ namespace DataVisualization.Pages
             var combo = (ComboBox)sender;
             var item = (ComboBoxItem)combo.SelectedItem;
 
-            if (item.Content.ToString() == "Green")
+            if (item.Content.ToString() == "bat")
             {
-                Red.Visibility = Visibility.Collapsed;
-                Green.Visibility = Visibility.Visible;
-                Blue.Visibility = Visibility.Collapsed;
+                darky.Visibility = Visibility.Collapsed;
+                bat.Visibility = Visibility.Visible;
+                super.Visibility = Visibility.Collapsed;
             }
-            else if (item.Content.ToString() == "Red")
+            else if (item.Content.ToString() == "darky")
             {
-                Red.Visibility = Visibility.Visible;
-                Green.Visibility = Visibility.Collapsed;
-                Blue.Visibility = Visibility.Collapsed;
+                darky.Visibility = Visibility.Visible;
+                bat.Visibility = Visibility.Collapsed;
+                super.Visibility = Visibility.Collapsed;
             }
-            else if (item.Content.ToString() == "Blue")
+            else if (item.Content.ToString() == "super")
             {
-                Red.Visibility = Visibility.Collapsed;
-                Green.Visibility = Visibility.Collapsed;
-                Blue.Visibility = Visibility.Visible;
+                darky.Visibility = Visibility.Collapsed;
+                bat.Visibility = Visibility.Collapsed;
+                super.Visibility = Visibility.Visible;
             }
         }
     }
