@@ -159,6 +159,8 @@ namespace DataRetriever.Jobs.Calculations
             
             int i = 0;
             double last_absol_max = 0.0;
+            
+            List<double> macd_signals = new List<double>();
 
             foreach (Bid b in _bids_to_calculate)
             {
@@ -176,57 +178,75 @@ namespace DataRetriever.Jobs.Calculations
                     b.Calculation.Macd_signal = Math.Round(v_macd_r - v_trigger_r, 2);
                 }
 
-                
+
                 //////////////////////////////
                 // 
                 //////////////////////////////
 
-                if (i == 0)
+                // TODO -> Update ce système et utiliser le tableau 'numbers'
+                // Le but est de mettre les 50 dernières valeurs de Macd_signal et d'en ressortir la valeur 
+                // la plus importante qui sera le Macd_absol_max_signal pour ce bid
+                // ainsi on as la valeur la plus importante de ces 4 dernières heures et 
+                // les valeurs aberrante sont "lissées" après ces 4 heures
+
+                if (macd_signals.Count() >= 48)
+                    macd_signals.RemoveAt(0);
+
+                macd_signals.Add(b.Calculation.Macd_signal);
+
+                foreach (double signal in macd_signals)
                 {
+
+                }
+
+                    /*
+                    if (i == 0)
+                    {
+                        if (b.Calculation.Macd_absol_max_signal == 0)
+                        {
+                            b.Calculation.Data_to_update = true;
+                            last_absol_max = Math.Abs(b.Calculation.Macd_signal);
+                            b.Calculation.Macd_absol_max_signal = last_absol_max;
+                            b.Calculation.Macd_absol_trigger_signal = (b.Calculation.Macd_absol_max_signal * trigger) / (double)100;
+                        }
+                        else
+                        {
+                            last_absol_max = b.Calculation.Macd_absol_max_signal;
+                        }
+                        i++;
+                        continue;
+                    }
+
+                    //////////////////////////////
+                    // 
+                    //////////////////////////////
+
                     if (b.Calculation.Macd_absol_max_signal == 0)
                     {
                         b.Calculation.Data_to_update = true;
-                        last_absol_max = Math.Abs(b.Calculation.Macd_signal);
+
+                        if (Math.Abs(b.Calculation.Macd_signal) > last_absol_max)
+                            last_absol_max = Math.Abs(b.Calculation.Macd_signal);
+
                         b.Calculation.Macd_absol_max_signal = last_absol_max;
                         b.Calculation.Macd_absol_trigger_signal = (b.Calculation.Macd_absol_max_signal * trigger) / (double)100;
                     }
                     else
                     {
-                        last_absol_max = b.Calculation.Macd_absol_max_signal;
-                    }
-                    i++;
-                    continue;
-                }
-                
-                //////////////////////////////
-                // 
-                //////////////////////////////
-                
-                if (b.Calculation.Macd_absol_max_signal == 0)
-                {
-                    b.Calculation.Data_to_update = true;
-
-                    if (Math.Abs(b.Calculation.Macd_signal) > last_absol_max)
-                        last_absol_max = Math.Abs(b.Calculation.Macd_signal);
-
-                    b.Calculation.Macd_absol_max_signal = last_absol_max;
-                    b.Calculation.Macd_absol_trigger_signal = (b.Calculation.Macd_absol_max_signal * trigger) / (double)100;
-                }
-                else
-                {
-                    if (Math.Abs(b.Calculation.Macd_signal) > last_absol_max)
-                    {
-                        last_absol_max = Math.Abs(b.Calculation.Macd_signal);
-
-                        if (b.Calculation.Macd_absol_max_signal != last_absol_max)
+                        if (Math.Abs(b.Calculation.Macd_signal) > last_absol_max)
                         {
-                            b.Calculation.Data_to_update = true;
-                            b.Calculation.Macd_absol_max_signal = last_absol_max;
-                            b.Calculation.Macd_absol_trigger_signal = (b.Calculation.Macd_absol_max_signal * trigger) / (double)100;
+                            last_absol_max = Math.Abs(b.Calculation.Macd_signal);
+
+                            if (b.Calculation.Macd_absol_max_signal != last_absol_max)
+                            {
+                                b.Calculation.Data_to_update = true;
+                                b.Calculation.Macd_absol_max_signal = last_absol_max;
+                                b.Calculation.Macd_absol_trigger_signal = (b.Calculation.Macd_absol_max_signal * trigger) / (double)100;
+                            }
                         }
                     }
+                    */
                 }
-            }
 
             return new Error(false, "MACD calculated");
         }
