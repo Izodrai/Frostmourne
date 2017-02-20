@@ -26,7 +26,7 @@ namespace DataVisualization
         {
             this.InitializeComponent();
             MyFrame.Navigate(typeof(Pages.Home));
-            TitleTextBlock.Text = "Home";
+            TitleTextBlock.Text = "Accueil";
             Home.IsSelected = true;
         }
 
@@ -40,26 +40,26 @@ namespace DataVisualization
             if (Home.IsSelected)
             {
                 MyFrame.Navigate(typeof(Pages.Home));
-                TitleTextBlock.Text = "Home";
+                TitleTextBlock.Text = "Accueil";
             }
             else if (Market.IsSelected)
             {
                 MyFrame.Navigate(typeof(Pages.Market));
-                TitleTextBlock.Text = "Market";
+                TitleTextBlock.Text = "Suivi des devises";
             }
             else if (Report.IsSelected)
             {
                 MyFrame.Navigate(typeof(Pages.Report));
-                TitleTextBlock.Text = "Report";
+                TitleTextBlock.Text = "Suivi des positions";
             }
             else if (Settings.IsSelected)
             {
                 MyFrame.Navigate(typeof(Pages.Settings));
-                TitleTextBlock.Text = "Settings";
+                TitleTextBlock.Text = "Paramètres";
             }
         }
 
-        private void ListBox_SelectionChanged2(object sender, SelectionChangedEventArgs e)
+        private void ListBox_Exit(object sender, SelectionChangedEventArgs e)
         {
             if (Exit.IsSelected)
                 Application.Current.Exit();

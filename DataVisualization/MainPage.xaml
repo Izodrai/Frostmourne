@@ -30,12 +30,6 @@
                     FontWeight="Bold"
                     Margin="20,5,0,0"/>
 
-            <TextBlock Name="OthersInforamtionsTextBlock" 
-                    RelativePanel.AlignRightWithPanel="True"
-                    FontSize="28"
-                    FontWeight="Bold"
-                    Margin="20,5,0,0"/>
-
         </RelativePanel>
 
         <SplitView Grid.Row="1" 
@@ -57,25 +51,25 @@
                         <ListBoxItem Name="Market">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="19" Text="&#xE143;" Margin="2,5,0,0" />
-                                <TextBlock FontSize="24" Margin="20,0,0,0">Market</TextBlock>
+                                <TextBlock FontSize="16" Margin="25,3,0,0">Suivi des symboles</TextBlock>
                             </StackPanel>
                         </ListBoxItem>
                         <ListBoxItem Name="Report">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="19" Text="&#xE8EF;" Margin="2,5,0,0" />
-                                <TextBlock FontSize="24" Margin="20,0,0,0">Report</TextBlock>
+                                <TextBlock FontSize="16" Margin="25,3,0,0">Suivi des positions</TextBlock>
                             </StackPanel>
                         </ListBoxItem>
                         <ListBoxItem Name="Settings">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="19" Text="&#xE115;" Margin="2,5,0,0" />
-                                <TextBlock FontSize="24" Margin="20,0,0,0">Settings</TextBlock>
+                                <TextBlock FontSize="16" Margin="25,3,0,0">Paramètres</TextBlock>
                             </StackPanel>
                         </ListBoxItem>
                     </ListBox>
 
                     <ListBox SelectionMode="Single" 
-                        SelectionChanged="ListBox_SelectionChanged2"
+                        SelectionChanged="ListBox_Exit"
                         RelativePanel.AlignBottomWithPanel="true">
                         <ListBoxItem Name="Exit" >
                             <StackPanel Orientation="Horizontal">
