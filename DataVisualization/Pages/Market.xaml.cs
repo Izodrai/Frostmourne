@@ -27,6 +27,9 @@ namespace DataVisualization.Pages
         public Market()
         {
             this.InitializeComponent();
+            Darky.Visibility = Visibility.Collapsed;
+            Bat.Visibility = Visibility.Collapsed;
+            Super.Visibility = Visibility.Visible;
         }
 
         private void EMA_Click(object sender, RoutedEventArgs e)
@@ -49,23 +52,26 @@ namespace DataVisualization.Pages
             var combo = (ComboBox)sender;
             var item = (ComboBoxItem)combo.SelectedItem;
 
+            if (Darky == null || Bat == null || Super == null)
+                return;
+
             if (item.Content.ToString() == "bat")
             {
-                darky.Visibility = Visibility.Collapsed;
-                bat.Visibility = Visibility.Visible;
-                super.Visibility = Visibility.Collapsed;
+                Darky.Visibility = Visibility.Collapsed;
+                Bat.Visibility = Visibility.Visible;
+                Super.Visibility = Visibility.Collapsed;
             }
             else if (item.Content.ToString() == "darky")
             {
-                darky.Visibility = Visibility.Visible;
-                bat.Visibility = Visibility.Collapsed;
-                super.Visibility = Visibility.Collapsed;
+                Darky.Visibility = Visibility.Visible;
+                Bat.Visibility = Visibility.Collapsed;
+                Super.Visibility = Visibility.Collapsed;
             }
             else if (item.Content.ToString() == "super")
             {
-                darky.Visibility = Visibility.Collapsed;
-                bat.Visibility = Visibility.Collapsed;
-                super.Visibility = Visibility.Visible;
+                Darky.Visibility = Visibility.Collapsed;
+                Bat.Visibility = Visibility.Collapsed;
+                Super.Visibility = Visibility.Visible;
             }
         }
     }

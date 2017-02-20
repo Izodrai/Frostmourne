@@ -58,5 +58,11 @@ namespace DataVisualization
                 TitleTextBlock.Text = "Settings";
             }
         }
+
+        private void ListBox_SelectionChanged2(object sender, SelectionChangedEventArgs e)
+        {
+            if (Exit.IsSelected)
+                Application.Current.Exit();
+        }
     }
 }

@@ -36,6 +36,13 @@
                 Content="MACD" 
                 Click="MACD_Click"
                 Margin="20,10,0,10" />
+
+            <TextBlock Name="OthersInforamtionsTextBlock" 
+                    RelativePanel.AlignRightWithPanel="True"
+                    FontSize="28"
+                    FontWeight="Bold"
+                    Margin="10,10,20,0"
+                    Text="test"/>
         </RelativePanel>
 
 
@@ -58,9 +65,9 @@
         </RelativePanel>
 
         <RelativePanel Grid.Row="2">
-            <Image Name="darky" Source="../Assets/darky.jpg" Visibility="Collapsed"/>
-            <Image Name="bat" Source="../Assets/bat.jpg" Visibility="Collapsed"/>
-            <Image Name="super" Source="../Assets/super_hero.jpg" />
+            <Image Name="Darky" Source="../Assets/darky.jpg" Visibility="Collapsed" Stretch="Uniform"/>
+            <Image Name="Bat" Source="../Assets/bat.jpg" Visibility="Collapsed" Stretch="Uniform"/>
+            <Image Name="Super" Source="../Assets/super_hero.jpg" Visibility="Visible" Stretch="Uniform"/>
         </RelativePanel>
 
     </Grid>
