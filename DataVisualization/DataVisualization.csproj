@@ -95,6 +95,10 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Dbs\Mysql.cs" />
+    <Compile Include="Jobs\ActiveSymbols\ActiveSymbol.cs" />
+    <Compile Include="Jobs\Bids\Bid.cs" />
+    <Compile Include="Jobs\Calculations\Calculation.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>

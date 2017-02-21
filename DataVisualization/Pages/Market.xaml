@@ -41,36 +41,35 @@
                         RelativePanel.LeftOf="Text_block_Separator"
                         FontSize="28"
                         FontWeight="Bold"
-                        Margin="10,10,14,0"
-                        Text="tool"/>
+                        Margin="10,10,14,0"/>
 
             <TextBlock Name="Text_block_Separator" 
                         RelativePanel.LeftOf="Text_bloc_symbol"
                         FontSize="28"
                         FontWeight="Bold"
-                        Margin="0,10,0,0"
-                        Text="/"/>
+                        Margin="0,10,0,0"/>
 
             <TextBlock Name="Text_bloc_symbol" 
                         RelativePanel.AlignRightWithPanel="True"
                         FontSize="28"
                         FontWeight="Bold"
-                        Margin="10,10,20,0"
-                        Text="symbol"/>
+                        Margin="10,10,20,0"/>
         </RelativePanel>
 
 
         <RelativePanel Grid.Row="1">
-            <TextBlock  Text="Affiche actuel :" 
-                        Name="MyComboBox"  
+            <TextBlock  Text="Symbole actuel :" 
+                        Name="Text_bloc_symbols"  
                         FontSize="24" 
                         VerticalAlignment="Center" 
                         Margin="20,10,0,10" />
 
             <StackPanel Orientation="Horizontal" 
                         Margin="20,10,0,10"
-                        RelativePanel.RightOf="MyComboBox" >
-                <ComboBox SelectionChanged="ComboBox_SelectionChanged" Margin="0,3,0,3">
+                        RelativePanel.RightOf="Text_bloc_symbols" >
+                <ComboBox Name="Combo_box_symbols"  
+                          SelectionChanged="Combo_box_symbols_SelectionChanged" 
+                          Margin="0,3,0,3">
                     <ComboBoxItem Content="darky" />
                     <ComboBoxItem Content="bat" />
                     <ComboBoxItem Content="super" IsSelected="True" />
