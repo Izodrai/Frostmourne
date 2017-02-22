@@ -36,11 +36,7 @@ namespace DataVisualization.Pages
             Init_first_view();
             
 
-            var cboxitem = new ComboBoxItem();
-
-            cboxitem.Content = "Item3";
-
-            Combo_box_symbols.Items.Add(cboxitem);
+            
         }
 
         private void Init_first_view()
@@ -55,12 +51,22 @@ namespace DataVisualization.Pages
 
             ActiveSymbol actv_symbol = new ActiveSymbol(1, "EURUSD", "Instrument, which price is based on quotations of Euro to American Dollar on the interbank market.");
             this.ActiveSymbols.Add(actv_symbol);
+            actv_symbol = new ActiveSymbol(1, "EURGBP", "Instrument, which price is based on quotations of Euro to British Pound on the interbank market.");
+            this.ActiveSymbols.Add(actv_symbol);
+            actv_symbol = new ActiveSymbol(1, "GBPUSD", "Instrument, which price is based on quotations of British Pound to American Dollar on the interbank market.");
+            this.ActiveSymbols.Add(actv_symbol);
 
 
             Text_block_Tool.Text = "SMA";
             Text_block_Separator.Text = "/";
             Text_bloc_symbol.Text = this.ActiveSymbols.FirstOrDefault().Name;
-     
+
+            foreach (ActiveSymbol element in this.ActiveSymbols)
+            {
+                var cboxitem = new ComboBoxItem();
+                cboxitem.Content = element.Name;
+                Combo_box_symbols.Items.Add(cboxitem);
+            }
         }
 
         private void EMA_Click(object sender, RoutedEventArgs e)
@@ -86,26 +92,36 @@ namespace DataVisualization.Pages
             if (Darky == null || Bat == null || Super == null)
                 return;
 
+            if (item.Content.ToString() != null && item.Content.ToString() != "")
+            {
+                foreach (ActiveSymbol element in this.ActiveSymbols)
+                {
+                    if (element.Name != item.Content.ToString())
+                        continue;
+
+                    Text_bloc_symbol.Text = element.Name;
+                    break;
+                }
+            }
+
+
             if (item.Content.ToString() == "bat")
             {
                 Darky.Visibility = Visibility.Collapsed;
                 Bat.Visibility = Visibility.Visible;
                 Super.Visibility = Visibility.Collapsed;
-                Text_bloc_symbol.Text = "bat";
             }
             else if (item.Content.ToString() == "darky")
             {
                 Darky.Visibility = Visibility.Visible;
                 Bat.Visibility = Visibility.Collapsed;
                 Super.Visibility = Visibility.Collapsed;
-                Text_bloc_symbol.Text = "darky";
             }
             else if (item.Content.ToString() == "super")
             {
                 Darky.Visibility = Visibility.Collapsed;
                 Bat.Visibility = Visibility.Collapsed;
                 Super.Visibility = Visibility.Visible;
-                Text_bloc_symbol.Text = "super";
             }
         }
 
