@@ -70,17 +70,19 @@
                 <ComboBox Name="Combo_box_symbols"  
                           SelectionChanged="Combo_box_symbols_SelectionChanged" 
                           Margin="0,3,0,3">
-                    <ComboBoxItem Content="darky" />
-                    <ComboBoxItem Content="bat" />
-                    <ComboBoxItem Content="super" IsSelected="True" />
                 </ComboBox>
             </StackPanel>
         </RelativePanel>
 
         <RelativePanel Grid.Row="2">
-            <Image Name="Darky" Source="../Assets/darky.jpg" Visibility="Collapsed" Stretch="Uniform"/>
-            <Image Name="Bat" Source="../Assets/bat.jpg" Visibility="Collapsed" Stretch="Uniform"/>
-            <Image Name="Super" Source="../Assets/super_hero.jpg" Visibility="Visible" Stretch="Uniform"/>
+            <ProgressRing Name="ProgressRing"
+                      Margin="100,100,0,0"                      
+                      Grid.Row="8" 
+                      Grid.Column="1"
+                      HorizontalAlignment="Left"
+                      Width="100" 
+                      Height="100" 
+                      IsActive="True" />
         </RelativePanel>
 
     </Grid>

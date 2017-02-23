@@ -41,14 +41,8 @@ namespace DataVisualization.Pages
 
         private void Init_first_view()
         {
-            Darky.Visibility = Visibility.Collapsed;
-            Bat.Visibility = Visibility.Collapsed;
-            Super.Visibility = Visibility.Visible;
-
             this.ActiveSymbols = new List<ActiveSymbol>();
-
-
-
+            
             ActiveSymbol actv_symbol = new ActiveSymbol(1, "EURUSD", "Instrument, which price is based on quotations of Euro to American Dollar on the interbank market.");
             this.ActiveSymbols.Add(actv_symbol);
             actv_symbol = new ActiveSymbol(1, "EURGBP", "Instrument, which price is based on quotations of Euro to British Pound on the interbank market.");
@@ -67,6 +61,7 @@ namespace DataVisualization.Pages
                 cboxitem.Content = element.Name;
                 Combo_box_symbols.Items.Add(cboxitem);
             }
+            Combo_box_symbols.SelectedIndex = 0;
         }
 
         private void EMA_Click(object sender, RoutedEventArgs e)
@@ -89,9 +84,9 @@ namespace DataVisualization.Pages
             var combo = (ComboBox)sender;
             var item = (ComboBoxItem)combo.SelectedItem;
 
-            if (Darky == null || Bat == null || Super == null)
+            if (this.ActiveSymbols == null)
                 return;
-
+            
             if (item.Content.ToString() != null && item.Content.ToString() != "")
             {
                 foreach (ActiveSymbol element in this.ActiveSymbols)
@@ -102,26 +97,6 @@ namespace DataVisualization.Pages
                     Text_bloc_symbol.Text = element.Name;
                     break;
                 }
-            }
-
-
-            if (item.Content.ToString() == "bat")
-            {
-                Darky.Visibility = Visibility.Collapsed;
-                Bat.Visibility = Visibility.Visible;
-                Super.Visibility = Visibility.Collapsed;
-            }
-            else if (item.Content.ToString() == "darky")
-            {
-                Darky.Visibility = Visibility.Visible;
-                Bat.Visibility = Visibility.Collapsed;
-                Super.Visibility = Visibility.Collapsed;
-            }
-            else if (item.Content.ToString() == "super")
-            {
-                Darky.Visibility = Visibility.Collapsed;
-                Bat.Visibility = Visibility.Collapsed;
-                Super.Visibility = Visibility.Visible;
             }
         }
 
