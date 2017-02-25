@@ -2,6 +2,7 @@
 using DataRetriever.Logs;
 using DataRetriever.Jobs.XtbConnector;
 using System;
+using System.Threading;
 
 namespace DataRetriever
 {
@@ -42,6 +43,8 @@ namespace DataRetriever
             }
 
             Log.Warning(err.MessageError);
+
+            Thread.Sleep(200);
         }
         
     }

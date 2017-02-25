@@ -62,6 +62,30 @@ JOIN `symbols` AS `s` ON `s`.`id` = `sv`.`symbol_id`
 LEFT  JOIN `stock_analyse` AS `sa` ON `sv`.`id` = `sa`.`stock_value_id`
 WHERE `sv`.`bid_at` >= DATE_ADD(NOW(), INTERVAL -5 DAY);
 
+
+CREATE OR REPLACE VIEW `v_last_day_stock_values`
+AS SELECT 
+`sv`.`id` AS `sv_id`, `sv`.`bid_at`, `sv`.`start_bid`, `sv`.`last_bid`, 
+`s`.`id` AS `s_id`, `s`.`reference`, 
+`sa`.`id` AS `sa_id`, `sa`.`sma_c`, `sa`.`sma_l`, `sa`.`ema_c`, `sa`.`ema_l`, `sa`.`macd_value`, `sa`.`macd_trigger`, `sa`.`macd_signal`, `sa`.`macd_absol_max_signal`, `sa`.`macd_trigger_percent`, `sa`.`macd_absol_trigger_signal`
+FROM `stock_values` AS `sv`
+JOIN `symbols` AS `s` ON `s`.`id` = `sv`.`symbol_id`
+LEFT  JOIN `stock_analyse` AS `sa` ON `sv`.`id` = `sa`.`stock_value_id`
+WHERE `sv`.`bid_at` >= DATE_ADD(NOW(), INTERVAL -1 DAY);
+
+
+CREATE OR REPLACE VIEW `v_last_day_stock_values`
+AS SELECT 
+`sv`.`id` AS `sv_id`, `sv`.`bid_at`, `sv`.`start_bid`, `sv`.`last_bid`, 
+`s`.`id` AS `s_id`, `s`.`reference`, 
+`sa`.`id` AS `sa_id`, `sa`.`sma_c`, `sa`.`sma_l`, `sa`.`ema_c`, `sa`.`ema_l`, `sa`.`macd_value`, `sa`.`macd_trigger`, `sa`.`macd_signal`, `sa`.`macd_absol_max_signal`, `sa`.`macd_trigger_percent`, `sa`.`macd_absol_trigger_signal`
+FROM `stock_values` AS `sv`
+JOIN `symbols` AS `s` ON `s`.`id` = `sv`.`symbol_id`
+LEFT  JOIN `stock_analyse` AS `sa` ON `sv`.`id` = `sa`.`stock_value_id`
+WHERE `sv`.`bid_at` >= "2017-02-23 17:00:00";
+
+
+
 CREATE OR REPLACE VIEW `v_last_10_days_stock_values`
 AS SELECT 
 `sv`.`id` AS `sv_id`, `sv`.`bid_at`, `sv`.`start_bid`, `sv`.`last_bid`, 

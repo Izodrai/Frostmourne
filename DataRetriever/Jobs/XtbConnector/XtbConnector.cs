@@ -393,7 +393,7 @@ namespace DataRetriever.Jobs.XtbConnector
                 if (err.IsAnError)
                     return err;
 
-                Log.Info("Data retrieved for this symbols : " + symbol.Name);
+                Log.GreenInfo("Data retrieved for this symbols : " + symbol.Name);
                 Log.Info("");
             }
             return new Error(false, "data updated");
@@ -414,6 +414,9 @@ namespace DataRetriever.Jobs.XtbConnector
                 return err;
             }
 
+            return new Error(false, "The application has been terminated !!!");
+
+            /*
             try
             {
                 // Création d'un timer de 30s pour la récupération des données
@@ -437,6 +440,7 @@ namespace DataRetriever.Jobs.XtbConnector
             {
                 return new Error(true, ex.Message);
             }
+            */
 
         }
 
