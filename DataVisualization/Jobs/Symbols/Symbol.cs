@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataVisualization.Jobs.ActiveSymbols
+namespace DataVisualization.Jobs.Symbols
 {
-    public class ActiveSymbol
+    public class Symbol
     {
         public int Id { get; set; }
 
@@ -14,7 +14,7 @@ namespace DataVisualization.Jobs.ActiveSymbols
 
         public string Description { get; set; }
 
-        public ActiveSymbol(int _id, string _name, string _description)
+        public Symbol(int _id, string _name, string _description)
         {
             this.Id = _id;
             this.Name = _name;

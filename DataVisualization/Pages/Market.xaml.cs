@@ -14,8 +14,10 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using LiveCharts;
 using LiveCharts.Uwp;
-using DataVisualization.Jobs.ActiveSymbols;
+using DataVisualization.Jobs.Symbols;
 using Windows.UI.Popups;
+using DataVisualization.Dbs;
+using DataVisualization.Errors;
 
 // Pour plus d'informations sur le modèle d'élément Page vierge, voir la page http://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -27,41 +29,73 @@ namespace DataVisualization.Pages
     
     public sealed partial class Market : Page
     {
-        protected List<ActiveSymbol> ActiveSymbols { get; set; }
+        protected List<Jobs.Symbols.Symbol> Symbols { get; set; }
 
-        public Market()
+        protected Mysql MyDB_Connector { get; set; }
+        protected Error err { get; set; }
+
+        public async Market()
         {
             this.InitializeComponent();
 
-            Init_first_view();
-            
+            err = Init_first_view();
+            if (err.IsAnError)
+            {
+                return err;
+                var messageDialog = new MessageDialog("No internet connection has been found.");
+                await messageDialog.ShowAsync();
+            }
 
-            
+
+
         }
 
-        private void Init_first_view()
+        private Error Init_first_view()
         {
-            this.ActiveSymbols = new List<ActiveSymbol>();
+
+            this.Symbols = new List<Jobs.Symbols.Symbol>();
+
+            this.MyDB_Connector = new Mysql("localhost", "market", "market_user", "azerty");
+
+            if (this.MyDB_Connector.Connect().IsAnError)
+            {
+                return err;
+            }
+
+            List<Symbol> ss = new List<Symbol>();
+
+            err = this.MyDB_Connector.Load_symbols(ref ss);
+            if (err.IsAnError)
+            {
+                return err;
+            }
+            this.Symbols = ss;
+
+
+
             
-            ActiveSymbol actv_symbol = new ActiveSymbol(1, "EURUSD", "Instrument, which price is based on quotations of Euro to American Dollar on the interbank market.");
-            this.ActiveSymbols.Add(actv_symbol);
-            actv_symbol = new ActiveSymbol(1, "EURGBP", "Instrument, which price is based on quotations of Euro to British Pound on the interbank market.");
-            this.ActiveSymbols.Add(actv_symbol);
-            actv_symbol = new ActiveSymbol(1, "GBPUSD", "Instrument, which price is based on quotations of British Pound to American Dollar on the interbank market.");
-            this.ActiveSymbols.Add(actv_symbol);
+
+            Jobs.Symbols.Symbol actv_symbol = new Jobs.Symbols.Symbol(1, "EURUSD", "Instrument, which price is based on quotations of Euro to American Dollar on the interbank market.");
+            this.Symbols.Add(actv_symbol);
+            actv_symbol = new Jobs.Symbols.Symbol(1, "EURGBP", "Instrument, which price is based on quotations of Euro to British Pound on the interbank market.");
+            this.Symbols.Add(actv_symbol);
+            actv_symbol = new Jobs.Symbols.Symbol(1, "GBPUSD", "Instrument, which price is based on quotations of British Pound to American Dollar on the interbank market.");
+            this.Symbols.Add(actv_symbol);
 
 
             Text_block_Tool.Text = "SMA";
             Text_block_Separator.Text = "/";
-            Text_bloc_symbol.Text = this.ActiveSymbols.FirstOrDefault().Name;
+            Text_bloc_symbol.Text = this.Symbols.FirstOrDefault().Name;
 
-            foreach (ActiveSymbol element in this.ActiveSymbols)
+            foreach (Jobs.Symbols.Symbol element in this.Symbols)
             {
                 var cboxitem = new ComboBoxItem();
                 cboxitem.Content = element.Name;
                 Combo_box_symbols.Items.Add(cboxitem);
             }
             Combo_box_symbols.SelectedIndex = 0;
+
+            return new Error(false, "first informations loaded !");
         }
 
         private void EMA_Click(object sender, RoutedEventArgs e)
@@ -84,12 +118,12 @@ namespace DataVisualization.Pages
             var combo = (ComboBox)sender;
             var item = (ComboBoxItem)combo.SelectedItem;
 
-            if (this.ActiveSymbols == null)
+            if (this.Symbols == null)
                 return;
             
             if (item.Content.ToString() != null && item.Content.ToString() != "")
             {
-                foreach (ActiveSymbol element in this.ActiveSymbols)
+                foreach (Symbol element in this.Symbols)
                 {
                     if (element.Name != item.Content.ToString())
                         continue;
