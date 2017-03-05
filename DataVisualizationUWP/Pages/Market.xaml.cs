@@ -34,18 +34,23 @@ namespace DataVisualization.Pages
         protected Mysql MyDB_Connector { get; set; }
         protected Error err { get; set; }
 
-        public async Market()
+        public Market()
         {
             this.InitializeComponent();
+
+            this.err = new Error(false, "");
 
             err = Init_first_view();
             if (err.IsAnError)
             {
-                return err;
-                var messageDialog = new MessageDialog("No internet connection has been found.");
-                await messageDialog.ShowAsync();
+                Text_bloc_process_state.Text = err.MessageError;
+            }
+            else
+            {
+                Text_bloc_process_state.Text = err.MessageError;
             }
 
+            
 
 
         }
@@ -54,33 +59,35 @@ namespace DataVisualization.Pages
         {
 
             this.Symbols = new List<Jobs.Symbols.Symbol>();
-
+            
+            
             this.MyDB_Connector = new Mysql("localhost", "market", "market_user", "azerty");
 
             if (this.MyDB_Connector.Connect().IsAnError)
             {
-                return err;
+                return new Error(true, "We have a problem with the mysql connexion");
             }
 
-            List<Symbol> ss = new List<Symbol>();
+            List<Jobs.Symbols.Symbol> ss = new List<Jobs.Symbols.Symbol>();
 
+            /*
             err = this.MyDB_Connector.Load_symbols(ref ss);
             if (err.IsAnError)
             {
                 return err;
             }
             this.Symbols = ss;
-
+            */
 
 
             
 
             Jobs.Symbols.Symbol actv_symbol = new Jobs.Symbols.Symbol(1, "EURUSD", "Instrument, which price is based on quotations of Euro to American Dollar on the interbank market.");
             this.Symbols.Add(actv_symbol);
-            actv_symbol = new Jobs.Symbols.Symbol(1, "EURGBP", "Instrument, which price is based on quotations of Euro to British Pound on the interbank market.");
+            /*actv_symbol = new Jobs.Symbols.Symbol(1, "EURGBP", "Instrument, which price is based on quotations of Euro to British Pound on the interbank market.");
             this.Symbols.Add(actv_symbol);
             actv_symbol = new Jobs.Symbols.Symbol(1, "GBPUSD", "Instrument, which price is based on quotations of British Pound to American Dollar on the interbank market.");
-            this.Symbols.Add(actv_symbol);
+            this.Symbols.Add(actv_symbol);*/
 
 
             Text_block_Tool.Text = "SMA";
@@ -94,6 +101,7 @@ namespace DataVisualization.Pages
                 Combo_box_symbols.Items.Add(cboxitem);
             }
             Combo_box_symbols.SelectedIndex = 0;
+            
 
             return new Error(false, "first informations loaded !");
         }
@@ -123,7 +131,7 @@ namespace DataVisualization.Pages
             
             if (item.Content.ToString() != null && item.Content.ToString() != "")
             {
-                foreach (Symbol element in this.Symbols)
+                foreach (Jobs.Symbols.Symbol element in this.Symbols)
                 {
                     if (element.Name != item.Content.ToString())
                         continue;

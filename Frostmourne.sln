@@ -5,7 +5,7 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataRetriever", "DataRetriever\DataRetriever.csproj", "{292D139E-1131-4F3A-8234-ABCE7778DB6E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataVisualization", "DataVisualization\DataVisualization.csproj", "{14DCCECC-6A6E-4D1D-A84D-D1C5BFD363C3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataVisualizationUWP", "DataVisualizationUWP\DataVisualizationUWP.csproj", "{14DCCECC-6A6E-4D1D-A84D-D1C5BFD363C3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

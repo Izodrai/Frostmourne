@@ -75,14 +75,23 @@
         </RelativePanel>
 
         <RelativePanel Grid.Row="2">
+
+            <TextBlock Name="Text_bloc_process_state" 
+                       RelativePanel.AlignLeftWithPanel="True"
+                       Text="Work in progress"
+                       FontSize="28"
+                       FontWeight="Bold"
+                       Margin="10,10,20,0"/>
+            
             <ProgressRing Name="ProgressRing"
-                      Margin="100,100,0,0"                      
-                      Grid.Row="8" 
-                      Grid.Column="1"
-                      HorizontalAlignment="Left"
-                      Width="100" 
-                      Height="100" 
-                      IsActive="True" />
+                          RelativePanel.LeftOf="Text_bloc_process_state"
+                          Margin="100,100,0,0"                      
+                          Grid.Row="8" 
+                          Grid.Column="1"
+                          HorizontalAlignment="Left"
+                          Width="100" 
+                          Height="100" 
+                          IsActive="True" />
         </RelativePanel>
 
     </Grid>
