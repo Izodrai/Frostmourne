@@ -159,6 +159,28 @@ namespace DataRetriever.Jobs.Calculations
         {
             double d = 9;
             double last_value_d = 0.0;
+            List<double> macd_signals = new List<double>();
+
+            foreach (Bid b in _bids_to_calculate)
+            {
+                double v_macd = b.Calculation.Ema_c - b.Calculation.Ema_l;
+                double v_macd_r = Math.Round(b.Calculation.Ema_c - b.Calculation.Ema_l, 2);
+                double v_trigger = last_value_d + ((v_macd - last_value_d) * (2 / (d + 1)));
+                double v_trigger_r = Math.Round(v_trigger, 2);
+                last_value_d = v_trigger;
+
+                if (v_trigger_r != b.Calculation.Macd_trigger || v_macd_r != b.Calculation.Macd_value)
+                {
+                    b.Calculation.Data_to_update = true;
+                    b.Calculation.Macd_value = v_macd_r;
+                    b.Calculation.Macd_trigger = v_trigger_r;
+                    b.Calculation.Macd_signal = Math.Round(v_macd_r - v_trigger_r, 2);
+                }
+
+                macd_signals.Add(Math.Abs(b.Calculation.Macd_signal));
+            }
+
+            /*
 
             List<double> macd_signals = new List<double>();
             List<double> macd_signals_test = new List<double>();
@@ -243,7 +265,7 @@ namespace DataRetriever.Jobs.Calculations
                     b.Calculation.Macd_absol_trigger_signal = (b.Calculation.Macd_absol_max_signal * trigger) / (double)100;
                 }
 
-            }
+            }*/
 
             return new Error(false, "MACD calculated");
         }
