@@ -180,11 +180,6 @@ namespace DataRetriever.Jobs.Calculations
                 macd_signals.Add(Math.Abs(b.Calculation.Macd_signal));
             }
 
-            /*
-
-            List<double> macd_signals = new List<double>();
-            List<double> macd_signals_test = new List<double>();
-
             foreach (Bid b in _bids_to_calculate)
             {
                 double v_macd = b.Calculation.Ema_c - b.Calculation.Ema_l;
@@ -213,37 +208,7 @@ namespace DataRetriever.Jobs.Calculations
                 }
                 
                 macd_signals.Add(Math.Abs(b.Calculation.Macd_signal));
-
-                macd_signals_test.Add(Math.Abs(b.Calculation.Macd_signal));
-
-
-                double max = 0.0;
-                double max_1 = 0.0;
-                double max_2 = 0.0;
                 
-                foreach (double signal in macd_signals_test)
-                {
-                    if ( signal > max )
-                    {
-                        max_2 = max_1;
-                        max_1 = max;
-                        max = signal;
-                        continue;
-                    }
-                    if (signal > max_1)
-                    {
-                        max_2 = max = 1;
-                        max_1 = signal;
-                        continue;
-                    }
-                    if (signal > max_2)
-                    {
-                        max_2 = signal;
-                    }
-                }
-                Console.WriteLine(max + " - " + max_1 + " - " + max_2);
-
-
                 foreach (double signal in macd_signals)
                 {
                     if (signal > last_absol_max_signal)
@@ -265,7 +230,7 @@ namespace DataRetriever.Jobs.Calculations
                     b.Calculation.Macd_absol_trigger_signal = (b.Calculation.Macd_absol_max_signal * trigger) / (double)100;
                 }
 
-            }*/
+            }
 
             return new Error(false, "MACD calculated");
         }
