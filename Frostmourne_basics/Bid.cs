@@ -34,5 +34,14 @@ namespace Frostmourne_basics
             this.Bid_at = _bid_at;
             this.Last_bid = _last_bid;
         }
+
+        public Bid(int _id, int _symbol_id, string _symbol_name, DateTime _bid_at, double _last_bid)
+        {
+            this.Id = _id;
+            this.Symbol_id = _symbol_id;
+            this.Symbol_name = _symbol_name;
+            this.Bid_at = _bid_at;
+            this.Last_bid = _last_bid;
+        }
     }
 }

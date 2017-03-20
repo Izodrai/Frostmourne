@@ -14,6 +14,62 @@ namespace Frostmourne_basics
 {
     public class Xtb
     {
+        public static Error Load_bids_values_symbol()
+        {
+
+            return new Error(false, "data loaded");
+        }
+
+        public static Error Retrieve_and_update_data_for_symbol(Mysql MyDB, SyncAPIConnector Xtb_api_connector, Symbol symbol, int _days_to_retrieve, int _months_to_retrieve)
+        {
+            Error err;
+            List<Symbol> not_inactiv_symbols = new List<Symbol>();
+
+            err = MyDB.Load_data_retrieve_symbols(ref not_inactiv_symbols);
+            if (err.IsAnError)
+            {
+                MyDB.Close();
+                return err;
+            }
+            MyDB.Close();
+
+            foreach (Symbol not_inactiv_s in not_inactiv_symbols)
+            {
+                if (symbol.Name == not_inactiv_s.Name)
+                {
+                    symbol = not_inactiv_s;
+                    break;
+                }
+            }
+            
+            if (symbol.Id == 0)
+                return new Error(true, "this symbols are not inactive or doesn't exist");
+
+            DateTime tNow = DateTime.Now;
+            DateTime tFrom = tNow.Date.AddMonths(-_months_to_retrieve);
+            tFrom = tFrom.AddDays(-_days_to_retrieve);
+
+            Log.Info("Time Now -> " + tNow.ToString("yyyy-MM-dd HH:mm:ss") + " ||| retrieve data from -> " + tFrom.ToString("yyyy-MM-dd HH:mm:ss"));
+
+            List<Bid> bids = new List<Bid>();
+
+            err = Retrieve_bids_of_symbol_from_xtb(Xtb_api_connector, symbol, xAPI.Codes.PERIOD_CODE.PERIOD_M5, tNow, tFrom, ref bids);
+            if (err.IsAnError)
+            {
+                return err;
+            }
+
+            err = MyDB.Insert_or_update_bids_values(bids);
+            if (err.IsAnError)
+            {
+                MyDB.Close();
+                return err;
+            }
+            MyDB.Close();
+
+            return new Error(false, "data retrieved");
+        }
+
         public static Error Retrieve_and_update_data_for_symbols(Mysql MyDB, SyncAPIConnector Xtb_api_connector, int _days_to_retrieve, int _months_to_retrieve)
         {
             Error err;
@@ -41,14 +97,14 @@ namespace Frostmourne_basics
                     return err;
                 }
 
-                err = MyDB.Insert_or_update_bid_values(bids);
+                err = MyDB.Insert_or_update_bids_values(bids);
                 if (err.IsAnError)
                 {
                     return err;
                 }
             }
 
-            return new Error(false, "");
+            return new Error(false, "data retrieved");
         }
         
         public static Error Retrieve_bids_of_symbol_from_xtb(SyncAPIConnector _api_connector, Symbol _symbol, xAPI.Codes.PERIOD_CODE _period, DateTime tNow, DateTime tFrom, ref List<Bid> bids)

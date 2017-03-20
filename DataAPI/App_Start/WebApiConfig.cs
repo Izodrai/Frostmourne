@@ -15,9 +15,9 @@ namespace DataAPI
             config.MapHttpAttributeRoutes();
 
             config.Routes.MapHttpRoute(
-                name: "DefaultApi",
-                routeTemplate: "api/{controller}/{id}",
-                defaults: new { id = RouteParameter.Optional }
+                name: "ActionApi",
+                routeTemplate: "api/{controller}/{action}/{arg1}/{arg2}/{arg3}",
+                defaults: new { arg1 = RouteParameter.Optional, arg2 = RouteParameter.Optional, arg3 = RouteParameter.Optional }
             );
         }
     }

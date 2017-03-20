@@ -14,6 +14,8 @@ namespace Frostmourne_basics.Dbs
 
         protected string Pwd { get; set; }
 
+        public Mysql() { }
+
         public Mysql(string _server, string _database, string _login, string _password)
         {
             this.Server = _server;
@@ -26,7 +28,7 @@ namespace Frostmourne_basics.Dbs
         {
             try
             {
-                this.Mysql_connector = new MySqlConnection("server=" + this.Server + ";database = " + this.Database + "; user id = " + this.Login + "; password = " + this.Pwd);
+                this.Mysql_connector = new MySqlConnection("server=" + this.Server + ";database = " + this.Database + "; user id = " + this.Login + "; password = " + this.Pwd + ";Pooling=False");
                 this.Mysql_connector.Open();
 
                 if (!this.Mysql_connector.Ping())
