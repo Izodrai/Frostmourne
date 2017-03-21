@@ -44,7 +44,7 @@ namespace Frostmourne_basics
             Error err;
             Credentials Credentials;
 
-            err = configuration.LoadConfigurationSettings();
+            err = configuration.LoadAPIConfigurationSettings();
 
             if (err.IsAnError)
             {
