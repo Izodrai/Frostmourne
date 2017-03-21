@@ -21,7 +21,7 @@ namespace Frostmourne_basics.Dbs
 
             try
             {
-                MySqlCommand cmd = new MySqlCommand("SELECT id, reference, description FROM v_symbols_data_retrieve", this.Mysql_connector);
+                MySqlCommand cmd = new MySqlCommand("SELECT id, reference, description FROM v_symbols_not_inactive", this.Mysql_connector);
                 
                 cmd.Parameters.Clear();
 

@@ -38,8 +38,8 @@ namespace Frostmourne_basics
                 return new Error(true, "Error reading app settings xtb_login : " + e.Message);
             }
 
-            if (this.Environnement == "localhost")
-                this.Prod = false;
+            if (this.Environnement == "prod")
+                this.Prod = true;
 
             //////////////////////////////////////////////////
             // Load de l'id de l'utilisateur

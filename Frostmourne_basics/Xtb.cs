@@ -51,11 +51,11 @@ namespace Frostmourne_basics
 
             Log.Info("Time Now -> " + tNow.ToString("yyyy-MM-dd HH:mm:ss") + " ||| retrieve data from -> " + tFrom.ToString("yyyy-MM-dd HH:mm:ss"));
 
-            List<Bid> existing_bids = new List<Bid>();
+            List<Bid> mysql_bids = new List<Bid>();
 
             try
             {
-                MyDB.Load_bids_values_symbol(ref existing_bids, tFrom, tNow, symbol);
+                MyDB.Load_bids_values_symbol(ref mysql_bids, tFrom, tNow, symbol);
             }
             catch (Exception e)
             {
@@ -69,13 +69,27 @@ namespace Frostmourne_basics
             {
                 return err;
             }
-            
-            foreach (Bid bid in xtb_bids)
+
+            List<Bid> bids_to_insert_or_update = new List<Bid>();
+
+            foreach (Bid xtb_bid in xtb_bids)
             {
-                // Comparer les deux listes pour trouver ceux qui n'existent pas dans la bdd et ceux à update
+                bool exist = false;
+                foreach (Bid mysql_bid in mysql_bids)
+                {
+                    if (xtb_bid.Symbol_id != mysql_bid.Symbol_id)
+                        continue;
+                    if (xtb_bid.Bid_at != mysql_bid.Bid_at)
+                        continue;
+                    if (xtb_bid.Last_bid != mysql_bid.Last_bid)
+                        bids_to_insert_or_update.Add(xtb_bid);
+                    exist = true;
+                }
+                if (!exist)
+                    bids_to_insert_or_update.Add(xtb_bid);
             }
 
-            err = MyDB.Insert_or_update_bids_values(xtb_bids);
+            err = MyDB.Insert_or_update_bids_values(bids_to_insert_or_update);
             if (err.IsAnError)
             {
                 MyDB.Close();
@@ -105,11 +119,11 @@ namespace Frostmourne_basics
 
             foreach (Symbol symbol in symbols)
             {
-                List<Bid> existing_bids = new List<Bid>();
+                List<Bid> mysql_bids = new List<Bid>();
 
                 try
                 {
-                    MyDB.Load_bids_values_symbol(ref existing_bids, tFrom, tNow, symbol);
+                    MyDB.Load_bids_values_symbol(ref mysql_bids, tFrom, tNow, symbol);
                 }
                 catch (Exception e)
                 {
@@ -124,12 +138,26 @@ namespace Frostmourne_basics
                     return err;
                 }
 
-                foreach (Bid bid in xtb_bids)
+                List<Bid> bids_to_insert_or_update = new List<Bid>();
+
+                foreach (Bid xtb_bid in xtb_bids)
                 {
-                    // Comparer les deux listes pour trouver ceux qui n'existent pas dans la bdd et ceux à update
+                    bool exist = false;
+                    foreach (Bid mysql_bid in mysql_bids)
+                    {
+                        if (xtb_bid.Symbol_id != mysql_bid.Symbol_id)
+                            continue;
+                        if (xtb_bid.Bid_at != mysql_bid.Bid_at)
+                            continue;
+                        if (xtb_bid.Last_bid != mysql_bid.Last_bid)
+                            bids_to_insert_or_update.Add(xtb_bid);
+                        exist = true;
+                    }
+                    if (!exist)
+                        bids_to_insert_or_update.Add(xtb_bid);
                 }
 
-                err = MyDB.Insert_or_update_bids_values(xtb_bids);
+                err = MyDB.Insert_or_update_bids_values(bids_to_insert_or_update);
                 if (err.IsAnError)
                 {
                     return err;
