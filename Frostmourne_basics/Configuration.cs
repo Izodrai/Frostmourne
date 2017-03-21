@@ -11,6 +11,9 @@ namespace Frostmourne_basics
 {
     public class Configuration
     {
+        protected string Environnement { get; set; }
+        public bool Prod { get; set; }
+
         public string Xtb_login { get; set; }
         public string Xtb_pwd { get; set; }
         public Server Xtb_server { get; set; }
@@ -20,8 +23,24 @@ namespace Frostmourne_basics
         public string Mysql_pwd { get; set; }
         public string Mysql_database { get; set; }
 
-        public Error LoadConfigurationSettings()
+        public Error LoadAPIConfigurationSettings()
         {
+            //////////////////////////////////////////////////
+            // Load de l'environnement
+            //////////////////////////////////////////////////
+
+            try
+            {
+                this.Environnement = WebConfigurationManager.AppSettings["Environnement"];
+            }
+            catch (ConfigurationErrorsException e)
+            {
+                return new Error(true, "Error reading app settings xtb_login : " + e.Message);
+            }
+
+            if (this.Environnement == "localhost")
+                this.Prod = false;
+
             //////////////////////////////////////////////////
             // Load de l'id de l'utilisateur
             //////////////////////////////////////////////////
@@ -38,6 +57,7 @@ namespace Frostmourne_basics
             //////////////////////////////////////////////////
             // Load du mot de passe de l'utilisateur
             //////////////////////////////////////////////////
+
             try
             {
                 Xtb_pwd = WebConfigurationManager.AppSettings["xtb_pwd"];
@@ -46,11 +66,11 @@ namespace Frostmourne_basics
             {
                 return new Error(true, "Error reading app settings UserPwd : " + e.Message);
             }
-
-
+            
             //////////////////////////////////////////////////
             // Load du type de connexion aux serveurs (demo ou real uniquement)
             //////////////////////////////////////////////////
+
             try
             {
                 switch (WebConfigurationManager.AppSettings["Xtb_Server"])
@@ -69,15 +89,53 @@ namespace Frostmourne_basics
             {
                 return new Error(true, "Error reading app settings Server : " + e.Message);
             }
+            
+            //////////////////////////////////////////////////
+            // Load de l'host et mdp mysql suivant l'environnement
+            //////////////////////////////////////////////////
+            
+            if (this.Prod)
+            {
+                try
+                {
+                    Mysql_host = WebConfigurationManager.AppSettings["Mysql_host"];
+                }
+                catch (ConfigurationErrorsException e)
+                {
+                    return new Error(true, "Error reading app settings Mysql_host : " + e.Message);
+                }
+                try
+                {
+                    Mysql_pwd = WebConfigurationManager.AppSettings["Mysql_pwd_host"];
+                }
+                catch (ConfigurationErrorsException e)
+                {
+                    return new Error(true, "Error reading app settings Mysql_pwd_host : " + e.Message);
+                }
+            }
+            else
+            {
+                try
+                {
+                    Mysql_host = WebConfigurationManager.AppSettings["Mysql_localhost"];
+                }
+                catch (ConfigurationErrorsException e)
+                {
+                    return new Error(true, "Error reading app settings Mysql_localhost : " + e.Message);
+                }
+                try
+                {
+                    Mysql_pwd = WebConfigurationManager.AppSettings["Mysql_localhost_pwd"];
+                }
+                catch (ConfigurationErrorsException e)
+                {
+                    return new Error(true, "Error reading app settings Mysql_localhost_pwd : " + e.Message);
+                }
+            }
 
-            try
-            {
-                Mysql_host = WebConfigurationManager.AppSettings["Mysql_host"];
-            }
-            catch (ConfigurationErrorsException e)
-            {
-                return new Error(true, "Error reading app settings Mysql_host : " + e.Message);
-            }
+            //////////////////////////////////////////////////
+            // Load du login mysql
+            //////////////////////////////////////////////////
 
             try
             {
@@ -87,16 +145,11 @@ namespace Frostmourne_basics
             {
                 return new Error(true, "Error reading app settings Mysql_login : " + e.Message);
             }
-
-            try
-            {
-                Mysql_pwd = WebConfigurationManager.AppSettings["Mysql_pwd"];
-            }
-            catch (ConfigurationErrorsException e)
-            {
-                return new Error(true, "Error reading app settings Mysql_pwd : " + e.Message);
-            }
-
+            
+            //////////////////////////////////////////////////
+            // Load de la base de données
+            //////////////////////////////////////////////////
+            
             try
             {
                 Mysql_database = WebConfigurationManager.AppSettings["Mysql_database"];
