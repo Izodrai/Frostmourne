@@ -51,15 +51,31 @@ namespace Frostmourne_basics
 
             Log.Info("Time Now -> " + tNow.ToString("yyyy-MM-dd HH:mm:ss") + " ||| retrieve data from -> " + tFrom.ToString("yyyy-MM-dd HH:mm:ss"));
 
-            List<Bid> bids = new List<Bid>();
+            List<Bid> existing_bids = new List<Bid>();
 
-            err = Retrieve_bids_of_symbol_from_xtb(Xtb_api_connector, symbol, xAPI.Codes.PERIOD_CODE.PERIOD_M5, tNow, tFrom, ref bids);
+            try
+            {
+                MyDB.Load_bids_values_symbol(ref existing_bids, tFrom, tNow, symbol);
+            }
+            catch (Exception e)
+            {
+                return new Error(true, "Error during Load_bids_values_symbol : " + e.Message);
+            }
+
+            List<Bid> xtb_bids = new List<Bid>();
+
+            err = Retrieve_bids_of_symbol_from_xtb(Xtb_api_connector, symbol, xAPI.Codes.PERIOD_CODE.PERIOD_M5, tNow, tFrom, ref xtb_bids);
             if (err.IsAnError)
             {
                 return err;
             }
+            
+            foreach (Bid bid in xtb_bids)
+            {
+                // Comparer les deux listes pour trouver ceux qui n'existent pas dans la bdd et ceux à update
+            }
 
-            err = MyDB.Insert_or_update_bids_values(bids);
+            err = MyDB.Insert_or_update_bids_values(xtb_bids);
             if (err.IsAnError)
             {
                 MyDB.Close();
@@ -89,15 +105,31 @@ namespace Frostmourne_basics
 
             foreach (Symbol symbol in symbols)
             {
-                List<Bid> bids = new List<Bid>();
+                List<Bid> existing_bids = new List<Bid>();
 
-                err = Retrieve_bids_of_symbol_from_xtb(Xtb_api_connector, symbol, xAPI.Codes.PERIOD_CODE.PERIOD_M5, tNow, tFrom, ref bids);
+                try
+                {
+                    MyDB.Load_bids_values_symbol(ref existing_bids, tFrom, tNow, symbol);
+                }
+                catch (Exception e)
+                {
+                    return new Error(true, "Error during Load_bids_values_symbol : " + e.Message);
+                }
+
+                List<Bid> xtb_bids = new List<Bid>();
+
+                err = Retrieve_bids_of_symbol_from_xtb(Xtb_api_connector, symbol, xAPI.Codes.PERIOD_CODE.PERIOD_M5, tNow, tFrom, ref xtb_bids);
                 if (err.IsAnError)
                 {
                     return err;
                 }
 
-                err = MyDB.Insert_or_update_bids_values(bids);
+                foreach (Bid bid in xtb_bids)
+                {
+                    // Comparer les deux listes pour trouver ceux qui n'existent pas dans la bdd et ceux à update
+                }
+
+                err = MyDB.Insert_or_update_bids_values(xtb_bids);
                 if (err.IsAnError)
                 {
                     return err;
