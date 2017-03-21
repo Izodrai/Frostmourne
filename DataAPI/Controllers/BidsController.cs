@@ -28,39 +28,15 @@ namespace DataAPI.Controllers
         {
             return "arg1 -> " + arg1;
         }*/
-
+        
         [HttpGet]
-        public Error Update_Not_Inactiv_Symbols()
+        public Error Update_Symbols(string arg1)
         {
             Error err;
             Mysql MyDB = new Mysql();
             SyncAPIConnector Xtb_api_connector = null;
             Configuration configuration = new Configuration();
-            configuration.LoadConfigurationSettings();
-
-            err = Tool.Init(ref Xtb_api_connector, ref configuration, ref MyDB);
-            if (err.IsAnError)
-            {
-                return err;
-            }
-
-            err = Xtb.Retrieve_and_update_data_for_symbols(MyDB, Xtb_api_connector, 0, 1);
-            if (err.IsAnError)
-            {
-                return err;
-            }
-
-            return new Error(false, "All non inactive symbols updated");
-        }
-
-        [HttpGet]
-        public Error Update_Not_Inactiv_Symbols(string arg1, string arg2)
-        {
-            Error err;
-            Mysql MyDB = new Mysql();
-            SyncAPIConnector Xtb_api_connector = null;
-            Configuration configuration = new Configuration();
-            configuration.LoadConfigurationSettings();
+            configuration.LoadAPIConfigurationSettings();
             
             err = Tool.Init(ref Xtb_api_connector, ref configuration, ref MyDB);
             if (err.IsAnError)
@@ -68,7 +44,15 @@ namespace DataAPI.Controllers
                 return err;
             }
 
-            err = Xtb.Retrieve_and_update_data_for_symbols(MyDB, Xtb_api_connector, Convert.ToInt32(arg1), Convert.ToInt32(arg2));
+            int days = Convert.ToInt32(arg1);
+
+            if (days <= 0)
+                days = 1;
+
+            if (days > 30)
+                days = 30;
+
+            err = Xtb.Retrieve_and_update_data_for_symbols(MyDB, Xtb_api_connector, days, 0);
             if (err.IsAnError)
             {
                 return err;
@@ -78,13 +62,13 @@ namespace DataAPI.Controllers
         }
 
         [HttpGet]
-        public Error Update_Symbol(string arg1)
+        public Error Update_Symbol(string arg1, string arg2)
         {
             Error err;
             Mysql MyDB = new Mysql();
             SyncAPIConnector Xtb_api_connector = null;
             Configuration configuration = new Configuration();
-            configuration.LoadConfigurationSettings();
+            configuration.LoadAPIConfigurationSettings();
 
             err = Tool.Init(ref Xtb_api_connector, ref configuration, ref MyDB);
             if (err.IsAnError)
@@ -92,7 +76,15 @@ namespace DataAPI.Controllers
                 return err;
             }
 
-            err = Xtb.Retrieve_and_update_data_for_symbol(MyDB, Xtb_api_connector, new Symbol(0, arg1, ""), 0, 1);
+            int days = Convert.ToInt32(arg2);
+            
+            if (days <= 0)
+                days = 1;
+
+            if (days > 30)
+                days = 30;
+
+            err = Xtb.Retrieve_and_update_data_for_symbol(MyDB, Xtb_api_connector, new Symbol(0, arg1,""), days, 0);
             if (err.IsAnError)
             {
                 return err;
@@ -100,32 +92,5 @@ namespace DataAPI.Controllers
 
             return new Error(false, "Data Updated");
         }
-
-        [HttpGet]
-        public Error Update_Symbol(string arg1, string arg2, string arg3)
-        {
-            Error err;
-            Mysql MyDB = new Mysql();
-            SyncAPIConnector Xtb_api_connector = null;
-            Configuration configuration = new Configuration();
-            configuration.LoadConfigurationSettings();
-
-            err = Tool.Init(ref Xtb_api_connector, ref configuration, ref MyDB);
-            if (err.IsAnError)
-            {
-                return err;
-            }
-
-            err = Xtb.Retrieve_and_update_data_for_symbol(MyDB, Xtb_api_connector, new Symbol(0, arg1,""), Convert.ToInt32(arg2), Convert.ToInt32(arg3));
-            if (err.IsAnError)
-            {
-                return err;
-            }
-
-            return new Error(false, "Data Updated");
-        }
-
-
-
     }
 }
