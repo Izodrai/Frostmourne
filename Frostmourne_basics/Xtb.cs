@@ -32,9 +32,11 @@ namespace Frostmourne_basics
                 try
                 {
                     MyDB.Load_bids_values_symbol(ref bids, _tFrom, _tNow, symbol);
+                    MyDB.Close();
                 }
                 catch (Exception e)
                 {
+                    MyDB.Close();
                     return new Error(true, "Error during Load_bids_values_symbol : " + e.Message);
                 }
             }
@@ -69,9 +71,11 @@ namespace Frostmourne_basics
             try
             {
                 MyDB.Load_bids_values_symbol(ref bids, _tFrom, _tNow, symbol);
+                MyDB.Close();
             }
             catch (Exception e)
             {
+                MyDB.Close();
                 return new Error(true, "Error during Load_bids_values_symbol : " + e.Message);
             }
 
@@ -110,9 +114,11 @@ namespace Frostmourne_basics
             try
             {
                 MyDB.Load_bids_values_symbol(ref mysql_bids, _tFrom, _tNow, symbol);
+                MyDB.Close();
             }
             catch (Exception e)
             {
+                MyDB.Close();
                 return new Error(true, "Error during Load_bids_values_symbol : " + e.Message);
             }
             
@@ -160,9 +166,11 @@ namespace Frostmourne_basics
             err = MyDB.Load_data_retrieve_symbols(ref symbols);
             if (err.IsAnError)
             {
+                MyDB.Close();
                 return err;
             }
-            
+            MyDB.Close();
+
             Log.Info("Time Now -> " + _tNow.ToString("yyyy-MM-dd HH:mm:ss") + " ||| retrieve data from -> " + _tFrom.ToString("yyyy-MM-dd HH:mm:ss"));
 
             foreach (Symbol symbol in symbols)
@@ -172,14 +180,14 @@ namespace Frostmourne_basics
                 try
                 {
                     MyDB.Load_bids_values_symbol(ref mysql_bids, _tFrom, _tNow, symbol);
+                    MyDB.Close();
                 }
                 catch (Exception e)
                 {
+                    MyDB.Close();
                     return new Error(true, "Error during Load_bids_values_symbol : " + e.Message);
                 }
-
-                //List<Bid> xtb_bids = new List<Bid>();
-
+                
                 err = Retrieve_bids_of_symbol_from_xtb(Xtb_api_connector, symbol, xAPI.Codes.PERIOD_CODE.PERIOD_M5, _tNow, _tFrom, ref xtb_bids);
                 if (err.IsAnError)
                 {
@@ -187,6 +195,8 @@ namespace Frostmourne_basics
                 }
 
                 List<Bid> bids_to_insert_or_update = new List<Bid>();
+
+                // BUG DANS LE COIN, IL INSERT/UPDATE LES BIDS ALORS QU'ILS SONT DEJA EN BASE !!!
 
                 foreach (Bid xtb_bid in xtb_bids)
                 {
@@ -208,8 +218,10 @@ namespace Frostmourne_basics
                 err = MyDB.Insert_or_update_bids_values(bids_to_insert_or_update);
                 if (err.IsAnError)
                 {
+                    MyDB.Close();
                     return err;
                 }
+                MyDB.Close();
             }
 
             return new Error(false, "data retrieved");

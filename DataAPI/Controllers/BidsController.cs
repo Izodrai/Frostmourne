@@ -16,15 +16,6 @@ namespace DataAPI.Controllers
 {
     public partial class BidsController : ApiController
     {
-        // GET api/bids/details
-        /*
-        [HttpGet]
-        public IEnumerable<string> Details()
-        {
-            return new string[] { "value1" };
-        }
-        */
-
         [HttpGet]
         public Response Update_Symbols(string arg1)
         {
