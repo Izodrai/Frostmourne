@@ -14,13 +14,71 @@ namespace Frostmourne_basics
 {
     public class Xtb
     {
-        public static Error Load_bids_values_symbol()
+        public static Error Load_bids_symbols(Mysql MyDB, DateTime _tNow, DateTime _tFrom, ref List<Bid> bids)
         {
+            Error err;
+            List<Symbol> symbols = new List<Symbol>();
+
+            err = MyDB.Load_data_retrieve_symbols(ref symbols);
+            if (err.IsAnError)
+            {
+                return err;
+            }
+
+            Log.Info("Time Now -> " + _tNow.ToString("yyyy-MM-dd HH:mm:ss") + " ||| retrieve data from -> " + _tFrom.ToString("yyyy-MM-dd HH:mm:ss"));
+
+            foreach (Symbol symbol in symbols)
+            {
+                try
+                {
+                    MyDB.Load_bids_values_symbol(ref bids, _tFrom, _tNow, symbol);
+                }
+                catch (Exception e)
+                {
+                    return new Error(true, "Error during Load_bids_values_symbol : " + e.Message);
+                }
+            }
+            return new Error(false, "data retrieved");
+        }
+
+        public static Error Load_bids_symbol(Mysql MyDB, Symbol symbol, DateTime _tNow, DateTime _tFrom, ref List<Bid> bids)
+        {
+            Error err;
+            List<Symbol> not_inactiv_symbols = new List<Symbol>();
+
+            err = MyDB.Load_data_retrieve_symbols(ref not_inactiv_symbols);
+            if (err.IsAnError)
+            {
+                MyDB.Close();
+                return err;
+            }
+            MyDB.Close();
+
+            foreach (Symbol not_inactiv_s in not_inactiv_symbols)
+            {
+                if (symbol.Name == not_inactiv_s.Name)
+                {
+                    symbol = not_inactiv_s;
+                    break;
+                }
+            }
+
+            if (symbol.Id == 0)
+                return new Error(true, "this symbols are not inactive or doesn't exist");
+            
+            try
+            {
+                MyDB.Load_bids_values_symbol(ref bids, _tFrom, _tNow, symbol);
+            }
+            catch (Exception e)
+            {
+                return new Error(true, "Error during Load_bids_values_symbol : " + e.Message);
+            }
 
             return new Error(false, "data loaded");
         }
 
-        public static Error Retrieve_and_update_data_for_symbol(Mysql MyDB, SyncAPIConnector Xtb_api_connector, Symbol symbol, int _days_to_retrieve, int _months_to_retrieve)
+        public static Error Retrieve_and_update_data_for_symbol(Mysql MyDB, SyncAPIConnector Xtb_api_connector, Symbol symbol, DateTime _tNow, DateTime _tFrom, ref List<Bid> xtb_bids)
         {
             Error err;
             List<Symbol> not_inactiv_symbols = new List<Symbol>();
@@ -44,27 +102,21 @@ namespace Frostmourne_basics
             
             if (symbol.Id == 0)
                 return new Error(true, "this symbols are not inactive or doesn't exist");
-
-            DateTime tNow = DateTime.Now;
-            DateTime tFrom = tNow.Date.AddMonths(-_months_to_retrieve);
-            tFrom = tFrom.AddDays(-_days_to_retrieve);
-
-            Log.Info("Time Now -> " + tNow.ToString("yyyy-MM-dd HH:mm:ss") + " ||| retrieve data from -> " + tFrom.ToString("yyyy-MM-dd HH:mm:ss"));
+            
+            Log.Info("Time Now -> " + _tNow.ToString("yyyy-MM-dd HH:mm:ss") + " ||| retrieve data from -> " + _tFrom.ToString("yyyy-MM-dd HH:mm:ss"));
 
             List<Bid> mysql_bids = new List<Bid>();
 
             try
             {
-                MyDB.Load_bids_values_symbol(ref mysql_bids, tFrom, tNow, symbol);
+                MyDB.Load_bids_values_symbol(ref mysql_bids, _tFrom, _tNow, symbol);
             }
             catch (Exception e)
             {
                 return new Error(true, "Error during Load_bids_values_symbol : " + e.Message);
             }
-
-            List<Bid> xtb_bids = new List<Bid>();
-
-            err = Retrieve_bids_of_symbol_from_xtb(Xtb_api_connector, symbol, xAPI.Codes.PERIOD_CODE.PERIOD_M5, tNow, tFrom, ref xtb_bids);
+            
+            err = Retrieve_bids_of_symbol_from_xtb(Xtb_api_connector, symbol, xAPI.Codes.PERIOD_CODE.PERIOD_M5, _tNow, _tFrom, ref xtb_bids);
             if (err.IsAnError)
             {
                 return err;
@@ -77,7 +129,7 @@ namespace Frostmourne_basics
                 bool exist = false;
                 foreach (Bid mysql_bid in mysql_bids)
                 {
-                    if (xtb_bid.Symbol_id != mysql_bid.Symbol_id)
+                    if (xtb_bid.Symbol.Id != mysql_bid.Symbol.Id)
                         continue;
                     if (xtb_bid.Bid_at != mysql_bid.Bid_at)
                         continue;
@@ -100,7 +152,7 @@ namespace Frostmourne_basics
             return new Error(false, "data retrieved");
         }
 
-        public static Error Retrieve_and_update_data_for_symbols(Mysql MyDB, SyncAPIConnector Xtb_api_connector, int _days_to_retrieve, int _months_to_retrieve)
+        public static Error Retrieve_and_update_data_for_symbols(Mysql MyDB, SyncAPIConnector Xtb_api_connector, DateTime _tNow, DateTime _tFrom, ref List<Bid> xtb_bids)
         {
             Error err;
             List<Symbol> symbols = new List<Symbol>();
@@ -110,12 +162,8 @@ namespace Frostmourne_basics
             {
                 return err;
             }
-
-            DateTime tNow = DateTime.Now;
-            DateTime tFrom = tNow.Date.AddMonths(-_months_to_retrieve);
-            tFrom = tFrom.AddDays(-_days_to_retrieve);
-
-            Log.Info("Time Now -> " + tNow.ToString("yyyy-MM-dd HH:mm:ss") + " ||| retrieve data from -> " + tFrom.ToString("yyyy-MM-dd HH:mm:ss"));
+            
+            Log.Info("Time Now -> " + _tNow.ToString("yyyy-MM-dd HH:mm:ss") + " ||| retrieve data from -> " + _tFrom.ToString("yyyy-MM-dd HH:mm:ss"));
 
             foreach (Symbol symbol in symbols)
             {
@@ -123,16 +171,16 @@ namespace Frostmourne_basics
 
                 try
                 {
-                    MyDB.Load_bids_values_symbol(ref mysql_bids, tFrom, tNow, symbol);
+                    MyDB.Load_bids_values_symbol(ref mysql_bids, _tFrom, _tNow, symbol);
                 }
                 catch (Exception e)
                 {
                     return new Error(true, "Error during Load_bids_values_symbol : " + e.Message);
                 }
 
-                List<Bid> xtb_bids = new List<Bid>();
+                //List<Bid> xtb_bids = new List<Bid>();
 
-                err = Retrieve_bids_of_symbol_from_xtb(Xtb_api_connector, symbol, xAPI.Codes.PERIOD_CODE.PERIOD_M5, tNow, tFrom, ref xtb_bids);
+                err = Retrieve_bids_of_symbol_from_xtb(Xtb_api_connector, symbol, xAPI.Codes.PERIOD_CODE.PERIOD_M5, _tNow, _tFrom, ref xtb_bids);
                 if (err.IsAnError)
                 {
                     return err;
@@ -145,7 +193,7 @@ namespace Frostmourne_basics
                     bool exist = false;
                     foreach (Bid mysql_bid in mysql_bids)
                     {
-                        if (xtb_bid.Symbol_id != mysql_bid.Symbol_id)
+                        if (xtb_bid.Symbol.Id != mysql_bid.Symbol.Id)
                             continue;
                         if (xtb_bid.Bid_at != mysql_bid.Bid_at)
                             continue;
@@ -196,7 +244,7 @@ namespace Frostmourne_basics
                 return new Error(true, "No data to retrieve in this range");
 
             foreach (RateInfoRecord v in infos)
-                bids.Add(new Bid(_symbol.Id, _symbol.Name, Tool.LongUnixTimeStampToDateTime(v.Ctm), Convert.ToDouble(v.Open) + Convert.ToDouble(v.Close)));
+                bids.Add(new Bid(new Symbol(_symbol.Id, _symbol.Name, ""), Tool.LongUnixTimeStampToDateTime(v.Ctm), Convert.ToDouble(v.Open) + Convert.ToDouble(v.Close)));
             
             return new Error(false, "Data symbol retrieved !");
         }

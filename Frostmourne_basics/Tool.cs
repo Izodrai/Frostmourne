@@ -39,7 +39,35 @@ namespace Frostmourne_basics
             return (date.ToUniversalTime() - epoch).TotalSeconds;
         }
 
-        public static Error Init(ref SyncAPIConnector Xtb_api_connector, ref Configuration configuration, ref Mysql MyDB)
+        public static Error InitMyDb(ref Configuration configuration, ref Mysql MyDB)
+        {
+            Error err;
+
+            err = configuration.LoadAPIConfigurationSettings();
+
+            if (err.IsAnError)
+            {
+                return err;
+            }
+            //////////////////////////////////////////////
+            //
+            // Tentative d'authentification au serveur Atiesh
+            //
+            //////////////////////////////////////////////
+
+            MyDB = new Mysql(configuration.Mysql_host, configuration.Mysql_database, configuration.Mysql_login, configuration.Mysql_pwd);
+
+            err = MyDB.Connect();
+            if (err.IsAnError)
+            {
+                return err;
+            }
+            MyDB.Close();
+
+            return new Error(false, "Init success");
+        }
+
+        public static Error InitAll(ref SyncAPIConnector Xtb_api_connector, ref Configuration configuration, ref Mysql MyDB)
         {
             Error err;
             Credentials Credentials;
