@@ -1,4 +1,5 @@
-﻿using Frostmourne_basics;
+﻿using DataAPI.Models;
+using Frostmourne_basics;
 using Frostmourne_basics.Dbs;
 using Swashbuckle.Swagger.Annotations;
 using System;
@@ -22,15 +23,10 @@ namespace DataAPI.Controllers
         {
             return new string[] { "value1" };
         }
-
-        [HttpGet]
-        public string Details(string arg1)
-        {
-            return "arg1 -> " + arg1;
-        }*/
+        */
         
         [HttpGet]
-        public Error Update_Symbols(string arg1)
+        public Response Update_Symbols(string arg1)
         {
             Error err;
             Mysql MyDB = new Mysql();
@@ -40,9 +36,7 @@ namespace DataAPI.Controllers
             
             err = Tool.Init(ref Xtb_api_connector, ref configuration, ref MyDB);
             if (err.IsAnError)
-            {
-                return err;
-            }
+                return new Response(err, null);
 
             int days = Convert.ToInt32(arg1);
 
@@ -54,15 +48,13 @@ namespace DataAPI.Controllers
 
             err = Xtb.Retrieve_and_update_data_for_symbols(MyDB, Xtb_api_connector, days, 0);
             if (err.IsAnError)
-            {
-                return err;
-            }
+                return new Response(err, null);
 
-            return new Error(false, "All non inactive symbols updated");
+            return new Response(new Error(false, "All non inactive symbols updated"), null);
         }
 
         [HttpGet]
-        public Error Update_Symbol(string arg1, string arg2)
+        public Response Update_Symbol(string arg1, string arg2)
         {
             Error err;
             Mysql MyDB = new Mysql();
@@ -72,9 +64,7 @@ namespace DataAPI.Controllers
 
             err = Tool.Init(ref Xtb_api_connector, ref configuration, ref MyDB);
             if (err.IsAnError)
-            {
-                return err;
-            }
+                return new Response(err, null);
 
             int days = Convert.ToInt32(arg2);
             
@@ -86,11 +76,9 @@ namespace DataAPI.Controllers
 
             err = Xtb.Retrieve_and_update_data_for_symbol(MyDB, Xtb_api_connector, new Symbol(0, arg1,""), days, 0);
             if (err.IsAnError)
-            {
-                return err;
-            }
-
-            return new Error(false, "Data Updated");
+                return new Response(err, null);
+            
+            return new Response(new Error(false, "Data for symbol " + arg1 + " updated"), null);
         }
     }
 }
