@@ -29,7 +29,7 @@ namespace DataAPI.Controllers
             if (err.IsAnError)
                 return new Response(err, null);
 
-            DateTime tNow = DateTime.Now;
+            DateTime tNow = DateTime.UtcNow;
             DateTime tFrom = DateTime.Parse(arg1);
 
             List<Bid> bids = new List<Bid>();
@@ -38,7 +38,7 @@ namespace DataAPI.Controllers
             if (err.IsAnError)
                 return new Response(err, null);
 
-            return new Response(new Error(false, "All non inactive symbols updated, tFrom -> " + tFrom + " -> to -> tNow -> " + tNow), null);
+            return new Response(new Error(false, "All non inactive symbols updated, tFrom -> " + tFrom.ToString("yyyy-MM-dd HH:mm:ss") + " -> to -> tNow -> " + tNow.ToString("yyyy-MM-dd HH:mm:ss")), null);
         }
 
         [HttpGet]
@@ -54,8 +54,7 @@ namespace DataAPI.Controllers
             if (err.IsAnError)
                 return new Response(err, null);
             
-
-            DateTime tNow = DateTime.Now;
+            DateTime tNow = DateTime.UtcNow;
             DateTime tFrom = DateTime.Parse(arg2);
 
             List<Bid> bids = new List<Bid>();
@@ -64,7 +63,7 @@ namespace DataAPI.Controllers
             if (err.IsAnError)
                 return new Response(err, null);
 
-            return new Response(new Error(false, "Data for symbol " + arg1 + " updated"), null);
+            return new Response(new Error(false, "Data for symbol " + arg1 + " updated between " + tFrom.ToString("yyyy-MM-dd HH:mm:ss") + " and " + tNow.ToString("yyyy-MM-dd HH:mm:ss")), null);
         }
 
         [HttpGet]
@@ -79,7 +78,7 @@ namespace DataAPI.Controllers
             if (err.IsAnError)
                 return new Response(err, null);
 
-            DateTime tNow = DateTime.Now;
+            DateTime tNow = DateTime.UtcNow;
             DateTime tFrom = DateTime.Parse(arg2);
             List<Bid> bids = new List<Bid>();
 
@@ -102,7 +101,7 @@ namespace DataAPI.Controllers
             if (err.IsAnError)
                 return new Response(err, null);
 
-            DateTime tNow = DateTime.Now;
+            DateTime tNow = DateTime.UtcNow;
             DateTime tFrom = DateTime.Parse(arg1);
             List<Bid> bids = new List<Bid>();
 
