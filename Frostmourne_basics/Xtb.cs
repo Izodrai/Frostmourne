@@ -14,6 +14,16 @@ namespace Frostmourne_basics
 {
     public class Xtb
     {
+        public static Error Load_symbols_to_retrieve(Mysql MyDB, ref List<Symbol> symbols)
+        {
+            Error err;
+            err = MyDB.Load_data_retrieve_symbols(ref symbols);
+            if (err.IsAnError)
+            {
+                return err;
+            }
+            return new Error(false, "data retrieved");
+        }
         public static Error Load_bids_symbols(Mysql MyDB, DateTime _tNow, DateTime _tFrom, ref List<Bid> bids)
         {
             Error err;
@@ -140,11 +150,27 @@ namespace Frostmourne_basics
                     if (xtb_bid.Bid_at != mysql_bid.Bid_at)
                         continue;
                     if (xtb_bid.Last_bid != mysql_bid.Last_bid)
+                    {
+                        xtb_bid.To_add_or_update = true;
+
+                        /////////////////////
+                        //TODO fonction pour calculer les valeurs du bid
+                        /////////////////////
+
                         bids_to_insert_or_update.Add(xtb_bid);
+                    }
                     exist = true;
                 }
                 if (!exist)
+                {
+                    xtb_bid.To_add_or_update = true;
+
+                    /////////////////////
+                    //TODO fonction pour calculer les valeurs du bid
+                    /////////////////////
+
                     bids_to_insert_or_update.Add(xtb_bid);
+                }
             }
 
             err = MyDB.Insert_or_update_bids_values(bids_to_insert_or_update);
@@ -175,53 +201,9 @@ namespace Frostmourne_basics
 
             foreach (Symbol symbol in symbols)
             {
-                List<Bid> mysql_bids = new List<Bid>();
-
-                try
-                {
-                    MyDB.Load_bids_values_symbol(ref mysql_bids, _tFrom, _tNow, symbol);
-                    MyDB.Close();
-                }
-                catch (Exception e)
-                {
-                    MyDB.Close();
-                    return new Error(true, "Error during Load_bids_values_symbol : " + e.Message);
-                }
-                
-                err = Retrieve_bids_of_symbol_from_xtb(Xtb_api_connector, symbol, xAPI.Codes.PERIOD_CODE.PERIOD_M5, _tNow, _tFrom, ref xtb_bids);
+                err = Xtb.Retrieve_and_update_data_for_symbol(MyDB, Xtb_api_connector, symbol, _tNow, _tFrom, ref xtb_bids);
                 if (err.IsAnError)
-                {
                     return err;
-                }
-
-                List<Bid> bids_to_insert_or_update = new List<Bid>();
-
-                // BUG DANS LE COIN, IL INSERT/UPDATE LES BIDS ALORS QU'ILS SONT DEJA EN BASE !!!
-
-                foreach (Bid xtb_bid in xtb_bids)
-                {
-                    bool exist = false;
-                    foreach (Bid mysql_bid in mysql_bids)
-                    {
-                        if (xtb_bid.Symbol.Id != mysql_bid.Symbol.Id)
-                            continue;
-                        if (xtb_bid.Bid_at != mysql_bid.Bid_at)
-                            continue;
-                        if (xtb_bid.Last_bid != mysql_bid.Last_bid)
-                            bids_to_insert_or_update.Add(xtb_bid);
-                        exist = true;
-                    }
-                    if (!exist)
-                        bids_to_insert_or_update.Add(xtb_bid);
-                }
-
-                err = MyDB.Insert_or_update_bids_values(bids_to_insert_or_update);
-                if (err.IsAnError)
-                {
-                    MyDB.Close();
-                    return err;
-                }
-                MyDB.Close();
             }
 
             return new Error(false, "data retrieved");
@@ -256,7 +238,7 @@ namespace Frostmourne_basics
                 return new Error(true, "No data to retrieve in this range");
 
             foreach (RateInfoRecord v in infos)
-                bids.Add(new Bid(new Symbol(_symbol.Id, _symbol.Name, ""), Tool.LongUnixTimeStampToDateTime(v.Ctm), Convert.ToDouble(v.Open) + Convert.ToDouble(v.Close)));
+                bids.Add(new Bid(new Symbol(_symbol.Id, _symbol.Name, ""), Tool.LongUnixTimeStampToDateTime(v.Ctm), Convert.ToDouble(v.Open) + Convert.ToDouble(v.Close), "", false));
             
             return new Error(false, "Data symbol retrieved !");
         }

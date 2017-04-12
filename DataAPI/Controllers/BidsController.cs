@@ -27,7 +27,7 @@ namespace DataAPI.Controllers
 
             err = Tool.InitAll(ref Xtb_api_connector, ref configuration, ref MyDB);
             if (err.IsAnError)
-                return new Response(err, null);
+                return new Response(err, null, null);
 
             DateTime tNow = DateTime.UtcNow;
             DateTime tFrom = DateTime.Parse(arg1);
@@ -36,9 +36,9 @@ namespace DataAPI.Controllers
 
             err = Xtb.Retrieve_and_update_data_for_symbols(MyDB, Xtb_api_connector, tNow, tFrom, ref bids);
             if (err.IsAnError)
-                return new Response(err, null);
+                return new Response(err, null, null);
 
-            return new Response(new Error(false, "All non inactive symbols updated, tFrom -> " + tFrom.ToString("yyyy-MM-dd HH:mm:ss") + " -> to -> tNow -> " + tNow.ToString("yyyy-MM-dd HH:mm:ss")), null);
+            return new Response(new Error(false, "All non inactive symbols updated, tFrom -> " + tFrom.ToString("yyyy-MM-dd HH:mm:ss") + " -> to -> tNow -> " + tNow.ToString("yyyy-MM-dd HH:mm:ss")), null, null);
         }
 
         [HttpGet]
@@ -52,7 +52,7 @@ namespace DataAPI.Controllers
 
             err = Tool.InitAll(ref Xtb_api_connector, ref configuration, ref MyDB);
             if (err.IsAnError)
-                return new Response(err, null);
+                return new Response(err, null, null);
             
             DateTime tNow = DateTime.UtcNow;
             DateTime tFrom = DateTime.Parse(arg2);
@@ -61,9 +61,9 @@ namespace DataAPI.Controllers
 
             err = Xtb.Retrieve_and_update_data_for_symbol(MyDB, Xtb_api_connector, new Symbol(0, arg1, ""), tNow, tFrom, ref bids);
             if (err.IsAnError)
-                return new Response(err, null);
+                return new Response(err, null, null);
 
-            return new Response(new Error(false, "Data for symbol " + arg1 + " updated between " + tFrom.ToString("yyyy-MM-dd HH:mm:ss") + " and " + tNow.ToString("yyyy-MM-dd HH:mm:ss")), null);
+            return new Response(new Error(false, "Data for symbol " + arg1 + " updated between " + tFrom.ToString("yyyy-MM-dd HH:mm:ss") + " and " + tNow.ToString("yyyy-MM-dd HH:mm:ss")), null, null);
         }
 
         [HttpGet]
@@ -76,7 +76,7 @@ namespace DataAPI.Controllers
 
             err = Tool.InitMyDb(ref configuration, ref MyDB);
             if (err.IsAnError)
-                return new Response(err, null);
+                return new Response(err, null, null);
 
             DateTime tNow = DateTime.UtcNow;
             DateTime tFrom = DateTime.Parse(arg2);
@@ -84,9 +84,9 @@ namespace DataAPI.Controllers
 
             err = Xtb.Load_bids_symbol(MyDB, new Symbol(0, arg1, ""), tNow, tFrom, ref bids);
             if (err.IsAnError)
-                return new Response(err, null);
+                return new Response(err, null, null);
 
-            return new Response(new Error(false, "Data ok"), bids);
+            return new Response(new Error(false, "Data ok"), bids, null);
         }
 
         [HttpGet]
@@ -99,7 +99,7 @@ namespace DataAPI.Controllers
 
             err = Tool.InitMyDb(ref configuration, ref MyDB);
             if (err.IsAnError)
-                return new Response(err, null);
+                return new Response(err, null, null);
 
             DateTime tNow = DateTime.UtcNow;
             DateTime tFrom = DateTime.Parse(arg1);
@@ -107,9 +107,30 @@ namespace DataAPI.Controllers
 
             err = Xtb.Load_bids_symbols(MyDB, tNow, tFrom, ref bids);
             if (err.IsAnError)
-                return new Response(err, null);
+                return new Response(err, null, null);
 
-            return new Response(new Error(false, "Data ok"), bids);
+            return new Response(new Error(false, "Data ok"), bids, null);
+        }
+
+        [HttpGet]
+        public Response Get_Symbols_To_Retrieve()
+        {
+            Error err;
+            Mysql MyDB = new Mysql();
+            Configuration configuration = new Configuration();
+            configuration.LoadAPIConfigurationSettings();
+
+            err = Tool.InitMyDb(ref configuration, ref MyDB);
+            if (err.IsAnError)
+                return new Response(err, null, null);
+
+            List<Symbol> symbols = new List<Symbol>();
+
+            err = Xtb.Load_symbols_to_retrieve(MyDB, ref symbols);
+            if (err.IsAnError)
+                return new Response(err, null, null);
+
+            return new Response(new Error(false, "Data ok"), null, symbols);
         }
     }
 }

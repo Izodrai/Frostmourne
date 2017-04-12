@@ -10,11 +10,13 @@ namespace DataAPI.Models
     {
         public Error Error { get; set; }
         public List<Bid> Bids { get; set; }
+        public List<Symbol> Symbols { get; set; }
 
-        public Response(Error _err, List<Bid> _bids)
+        public Response(Error _err, List<Bid> _bids, List<Symbol> _symbols)
         {
             this.Error = _err;
             this.Bids = _bids;
+            this.Symbols = _symbols;
         }
     }
 }
