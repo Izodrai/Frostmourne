@@ -14,21 +14,24 @@ namespace Frostmourne_basics.Dbs
 
         protected string Pwd { get; set; }
 
+        protected string Port { get; set; }
+
         public Mysql() { }
 
-        public Mysql(string _server, string _database, string _login, string _password)
+        public Mysql(string _server, string _port, string _database, string _login, string _password)
         {
             this.Server = _server;
             this.Database = _database;
             this.Login = _login;
             this.Pwd = _password;
+            this.Port = _port;
         }
 
         public Error Connect()
         {
             try
             {
-                this.Mysql_connector = new MySqlConnection("server=" + this.Server + ";database = " + this.Database + "; user id = " + this.Login + "; password = " + this.Pwd + ";Pooling=False");
+                this.Mysql_connector = new MySqlConnection("server=" + this.Server + ";port= " + this.Port + " ;database = " + this.Database + "; user id = " + this.Login + "; password = " + this.Pwd + ";Pooling=False");
                 this.Mysql_connector.Open();
 
                 if (!this.Mysql_connector.Ping())

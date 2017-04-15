@@ -55,13 +55,11 @@ namespace Frostmourne_basics
             //
             //////////////////////////////////////////////
 
-            MyDB = new Mysql(configuration.Mysql_host, configuration.Mysql_database, configuration.Mysql_login, configuration.Mysql_pwd);
+            MyDB = new Mysql(configuration.Mysql_host, configuration.Mysql_port, configuration.Mysql_database, configuration.Mysql_login, configuration.Mysql_pwd);
 
             err = MyDB.Connect();
             if (err.IsAnError)
-            {
                 return err;
-            }
             MyDB.Close();
 
             return new Error(false, "Init success");
@@ -117,7 +115,7 @@ namespace Frostmourne_basics
             //
             //////////////////////////////////////////////
 
-            MyDB = new Mysql(configuration.Mysql_host, configuration.Mysql_database, configuration.Mysql_login, configuration.Mysql_pwd);
+            MyDB = new Mysql(configuration.Mysql_host, configuration.Mysql_port, configuration.Mysql_database, configuration.Mysql_login, configuration.Mysql_pwd);
 
             err = MyDB.Connect();
             if (err.IsAnError)

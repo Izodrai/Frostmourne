@@ -22,6 +22,7 @@ namespace Frostmourne_basics
         public string Mysql_login { get; set; }
         public string Mysql_pwd { get; set; }
         public string Mysql_database { get; set; }
+        public string Mysql_port { get; set; }
 
         public Error LoadAPIConfigurationSettings()
         {
@@ -53,7 +54,7 @@ namespace Frostmourne_basics
             {
                 return new Error(true, "Error reading app settings xtb_login : " + e.Message);
             }
-
+            
             //////////////////////////////////////////////////
             // Load du mot de passe de l'utilisateur
             //////////////////////////////////////////////////
@@ -106,11 +107,19 @@ namespace Frostmourne_basics
                 }
                 try
                 {
-                    Mysql_pwd = WebConfigurationManager.AppSettings["Mysql_pwd_host"];
+                    Mysql_pwd = WebConfigurationManager.AppSettings["Mysql_host_pwd"];
                 }
                 catch (ConfigurationErrorsException e)
                 {
-                    return new Error(true, "Error reading app settings Mysql_pwd_host : " + e.Message);
+                    return new Error(true, "Error reading app settings Mysql_host_pwd : " + e.Message);
+                }
+                try
+                {
+                    Mysql_port = WebConfigurationManager.AppSettings["Mysql_host_port"];
+                }
+                catch (ConfigurationErrorsException e)
+                {
+                    return new Error(true, "Error reading app settings Mysql_host_port : " + e.Message);
                 }
             }
             else
@@ -130,6 +139,14 @@ namespace Frostmourne_basics
                 catch (ConfigurationErrorsException e)
                 {
                     return new Error(true, "Error reading app settings Mysql_localhost_pwd : " + e.Message);
+                }
+                try
+                {
+                    Mysql_port = WebConfigurationManager.AppSettings["Mysql_localhost_port"];
+                }
+                catch (ConfigurationErrorsException e)
+                {
+                    return new Error(true, "Error reading app settings Mysql_localhost_port : " + e.Message);
                 }
             }
 
