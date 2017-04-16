@@ -19,11 +19,9 @@ namespace Frostmourne_basics
 
         public string Calculations { get; set; }
 
-        public bool To_add_or_update { get; set; }
-
         public Bid() { }
 
-        public Bid(Symbol _symbol, DateTime _bid_at, double _last_bid, string _calculations, bool _to_add_or_update)
+        public Bid(Symbol _symbol, DateTime _bid_at, double _last_bid, string _calculations)
         {
             this.Symbol = _symbol;
             this.Bid_at = _bid_at;
@@ -33,11 +31,9 @@ namespace Frostmourne_basics
                 _calculations = "{}";
 
             this.Calculations = _calculations;
-
-            this.To_add_or_update = _to_add_or_update;
         }
 
-        public Bid(int _id, Symbol _symbol, DateTime _bid_at, double _last_bid, string _calculations, bool _to_add_or_update)
+        public Bid(int _id, Symbol _symbol, DateTime _bid_at, double _last_bid, string _calculations)
         {
             this.Id = _id;
             this.Symbol = _symbol;
@@ -48,8 +44,6 @@ namespace Frostmourne_basics
                 _calculations = "{}";
 
             this.Calculations = _calculations;
-
-            this.To_add_or_update = _to_add_or_update;
         }
 
         public void Calc_bid(ref List<Bid> last_bids, Configuration calc_config)
@@ -64,9 +58,22 @@ namespace Frostmourne_basics
                 calculations.Add(c);
             }
 
-            Log.Info(JsonConvert.SerializeObject(calculations));
-
+            this.Calculations = JsonConvert.SerializeObject(calculations);
         }
+
+        /*
+        protected void calc_ema(ref List<Bid> last_bids, int ct_period, ref Calculation ema)
+        {
+            if (last_bids.Count < ct_period)
+                return;
+
+            double s_ema = this.Last_bid;
+            for (int i = last_bids.Count - 1; i >= last_bids.Count - ct_period + 1; --i)
+            {
+
+            }
+        }
+        */
 
         protected void calc_sma(ref List<Bid> last_bids, int ct_period, ref Calculation sma)
         {

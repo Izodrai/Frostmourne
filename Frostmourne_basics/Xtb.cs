@@ -92,7 +92,7 @@ namespace Frostmourne_basics
             return new Error(false, "data loaded");
         }
 
-        public static Error Retrieve_and_update_data_for_symbol(Mysql MyDB, SyncAPIConnector Xtb_api_connector, Symbol symbol, DateTime _tNow, DateTime _tFrom, ref List<Bid> xtb_bids)
+        public static Error Retrieve_and_update_data_for_symbol(Mysql MyDB, SyncAPIConnector Xtb_api_connector, Symbol symbol, DateTime _tNow, DateTime _tFrom, ref List<Bid> xtb_bids, Configuration config)
         {
             Error err;
             List<Symbol> not_inactiv_symbols = new List<Symbol>();
@@ -139,10 +139,12 @@ namespace Frostmourne_basics
             }
 
             List<Bid> bids_to_insert_or_update = new List<Bid>();
+            List<Bid> last_bids = new List<Bid>();
 
             foreach (Bid xtb_bid in xtb_bids)
             {
-                //Fonction dans la classe bid pour calculer les différents indicateurs en lui passant la liste de bids précédents
+                xtb_bid.Calc_bid(ref last_bids, config);
+
                 bool exist = false;
                 foreach (Bid mysql_bid in mysql_bids)
                 {
@@ -151,18 +153,18 @@ namespace Frostmourne_basics
                     if (xtb_bid.Bid_at != mysql_bid.Bid_at)
                         continue;
                     if (xtb_bid.Last_bid != mysql_bid.Last_bid)
-                    {
-                        xtb_bid.To_add_or_update = true;
-
                         bids_to_insert_or_update.Add(xtb_bid);
-                    }
+                    if (xtb_bid.Calculations != mysql_bid.Calculations)
+                        bids_to_insert_or_update.Add(xtb_bid);
+                    
                     exist = true;
                 }
                 if (!exist)
                 {
-                    xtb_bid.To_add_or_update = true;
                     bids_to_insert_or_update.Add(xtb_bid);
                 }
+
+                last_bids.Add(xtb_bid);
             }
 
             err = MyDB.Insert_or_update_bids_values(bids_to_insert_or_update);
@@ -176,7 +178,7 @@ namespace Frostmourne_basics
             return new Error(false, "data retrieved");
         }
 
-        public static Error Retrieve_and_update_data_for_symbols(Mysql MyDB, SyncAPIConnector Xtb_api_connector, DateTime _tNow, DateTime _tFrom, ref List<Bid> xtb_bids)
+        public static Error Retrieve_and_update_data_for_symbols(Mysql MyDB, SyncAPIConnector Xtb_api_connector, DateTime _tNow, DateTime _tFrom, ref List<Bid> xtb_bids, Configuration config)
         {
             Error err;
             List<Symbol> symbols = new List<Symbol>();
@@ -193,7 +195,7 @@ namespace Frostmourne_basics
 
             foreach (Symbol symbol in symbols)
             {
-                err = Xtb.Retrieve_and_update_data_for_symbol(MyDB, Xtb_api_connector, symbol, _tNow, _tFrom, ref xtb_bids);
+                err = Xtb.Retrieve_and_update_data_for_symbol(MyDB, Xtb_api_connector, symbol, _tNow, _tFrom, ref xtb_bids, config);
                 if (err.IsAnError)
                     return err;
             }
@@ -230,7 +232,7 @@ namespace Frostmourne_basics
                 return new Error(true, "No data to retrieve in this range");
 
             foreach (RateInfoRecord v in infos)
-                bids.Add(new Bid(new Symbol(_symbol.Id, _symbol.Name, ""), Tool.LongUnixTimeStampToDateTime(v.Ctm), Convert.ToDouble(v.Open) + Convert.ToDouble(v.Close), "", false));
+                bids.Add(new Bid(new Symbol(_symbol.Id, _symbol.Name, ""), Tool.LongUnixTimeStampToDateTime(v.Ctm), Convert.ToDouble(v.Open) + Convert.ToDouble(v.Close), ""));
             
             return new Error(false, "Data symbol retrieved !");
         }

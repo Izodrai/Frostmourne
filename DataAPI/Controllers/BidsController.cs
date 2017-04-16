@@ -34,7 +34,7 @@ namespace DataAPI.Controllers
 
             List<Bid> bids = new List<Bid>();
 
-            err = Xtb.Retrieve_and_update_data_for_symbols(MyDB, Xtb_api_connector, tNow, tFrom, ref bids);
+            err = Xtb.Retrieve_and_update_data_for_symbols(MyDB, Xtb_api_connector, tNow, tFrom, ref bids, configuration);
             if (err.IsAnError)
                 return new Response(err, null, null);
 
@@ -59,7 +59,7 @@ namespace DataAPI.Controllers
 
             List<Bid> bids = new List<Bid>();
 
-            err = Xtb.Retrieve_and_update_data_for_symbol(MyDB, Xtb_api_connector, new Symbol(0, arg1, ""), tNow, tFrom, ref bids);
+            err = Xtb.Retrieve_and_update_data_for_symbol(MyDB, Xtb_api_connector, new Symbol(0, arg1, ""), tNow, tFrom, ref bids, configuration);
             if (err.IsAnError)
                 return new Response(err, null, null);
 

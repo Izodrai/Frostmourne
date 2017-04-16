@@ -183,10 +183,40 @@ namespace Frostmourne_basics
                 return new Error(true, "Error reading app settings Mysql_database : " + e.Message);
             }
 
+            //////////////////////////////////////////////////
+            // Load des paramètres à calculer SMA
+            //////////////////////////////////////////////////
+
+            this.SMA_values = new List<int>();
+            try
+            {
+                foreach (string s in WebConfigurationManager.AppSettings["Sma_configuration"].Split(','))
+                {
+                    SMA_values.Add(Int32.Parse(s));
+                }
+            }
+            catch (ConfigurationErrorsException e)
+            {
+                return new Error(true, "Error reading app settings Sma_configuration : " + e.Message);
+            }
 
             //////////////////////////////////////////////////
-            // Load des paramètres à calculer
+            // Load des paramètres à calculer EMA
             //////////////////////////////////////////////////
+
+            this.EMA_values = new List<int>();
+            try
+            {
+                foreach (string s in WebConfigurationManager.AppSettings["Ema_configuration"].Split(','))
+                {
+                    EMA_values.Add(Int32.Parse(s));
+                }
+            }
+            catch (ConfigurationErrorsException e)
+            {
+                return new Error(true, "Error reading app settings Ema_configuration : " + e.Message);
+            }
+
             return new Error(false, "Web setting loaded!");
         }
     }

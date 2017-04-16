@@ -23,7 +23,7 @@ namespace Frostmourne_basics.Dbs
                 {
                     object[] values = new object[reader.FieldCount];
                     reader.GetValues(values);
-                    _bids.Add(new Bid(Convert.ToInt32(values[0]), new Symbol(symbol.Id, symbol.Name, ""), DateTime.Parse(Convert.ToString(values[1])), Convert.ToDouble(values[2]), Convert.ToString(values[3]), false));
+                    _bids.Add(new Bid(Convert.ToInt32(values[0]), new Symbol(symbol.Id, symbol.Name, ""), DateTime.Parse(Convert.ToString(values[1])), Convert.ToDouble(values[2]), Convert.ToString(values[3])));
                 }
 
             }
@@ -50,9 +50,6 @@ namespace Frostmourne_basics.Dbs
 
                 foreach (Bid b in _bids)
                 {
-                    if (!b.To_add_or_update)
-                        continue;
-
                     cmd.Parameters["@symbol_id"].Value = b.Symbol.Id;
                     cmd.Parameters["@last_bid"].Value = b.Last_bid;
                     cmd.Parameters["@bid_at"].Value = b.Bid_at.ToString("yyyy-MM-dd HH:mm:ss");
