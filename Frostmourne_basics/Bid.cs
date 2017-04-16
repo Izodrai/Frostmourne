@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -57,14 +58,14 @@ namespace Frostmourne_basics
 
             foreach (int ct_period in calc_config.SMA_values)
             {
-                double sma = 0;
                 Calculation c = new Calculation();
 
                 calc_sma(ref last_bids, ct_period,ref c);
-                Log.Info(ct_period.ToString() + " - " + sma.ToString());
-
                 calculations.Add(c);
             }
+
+            Log.Info(JsonConvert.SerializeObject(calculations));
+
         }
 
         protected void calc_sma(ref List<Bid> last_bids, int ct_period, ref Calculation sma)
@@ -75,10 +76,7 @@ namespace Frostmourne_basics
             double s_sma = this.Last_bid;
 
             for (int i = last_bids.Count - 1; i >= last_bids.Count - ct_period + 1; --i)
-            {
-                Bid bid = last_bids[i];
-                s_sma += bid.Last_bid;
-            }
+                s_sma += last_bids[i].Last_bid;
 
             sma.Type = "sma_" + ct_period.ToString();
             sma.Value = Math.Round((s_sma / ct_period),2);
