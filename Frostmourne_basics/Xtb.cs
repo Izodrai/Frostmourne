@@ -142,6 +142,7 @@ namespace Frostmourne_basics
 
             foreach (Bid xtb_bid in xtb_bids)
             {
+                //Fonction dans la classe bid pour calculer les différents indicateurs en lui passant la liste de bids précédents
                 bool exist = false;
                 foreach (Bid mysql_bid in mysql_bids)
                 {
@@ -153,10 +154,6 @@ namespace Frostmourne_basics
                     {
                         xtb_bid.To_add_or_update = true;
 
-                        /////////////////////
-                        //TODO fonction pour calculer les valeurs du bid
-                        /////////////////////
-
                         bids_to_insert_or_update.Add(xtb_bid);
                     }
                     exist = true;
@@ -164,11 +161,6 @@ namespace Frostmourne_basics
                 if (!exist)
                 {
                     xtb_bid.To_add_or_update = true;
-
-                    /////////////////////
-                    //TODO fonction pour calculer les valeurs du bid
-                    /////////////////////
-
                     bids_to_insert_or_update.Add(xtb_bid);
                 }
             }

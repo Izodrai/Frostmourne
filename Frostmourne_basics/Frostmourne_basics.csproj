@@ -51,6 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bid.cs" />
+    <Compile Include="Calculation.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="Dbs\Mysql_stock_values.cs" />
     <Compile Include="Dbs\Mysql_symbols.cs" />

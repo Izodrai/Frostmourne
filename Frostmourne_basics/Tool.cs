@@ -43,12 +43,14 @@ namespace Frostmourne_basics
         {
             Error err;
 
+            /*
             err = configuration.LoadAPIConfigurationSettings();
 
             if (err.IsAnError)
             {
                 return err;
             }
+            */
             //////////////////////////////////////////////
             //
             // Tentative d'authentification au serveur Atiesh

@@ -24,6 +24,13 @@ namespace Frostmourne_basics
         public string Mysql_database { get; set; }
         public string Mysql_port { get; set; }
 
+        public List<int> SMA_values { get; set; }
+
+        public List<int> EMA_values { get; set; }
+
+        public List<int> MACD_values { get; set; }
+
+
         public Error LoadAPIConfigurationSettings()
         {
             //////////////////////////////////////////////////
@@ -176,6 +183,10 @@ namespace Frostmourne_basics
                 return new Error(true, "Error reading app settings Mysql_database : " + e.Message);
             }
 
+
+            //////////////////////////////////////////////////
+            // Load des paramètres à calculer
+            //////////////////////////////////////////////////
             return new Error(false, "Web setting loaded!");
         }
     }
