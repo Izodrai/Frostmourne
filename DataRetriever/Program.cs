@@ -40,11 +40,15 @@ namespace DataRetriever
 
             while (choice != "0")
             {
+                Log.JumpLine();
+                Log.JumpLine();
+                Log.Info("########################");
+                Log.JumpLine();
+                Log.JumpLine();
+
                 Log.WhiteInfo("What do you want to do ?");
                 Log.Info("(1) -> Check and Manage Symbol Status");
                 Log.Info("(2) -> Check and Manage Symbol Values");
-                Log.Info("(3) -> Check and Manage Positions");
-                Log.Info("(4) -> Other");
                 Log.Info("(0) -> Exit");
 
                 choice = Console.ReadLine();
@@ -52,18 +56,16 @@ namespace DataRetriever
                 {
                     Log.JumpLine();
                     Log.MagentaInfo("Frostmourne system stoped at " + DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"));
-                    Thread.Sleep(1000);
+                    Thread.Sleep(500);
                     continue;
                 }
 
-                err = Dispatcher.Dispatch_choice(choice);
+                err = Dispatcher.Dispatch_choice(choice, ref Xtb_api_connector, ref configuration, ref MyDB);
                 if (err.IsAnError)
                 {
                     Log.Error(err.MessageError);
                     return;
                 }
-
-                Log.JumpLine();
             }
         }
         
