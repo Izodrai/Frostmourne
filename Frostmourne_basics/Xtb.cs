@@ -152,9 +152,7 @@ namespace Frostmourne_basics
                         continue;
                     if (xtb_bid.Bid_at != mysql_bid.Bid_at)
                         continue;
-                    if (xtb_bid.Last_bid != mysql_bid.Last_bid)
-                        bids_to_insert_or_update.Add(xtb_bid);
-                    if (xtb_bid.Calculations != mysql_bid.Calculations)
+                    if (xtb_bid.Last_bid != mysql_bid.Last_bid || xtb_bid.Calculations != mysql_bid.Calculations)
                         bids_to_insert_or_update.Add(xtb_bid);
                     
                     exist = true;
