@@ -55,25 +55,28 @@ namespace Frostmourne_basics
                 Calculation c = new Calculation();
 
                 calc_sma(ref last_bids, ct_period,ref c);
-                calculations.Add(c);
+
+                if (c.Value != 0)
+                    calculations.Add(c);
             }
 
             this.Calculations = JsonConvert.SerializeObject(calculations);
         }
 
-        /*
+        
         protected void calc_ema(ref List<Bid> last_bids, int ct_period, ref Calculation ema)
         {
             if (last_bids.Count < ct_period)
                 return;
 
             double s_ema = this.Last_bid;
+
             for (int i = last_bids.Count - 1; i >= last_bids.Count - ct_period + 1; --i)
             {
 
             }
         }
-        */
+        
 
         protected void calc_sma(ref List<Bid> last_bids, int ct_period, ref Calculation sma)
         {
