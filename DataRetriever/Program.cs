@@ -1,50 +1,70 @@
-﻿using DataRetriever.Errors;
-using DataRetriever.Logs;
-using DataRetriever.Jobs.XtbConnector;
-using System;
+﻿using System;
+using Frostmourne_basics;
+using DataRetriever.Workers;
+using xAPI.Sync;
+using Frostmourne_basics.Dbs;
 using System.Threading;
 
 namespace DataRetriever
 {
     class Program
     {        
-
         static void Main(string[] args)
-        {        
+        {
             Error err = new Error();
-            XtbConnector conn = new XtbConnector();
-
-            Log.MagentaInfo("The system started at " + DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"));
-
-            //////////////////////////////////////////////////
-            // Connexion aux serveurs xtb
-            //////////////////////////////////////////////////
-            err = conn.ConnectAndCheck();
-            if (err.IsAnError)
-            {
-                Log.Error(err.MessageError);
-                return;
-            }
-            Log.GreenInfo(err.MessageError);
-            Log.Info("");
-
-            Log.Info("XTB server time : " + conn.GetServerTime().ToString("yyyy-MM-dd HH:mm:ss"));
-
-            //////////////////////////////////////////////////
-            // Opération de récupération des données
-            //////////////////////////////////////////////////
-            Log.Info("Running data retrieving...");
+            Mysql MyDB = new Mysql();
+            SyncAPIConnector Xtb_api_connector = null;
+            Configuration configuration = new Configuration();
             
-            err = conn.LoopDataRetrieveAndCalculation();
+            Log.JumpLine();
+            Log.MagentaInfo("Frostmourne system started at " + DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"));
+            Log.JumpLine();
+
+            err = Data_retriever_configuration.LoadAPIConfigurationSettings(ref configuration);
             if (err.IsAnError)
             {
                 Log.Error(err.MessageError);
                 return;
             }
 
-            Log.Warning(err.MessageError);
+            Data_retriever_configuration.PrintConfiguration(ref configuration);
+            
+            err = Tool.InitAll(ref Xtb_api_connector, ref configuration, ref MyDB);
+            if (err.IsAnError)
+            {
+                Log.Error(err.MessageError);
+                return;
+            }
 
-            Thread.Sleep(200);
+            string choice = "";
+
+            while (choice != "0")
+            {
+                Log.WhiteInfo("What do you want to do ?");
+                Log.Info("(1) -> Check and Manage Symbol Status");
+                Log.Info("(2) -> Check and Manage Symbol Values");
+                Log.Info("(3) -> Check and Manage Positions");
+                Log.Info("(4) -> Other");
+                Log.Info("(0) -> Exit");
+
+                choice = Console.ReadLine();
+                if (choice == "0")
+                {
+                    Log.JumpLine();
+                    Log.MagentaInfo("Frostmourne system stoped at " + DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"));
+                    Thread.Sleep(1000);
+                    continue;
+                }
+
+                err = Dispatcher.Dispatch_choice(choice);
+                if (err.IsAnError)
+                {
+                    Log.Error(err.MessageError);
+                    return;
+                }
+
+                Log.JumpLine();
+            }
         }
         
     }

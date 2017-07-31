@@ -24,11 +24,11 @@ namespace Frostmourne_basics
         public string Mysql_database { get; set; }
         public string Mysql_port { get; set; }
 
-        public List<int> SMA_values { get; set; }
+        //public List<int> SMA_values { get; set; }
 
-        public List<int> EMA_values { get; set; }
+        //public List<int> EMA_values { get; set; }
 
-        public List<int> MACD_values { get; set; }
+        //public List<int> MACD_values { get; set; }
 
 
         public Error LoadAPIConfigurationSettings()
