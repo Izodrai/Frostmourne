@@ -1,5 +1,6 @@
 ﻿using Frostmourne_basics;
 using Frostmourne_basics.Dbs;
+using Frostmourne_basics.Commands;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -21,12 +22,14 @@ namespace DataRetriever.Workers.W_sym_status
 
             List<Symbol> symbol_list = new List<Symbol>();
 
+            Log.MagentaInfo("Update Symbol Status Menu");
             err = Commands.Load_all_symbols_status(ref Xtb_api_connector, ref configuration, ref MyDB, ref symbol_list);
             if (err.IsAnError)
                 return err;
 
             Display_symbols("all status", ref symbol_list);
             Log.Info("| 0 | Exit | Abort |");
+            Log.JumpLine();
 
             Log.WhiteInfo("Which status symbol do you want update ? (Write the ID)");
             

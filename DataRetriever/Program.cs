@@ -46,9 +46,10 @@ namespace DataRetriever
                 Log.JumpLine();
                 Log.JumpLine();
 
-                Log.WhiteInfo("What do you want to do ?");
-                Log.Info("(1) -> Check and Manage Symbol Status");
-                Log.Info("(2) -> Check and Manage Symbol Values");
+                Log.MagentaInfo("General Menu ");
+                Log.YellowInfo("What do you want to do ?");
+                Log.WhiteInfo("(1) -> Check and Manage Symbol Status");
+                Log.CyanInfo("(2) -> Check and Manage Stock Values");
                 Log.Info("(0) -> Exit");
 
                 choice = Console.ReadLine();

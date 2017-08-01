@@ -1,7 +1,7 @@
 ﻿using Frostmourne_basics;
 using System.Threading;
 using DataRetriever.Workers.W_sym_status;
-using DataRetriever.Workers.W_sym_values;
+using DataRetriever.Workers.W_stock_values;
 using System;
 using Frostmourne_basics.Dbs;
 using xAPI.Sync;
@@ -40,7 +40,7 @@ namespace DataRetriever.Workers
                 case "2":
                     while (choice != "0")
                     {
-                        Symbol_values.Display_choice();
+                        Stock_values.Display_choice();
                         choice = Console.ReadLine();
                         if (choice == "0")
                         {
@@ -49,7 +49,7 @@ namespace DataRetriever.Workers
                             continue;
                         }
 
-                        err = Symbol_values.Dispatch_choice(choice, ref Xtb_api_connector, ref configuration, ref MyDB);
+                        err = Stock_values.Dispatch_choice(choice, ref Xtb_api_connector, ref configuration, ref MyDB);
                         if (err.IsAnError)
                             return err;
                     }

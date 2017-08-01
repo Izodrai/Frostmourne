@@ -147,17 +147,17 @@ namespace DataRetriever
 
         public static void PrintConfiguration(ref Frostmourne_basics.Configuration configuration)
         {
-            Log.BlueInfo("\t>Environnement : " + configuration.Environnement);
+            Log.CyanInfo("\t>Environnement : " + configuration.Environnement);
             Log.JumpLine();
             Log.WhiteInfo("\t>Xtb_login :  " + configuration.Xtb_login);
-            Log.BlueInfo("\t>Xtb_pwd :    " + configuration.Xtb_pwd);
+            Log.CyanInfo("\t>Xtb_pwd :    " + configuration.Xtb_pwd);
             Log.WhiteInfo("\t>Xtb_server : " + configuration.Xtb_server);
             Log.JumpLine();
-            Log.BlueInfo("\t>Mysql_host :     " + configuration.Mysql_host);
+            Log.CyanInfo("\t>Mysql_host :     " + configuration.Mysql_host);
             Log.WhiteInfo("\t>Mysql_login :    " + configuration.Mysql_login);
-            Log.BlueInfo("\t>Mysql_pwd :      " + configuration.Mysql_pwd);
+            Log.CyanInfo("\t>Mysql_pwd :      " + configuration.Mysql_pwd);
             Log.WhiteInfo("\t>Mysql_database : " + configuration.Mysql_database);
-            Log.BlueInfo("\t>Mysql_port :     " + configuration.Mysql_port);
+            Log.CyanInfo("\t>Mysql_port :     " + configuration.Mysql_port);
             Log.JumpLine();
         }
     }

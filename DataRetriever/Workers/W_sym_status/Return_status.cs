@@ -1,5 +1,6 @@
 ﻿using Frostmourne_basics;
 using Frostmourne_basics.Dbs;
+using Frostmourne_basics.Commands;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -9,7 +10,7 @@ namespace DataRetriever.Workers.W_sym_status
 {
     public partial class Symbol_status
     {
-        protected static void Display_symbols(string symbol_type, ref List<Symbol> _sl)
+        public static void Display_symbols(string symbol_type, ref List<Symbol> _sl)
         {
             Log.JumpLine();
 
