@@ -43,6 +43,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Frostmourne_basics">
+      <HintPath>..\..\Frostmourne_basics\Frostmourne_basics\obj\Debug\Frostmourne_basics.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.AI.Agent.Intercept, Version=2.0.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.ApplicationInsights.Agent.Intercept.2.0.7\lib\net45\Microsoft.AI.Agent.Intercept.dll</HintPath>
     </Reference>
@@ -107,9 +110,8 @@
     <Reference Include="WebActivatorEx, Version=2.0.0.0, Culture=neutral, PublicKeyToken=7b26dc2a43f6a0d4, processorArchitecture=MSIL">
       <HintPath>..\packages\WebActivatorEx.2.2.0\lib\net40\WebActivatorEx.dll</HintPath>
     </Reference>
-    <Reference Include="xAPI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\xAPI_dotNET_wrapper_v2.4.9\lib\xAPI.dll</HintPath>
+    <Reference Include="xAPI">
+      <HintPath>..\..\XTB\xAPI_dotNET_wrapper_v2.4.9\lib\xAPI.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
