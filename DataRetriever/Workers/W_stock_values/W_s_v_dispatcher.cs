@@ -25,6 +25,8 @@ namespace DataRetriever.Workers.W_stock_values
             Log.WhiteInfo("(5) -> Get from DB - Stock Values for a symbol between two date");
             Log.CyanInfo("(6) -> Get from XTB and setup DB - Stock Values for a symbol from last insert");
 
+            Log.WhiteInfo("(7) -> Set DB - Update stocks value calculation");
+
 
             Log.Info("(0) -> Return To Main Menu");
         }
@@ -64,6 +66,11 @@ namespace DataRetriever.Workers.W_stock_values
                     break;
                 case "6":
                     err = Get_from_xtb_stock_values_from_last_insert_for_symbol(ref Xtb_api_connector, ref configuration, ref MyDB);
+                    if (err.IsAnError)
+                        return err;
+                    break;
+                case "7":
+                    err = Set_db_stock_values_calculations(ref Xtb_api_connector, ref configuration, ref MyDB);
                     if (err.IsAnError)
                         return err;
                     break;
