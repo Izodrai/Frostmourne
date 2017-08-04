@@ -154,7 +154,7 @@ namespace DataAPI.Controllers
 
             bids_to_update.Add(bid_to_update);
 
-            err = MyDB.Update_bid_calculations(bids_to_update);
+            err = Commands.Update_db_stock_values_calculation(ref Xtb_api_connector, ref configuration, ref MyDB, ref bids_to_update);
             if (err.IsAnError)
                 return new Response(err, null, null);
             
