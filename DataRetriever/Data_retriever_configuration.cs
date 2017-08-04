@@ -67,17 +67,7 @@ namespace DataRetriever
 
             try
             {
-                switch (ConfigurationManager.AppSettings["Xtb_Server"])
-                {
-                    case "demo":
-                        Config.Xtb_server = Servers.DEMO;
-                        break;
-                    case "real":
-                        Config.Xtb_server = Servers.REAL;
-                        break;
-                    default:
-                        return new Error(true, "Error reading app settings Server, not real or demo...");
-                }
+                Config.Set_server(ConfigurationManager.AppSettings["Xtb_Server"]);
             }
             catch (ConfigurationErrorsException e)
             {
