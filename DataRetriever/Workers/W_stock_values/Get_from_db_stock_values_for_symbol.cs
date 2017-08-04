@@ -119,6 +119,7 @@ namespace DataRetriever.Workers.W_stock_values
             {
                 Log.Error("from.Date >= to.Date");
                 Log.WhiteInfo(from.Date + " | " + to.Date);
+                return new Error(false, "");
             }
 
             Log.JumpLine();
