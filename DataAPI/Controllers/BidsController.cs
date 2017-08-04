@@ -86,7 +86,7 @@ namespace DataAPI.Controllers
 
             if (s_to_load.Id == 0)
                 return new Response(new Error(false, "This ID doesn't exist or inactive : " + arg1), null, null);
-            
+
             DateTime from = new DateTime();
 
             try
@@ -131,7 +131,34 @@ namespace DataAPI.Controllers
                 return new Response(err, null, null);
 
             return new Response(new Error(false, "Data for symbol " + s_to_load.Id.ToString() + " (" + s_to_load.Name + ") loaded"), bids, null);
+        }
 
+        [HttpGet]
+        public Response Set_Calculation(string arg1, string arg2)
+        {
+            Error err;
+            Mysql MyDB = new Mysql();
+            SyncAPIConnector Xtb_api_connector = null;
+            Configuration configuration = new Configuration();
+            Data_api_configuration.LoadAPIConfigurationSettings(ref configuration);
+
+            err = Tool.InitAll(ref Xtb_api_connector, ref configuration, ref MyDB);
+            if (err.IsAnError)
+                return new Response(err, null, null);
+            
+            Bid bid_to_update = new Bid();
+            List<Bid> bids_to_update = new List<Bid>();
+
+            bid_to_update.Id = Convert.ToInt32(arg1);
+            bid_to_update.Calculations = System.Text.Encoding.UTF8.GetString(System.Convert.FromBase64String(arg2));
+
+            bids_to_update.Add(bid_to_update);
+
+            err = MyDB.Update_bid_calculations(bids_to_update);
+            if (err.IsAnError)
+                return new Response(err, null, null);
+            
+            return new Response(new Error(false, "This bid calculation has been updated"), bids_to_update, null);
         }
     }
 }
