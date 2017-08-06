@@ -26,7 +26,7 @@ namespace DataAPI.Controllers
 
             List<Symbol> symbol_list = new List<Symbol>();
 
-            err = Commands.Load_all_symbols_status(ref Xtb_api_connector, ref configuration, ref MyDB, ref symbol_list);
+            err = Commands.Load_all_symbols_status(ref configuration, ref MyDB, ref symbol_list);
             if (err.IsAnError)
                 return new Response(err, null, null);
 
@@ -59,17 +59,16 @@ namespace DataAPI.Controllers
         {
             Error err;
             Mysql MyDB = new Mysql();
-            SyncAPIConnector Xtb_api_connector = null;
             Configuration configuration = new Configuration();
             Data_api_configuration.LoadAPIConfigurationSettings(ref configuration);
 
-            err = Tool.InitAll(ref Xtb_api_connector, ref configuration, ref MyDB);
+            err = Tool.InitMyDb(ref configuration, ref MyDB);
             if (err.IsAnError)
                 return new Response(err, null, null);
 
             List<Symbol> symbol_list = new List<Symbol>();
 
-            err = Commands.Load_all_symbols_status(ref Xtb_api_connector, ref configuration, ref MyDB, ref symbol_list);
+            err = Commands.Load_all_symbols_status(ref configuration, ref MyDB, ref symbol_list);
             if (err.IsAnError)
                 return new Response(err, null, null);
 
@@ -126,7 +125,7 @@ namespace DataAPI.Controllers
 
             List<Bid> bids = new List<Bid>();
 
-            err = Commands.Get_from_db_stock_values_between_two_date_for_symbol(ref Xtb_api_connector, ref configuration, ref MyDB, s_to_load, from, to, ref bids);
+            err = Commands.Get_from_db_stock_values_between_two_date_for_symbol(ref configuration, ref MyDB, s_to_load, from, to, ref bids);
             if (err.IsAnError)
                 return new Response(err, null, null);
 
@@ -154,7 +153,7 @@ namespace DataAPI.Controllers
 
             bids_to_update.Add(bid_to_update);
 
-            err = Commands.Update_db_stock_values_calculation(ref Xtb_api_connector, ref configuration, ref MyDB, ref bids_to_update);
+            err = Commands.Update_db_stock_values_calculation(ref configuration, ref MyDB, ref bids_to_update);
             if (err.IsAnError)
                 return new Response(err, null, null);
             
