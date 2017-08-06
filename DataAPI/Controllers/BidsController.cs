@@ -137,11 +137,10 @@ namespace DataAPI.Controllers
         {
             Error err;
             Mysql MyDB = new Mysql();
-            SyncAPIConnector Xtb_api_connector = null;
             Configuration configuration = new Configuration();
             Data_api_configuration.LoadAPIConfigurationSettings(ref configuration);
 
-            err = Tool.InitAll(ref Xtb_api_connector, ref configuration, ref MyDB);
+            err = Tool.InitMyDb(ref configuration, ref MyDB);
             if (err.IsAnError)
                 return new Response(err, null, null);
             
