@@ -23,7 +23,7 @@ namespace DataRetriever.Workers.W_stock_values
             List<Symbol> symbol_list = new List<Symbol>();
 
             Log.MagentaInfo("Get from XTB and setup DB Stock Value for a Symbol Menu");
-            err = Commands.Load_all_symbols_status(ref Xtb_api_connector, ref configuration, ref MyDB, ref symbol_list);
+            err = Commands.Load_all_symbols_status(ref configuration, ref MyDB, ref symbol_list);
             if (err.IsAnError)
                 return err;
 
@@ -86,13 +86,13 @@ namespace DataRetriever.Workers.W_stock_values
             Bid bid = new Bid();
             Symbol symbol = new Symbol(1, "", "");
 
-            err = Commands.Get_from_db_last_insert_for_symbol(ref Xtb_api_connector, ref configuration, ref MyDB, symbol, ref bid);
+            err = Commands.Get_from_db_last_insert_for_symbol(ref configuration, ref MyDB, symbol, ref bid);
             if (err.IsAnError)
                 return err;
             
             List<Bid> bids = new List<Bid>();
 
-            err = Commands.Get_from_db_stock_values_between_two_date_for_symbol(ref Xtb_api_connector, ref configuration, ref MyDB, symbol, bid.Bid_at.AddHours(-1), bid.Bid_at, ref bids);
+            err = Commands.Get_from_db_stock_values_between_two_date_for_symbol(ref configuration, ref MyDB, symbol, bid.Bid_at.AddHours(-1), bid.Bid_at, ref bids);
             if (err.IsAnError)
                 return err;
 
@@ -149,7 +149,7 @@ namespace DataRetriever.Workers.W_stock_values
 
             List<Bid> bids_to_updated = new List<Bid>();
 
-            err = Commands.Get_from_db_stock_values_between_two_date_for_symbol(ref Xtb_api_connector, ref configuration, ref MyDB, symbol, bid.Bid_at.AddHours(-1), bid.Bid_at, ref bids_to_updated);
+            err = Commands.Get_from_db_stock_values_between_two_date_for_symbol(ref configuration, ref MyDB, symbol, bid.Bid_at.AddHours(-1), bid.Bid_at, ref bids_to_updated);
             if (err.IsAnError)
                 return err;
 

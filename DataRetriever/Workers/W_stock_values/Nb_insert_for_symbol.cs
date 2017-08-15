@@ -23,7 +23,7 @@ namespace DataRetriever.Workers.W_stock_values
             List<Symbol> symbol_list = new List<Symbol>();
 
             Log.MagentaInfo("Get Count Stock Value Insert for a Symbol Menu");
-            err = Commands.Load_all_symbols_status(ref Xtb_api_connector, ref configuration, ref MyDB, ref symbol_list);
+            err = Commands.Load_all_symbols_status(ref configuration, ref MyDB, ref symbol_list);
             if (err.IsAnError)
                 return err;
 
@@ -59,7 +59,7 @@ namespace DataRetriever.Workers.W_stock_values
 
             int ct = 0;
 
-            err = Commands.Get_from_db_nb_insert_by_symbol(ref Xtb_api_connector, ref configuration, ref MyDB, s_to_check, ref ct);
+            err = Commands.Get_from_db_nb_insert_by_symbol(ref configuration, ref MyDB, s_to_check, ref ct);
             if (err.IsAnError)
                 return err;
 
@@ -81,7 +81,7 @@ namespace DataRetriever.Workers.W_stock_values
             List<Symbol> symbol_list = new List<Symbol>();
 
             Log.MagentaInfo("Get Count Stock Value Insert for a Symbol Menu");
-            err = Commands.Load_all_symbols_status(ref Xtb_api_connector, ref configuration, ref MyDB, ref symbol_list);
+            err = Commands.Load_all_symbols_status(ref configuration, ref MyDB, ref symbol_list);
             if (err.IsAnError)
                 return err;
 
@@ -189,7 +189,7 @@ namespace DataRetriever.Workers.W_stock_values
             
             List<Bid_by_date> bids_ct = new List<Bid_by_date>();
 
-            err = Commands.Get_from_db_nb_insert_by_day_between_two_date_for_symbol(ref Xtb_api_connector, ref configuration, ref MyDB, s_to_check, from, to, ref bids_ct);
+            err = Commands.Get_from_db_nb_insert_by_day_between_two_date_for_symbol(ref configuration, ref MyDB, s_to_check, from, to, ref bids_ct);
             if (err.IsAnError)
                 return err;
 

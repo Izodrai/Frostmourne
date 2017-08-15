@@ -50,6 +50,7 @@ namespace DataRetriever
                 Log.YellowInfo("What do you want to do ?");
                 Log.WhiteInfo("(1) -> Check and Manage Symbol Status");
                 Log.CyanInfo("(2) -> Check and Manage Stock Values");
+                Log.WhiteInfo("(3) -> Open and close trades");
                 Log.Info("(0) -> Exit");
 
                 choice = Console.ReadLine();

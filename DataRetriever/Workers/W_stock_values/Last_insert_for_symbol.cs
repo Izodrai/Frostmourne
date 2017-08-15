@@ -23,7 +23,7 @@ namespace DataRetriever.Workers.W_stock_values
             List<Symbol> symbol_list = new List<Symbol>();
 
             Log.MagentaInfo("Get Last Stock Value Insert for a Symbol Menu");
-            err = Commands.Load_all_symbols_status(ref Xtb_api_connector, ref configuration, ref MyDB, ref symbol_list);
+            err = Commands.Load_all_symbols_status(ref configuration, ref MyDB, ref symbol_list);
             if (err.IsAnError)
                 return err;
 
@@ -59,7 +59,7 @@ namespace DataRetriever.Workers.W_stock_values
 
             Bid bid = new Bid();
 
-            err = Commands.Get_from_db_last_insert_for_symbol(ref Xtb_api_connector, ref configuration, ref MyDB, s_to_check, ref bid);
+            err = Commands.Get_from_db_last_insert_for_symbol(ref configuration, ref MyDB, s_to_check, ref bid);
             if (err.IsAnError)
                 return err;
 
@@ -84,7 +84,7 @@ namespace DataRetriever.Workers.W_stock_values
             List<Symbol> symbol_list = new List<Symbol>();
 
             Log.MagentaInfo("Get Last Stock Value Insert for each Symbol Menu");
-            err = Commands.Load_all_symbols_status(ref Xtb_api_connector, ref configuration, ref MyDB, ref symbol_list);
+            err = Commands.Load_all_symbols_status(ref configuration, ref MyDB, ref symbol_list);
             if (err.IsAnError)
                 return err;
 
@@ -94,7 +94,7 @@ namespace DataRetriever.Workers.W_stock_values
             {
                 Bid bid = new Bid();
 
-                err = Commands.Get_from_db_last_insert_for_symbol(ref Xtb_api_connector, ref configuration, ref MyDB, s, ref bid);
+                err = Commands.Get_from_db_last_insert_for_symbol(ref configuration, ref MyDB, s, ref bid);
                 if (err.IsAnError)
                     return err;
                 bid_list.Add(bid);

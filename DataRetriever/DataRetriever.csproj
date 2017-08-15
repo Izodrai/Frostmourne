@@ -66,6 +66,7 @@
     <Compile Include="Workers\W_sym_status\Return_status.cs" />
     <Compile Include="Workers\W_sym_status\W_s_st_dispatcher.cs" />
     <Compile Include="Workers\W_stock_values\W_s_v_dispatcher.cs" />
+    <Compile Include="Workers\W_trades\W_tr_dispatcher.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -33,7 +33,7 @@ namespace DataRetriever.Workers.W_sym_status
             Error err = new Error();
             List<Symbol> symbol_list = new List<Symbol>();
 
-            err = Commands.Load_active_symbols(ref Xtb_api_connector, ref configuration, ref MyDB, ref symbol_list);
+            err = Commands.Load_active_symbols(ref configuration, ref MyDB, ref symbol_list);
             if (err.IsAnError)
                 return err;
 
@@ -47,7 +47,7 @@ namespace DataRetriever.Workers.W_sym_status
             Error err = new Error();
             List<Symbol> symbol_list = new List<Symbol>();
 
-            err = Commands.Load_simulation_symbols(ref Xtb_api_connector, ref configuration, ref MyDB, ref symbol_list);
+            err = Commands.Load_simulation_symbols(ref configuration, ref MyDB, ref symbol_list);
             if (err.IsAnError)
                 return err;
 
@@ -61,7 +61,7 @@ namespace DataRetriever.Workers.W_sym_status
             Error err = new Error();
             List<Symbol> symbol_list = new List<Symbol>();
 
-            err = Commands.Load_standby_symbols(ref Xtb_api_connector, ref configuration, ref MyDB, ref symbol_list);
+            err = Commands.Load_standby_symbols(ref configuration, ref MyDB, ref symbol_list);
             if (err.IsAnError)
                 return err;
 
@@ -75,7 +75,7 @@ namespace DataRetriever.Workers.W_sym_status
             Error err = new Error();
             List<Symbol> symbol_list = new List<Symbol>();
 
-            err = Commands.Load_not_inactive_symbols(ref Xtb_api_connector, ref configuration, ref MyDB, ref symbol_list);
+            err = Commands.Load_not_inactive_symbols(ref configuration, ref MyDB, ref symbol_list);
             if (err.IsAnError)
                 return err;
 
@@ -89,7 +89,7 @@ namespace DataRetriever.Workers.W_sym_status
             Error err = new Error();
             List<Symbol> symbol_list = new List<Symbol>();
 
-            err = Commands.Load_inactive_symbols(ref Xtb_api_connector, ref configuration, ref MyDB, ref symbol_list);
+            err = Commands.Load_inactive_symbols(ref configuration, ref MyDB, ref symbol_list);
             if (err.IsAnError)
                 return err;
 
@@ -103,7 +103,7 @@ namespace DataRetriever.Workers.W_sym_status
             Error err = new Error();
             List<Symbol> symbol_list = new List<Symbol>();
 
-            err = Commands.Load_all_symbols_status(ref Xtb_api_connector, ref configuration, ref MyDB, ref symbol_list);
+            err = Commands.Load_all_symbols_status(ref configuration, ref MyDB, ref symbol_list);
             if (err.IsAnError)
                 return err;
 
@@ -132,7 +132,7 @@ namespace DataRetriever.Workers.W_sym_status
 
             List<Symbol> symbols_list = new List<Symbol>();
 
-            err = Commands.Load_all_symbols_status(ref Xtb_api_connector, ref configuration, ref MyDB, ref symbols_list);
+            err = Commands.Load_all_symbols_status(ref configuration, ref MyDB, ref symbols_list);
             if (err.IsAnError)
                 return err;
 
@@ -152,7 +152,7 @@ namespace DataRetriever.Workers.W_sym_status
                 return new Error(false, "");
             }
 
-            err = Commands.Load_symbol_status(ref Xtb_api_connector, ref configuration, ref MyDB, ref symbol);
+            err = Commands.Load_symbol_status(ref configuration, ref MyDB, ref symbol);
             if (err.IsAnError)
                 return err;
 

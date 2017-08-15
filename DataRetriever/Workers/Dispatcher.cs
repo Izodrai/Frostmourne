@@ -1,6 +1,7 @@
 ﻿using Frostmourne_basics;
 using System.Threading;
 using DataRetriever.Workers.W_sym_status;
+using DataRetriever.Workers.W_trades;
 using DataRetriever.Workers.W_stock_values;
 using System;
 using Frostmourne_basics.Dbs;
@@ -54,6 +55,24 @@ namespace DataRetriever.Workers
                             return err;
                     }
                     break;
+                case "3":
+                    while (choice != "0")
+                    {
+                        Trades.Display_choice();
+                        choice = Console.ReadLine();
+                        if (choice == "0")
+                        {
+                            Log.JumpLine();
+                            Thread.Sleep(500);
+                            continue;
+                        }
+
+                        err = Trades.Dispatch_choice(choice, ref Xtb_api_connector, ref configuration, ref MyDB);
+                        if (err.IsAnError)
+                            return err;
+                    }
+                    break;
+
                 default:
                     Log.JumpLine();
                     Log.Error("Is not a valid choice...");

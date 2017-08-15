@@ -23,7 +23,7 @@ namespace DataRetriever.Workers.W_sym_status
             List<Symbol> symbol_list = new List<Symbol>();
 
             Log.MagentaInfo("Update Symbol Status Menu");
-            err = Commands.Load_all_symbols_status(ref Xtb_api_connector, ref configuration, ref MyDB, ref symbol_list);
+            err = Commands.Load_all_symbols_status(ref configuration, ref MyDB, ref symbol_list);
             if (err.IsAnError)
                 return err;
 
@@ -102,13 +102,13 @@ namespace DataRetriever.Workers.W_sym_status
 
             s_to_update.State = new_status;
 
-            err = Commands.Update_symbol_status(ref Xtb_api_connector, ref configuration, ref MyDB, s_to_update);
+            err = Commands.Update_symbol_status(ref configuration, ref MyDB, s_to_update);
             if (err.IsAnError)
                 return err;
 
             Symbol s_updated = new Symbol();
             s_updated.Id = s_to_update.Id;
-            err = Commands.Load_symbol_status(ref Xtb_api_connector, ref configuration, ref MyDB, ref s_updated);
+            err = Commands.Load_symbol_status(ref configuration, ref MyDB, ref s_updated);
             if (err.IsAnError)
                 return err;
             

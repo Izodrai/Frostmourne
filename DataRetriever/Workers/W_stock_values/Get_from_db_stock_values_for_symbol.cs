@@ -23,7 +23,7 @@ namespace DataRetriever.Workers.W_stock_values
             List<Symbol> symbol_list = new List<Symbol>();
 
             Log.MagentaInfo("Get Stock Value Insert for a Symbol Menu");
-            err = Commands.Load_all_symbols_status(ref Xtb_api_connector, ref configuration, ref MyDB, ref symbol_list);
+            err = Commands.Load_all_symbols_status(ref configuration, ref MyDB, ref symbol_list);
             if (err.IsAnError)
                 return err;
 
@@ -134,7 +134,7 @@ namespace DataRetriever.Workers.W_stock_values
 
             List<Bid> bids = new List<Bid>();
 
-            err = Commands.Get_from_db_stock_values_between_two_date_for_symbol(ref Xtb_api_connector, ref configuration, ref MyDB, s_to_check, from, to, ref bids);
+            err = Commands.Get_from_db_stock_values_between_two_date_for_symbol(ref configuration, ref MyDB, s_to_check, from, to, ref bids);
             if (err.IsAnError)
                 return err;
 
