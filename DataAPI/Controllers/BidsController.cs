@@ -19,10 +19,6 @@ namespace DataAPI.Controllers
             SyncAPIConnector Xtb_api_connector = null;
             Configuration configuration = new Configuration();
             Data_api_configuration.LoadAPIConfigurationSettings(ref configuration);
-
-            err = Tool.InitAll(ref Xtb_api_connector, ref configuration, ref MyDB);
-            if (err.IsAnError)
-                return new Response(err, null, null, null);
             
             Symbol s_to_feed = new Symbol();
 
@@ -44,11 +40,7 @@ namespace DataAPI.Controllers
             Mysql MyDB = new Mysql();
             Configuration configuration = new Configuration();
             Data_api_configuration.LoadAPIConfigurationSettings(ref configuration);
-
-            err = Tool.InitMyDb(ref configuration, ref MyDB);
-            if (err.IsAnError)
-                return new Response(err, null, null, null);
-
+            
             Symbol s_to_load = new Symbol();
 
             s_to_load.Id = Convert.ToInt32(arg1);
@@ -106,10 +98,6 @@ namespace DataAPI.Controllers
             Mysql MyDB = new Mysql();
             Configuration configuration = new Configuration();
             Data_api_configuration.LoadAPIConfigurationSettings(ref configuration);
-
-            err = Tool.InitMyDb(ref configuration, ref MyDB);
-            if (err.IsAnError)
-                return new Response(err, null, null, null);
             
             Bid bid_to_update = new Bid();
             List<Bid> bids_to_update = new List<Bid>();
@@ -135,11 +123,7 @@ namespace DataAPI.Controllers
             Configuration configuration = new Configuration();
             Data_api_configuration.LoadAPIConfigurationSettings(ref configuration);
             List<Trade> trades = new List<Trade>();
-
-            err = Tool.InitAll(ref Xtb_api_connector, ref configuration, ref MyDB);
-            if (err.IsAnError)
-                return new Response(err, null, null, null);
-
+            
             err = Commands.Get_open_trades_from_xtb(ref Xtb_api_connector, ref configuration, ref MyDB, ref trades);
             if (err.IsAnError)
                 return new Response(err, null, null, null);
@@ -156,10 +140,6 @@ namespace DataAPI.Controllers
             Configuration configuration = new Configuration();
             Data_api_configuration.LoadAPIConfigurationSettings(ref configuration);
             List<Trade> trades = new List<Trade>();
-
-            err = Tool.InitAll(ref Xtb_api_connector, ref configuration, ref MyDB);
-            if (err.IsAnError)
-                return new Response(err, null, null, null);
 
             Symbol symbol = new Symbol();
             Trade trade = new Trade();
@@ -195,10 +175,6 @@ namespace DataAPI.Controllers
             SyncAPIConnector Xtb_api_connector = null;
             Configuration configuration = new Configuration();
             Data_api_configuration.LoadAPIConfigurationSettings(ref configuration);
-
-            err = Tool.InitAll(ref Xtb_api_connector, ref configuration, ref MyDB);
-            if (err.IsAnError)
-                return new Response(err, null, null, null);
             
             Trade trade_to_close = new Trade();
 
@@ -216,6 +192,22 @@ namespace DataAPI.Controllers
                 return new Response(err, null, null, null);
 
             return new Response(new Error(false, ""), null, null, trades);
+        }
+
+        [HttpGet]
+        public Response Get_Symbols_Status()
+        {
+            Error err = new Error();
+            List<Symbol> symbol_list = new List<Symbol>();
+            Mysql MyDB = new Mysql();
+            Configuration configuration = new Configuration();
+            Data_api_configuration.LoadAPIConfigurationSettings(ref configuration);
+            
+            err = Commands.Load_all_symbols_status(ref configuration, ref MyDB, ref symbol_list);
+            if (err.IsAnError)
+                return new Response(err, null, null, null);
+
+            return new Response(new Error(false, ""), null, symbol_list, null);
         }
     }
 }
