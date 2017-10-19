@@ -142,6 +142,7 @@
     </Compile>
     <Compile Include="Models\Response.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Token_validation.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config">
@@ -150,6 +151,7 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="Properties\PublishProfiles\DataAPI20171019030453 - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\izo-api-test - Web Deploy.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

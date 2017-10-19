@@ -28,7 +28,7 @@ namespace DataRetriever
             }
 
             Data_retriever_configuration.PrintConfiguration(ref configuration);
-            
+
             err = Tool.InitAll(ref Xtb_api_connector, ref configuration, ref MyDB);
             if (err.IsAnError)
             {

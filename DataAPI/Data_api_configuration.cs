@@ -131,6 +131,19 @@ namespace DataAPI
             Log.GreenInfo("Configuration loaded");
             Log.JumpLine();
 
+            //////////////////////////////////////////////////
+            // Load du token de l'api
+            //////////////////////////////////////////////////
+
+            try
+            {
+                Config.Api_token = WebConfigurationManager.AppSettings["Api_token"];
+            }
+            catch (ConfigurationErrorsException e)
+            {
+                return new Error(true, "Error reading app settings UserPwd : " + e.Message);
+            }
+
             return new Error(false, "Web setting loaded!");
         }
     }

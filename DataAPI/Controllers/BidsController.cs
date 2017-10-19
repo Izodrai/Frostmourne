@@ -12,108 +12,49 @@ namespace DataAPI.Controllers
     public partial class BidsController : ApiController
     {
         [HttpGet]
-        public Response Feed_Symbol_From_Last_Insert(string arg1)
+        public Response Get_Xtb_Bids(string arg1, string arg2, string arg3)
         {
             Error err;
             Mysql MyDB = new Mysql();
             SyncAPIConnector Xtb_api_connector = null;
             Configuration configuration = new Configuration();
             Data_api_configuration.LoadAPIConfigurationSettings(ref configuration);
+
+            if (!Token_validation.TokenValid(ref configuration, arg1))
+                return new Response(new Error(true,"bad token"), null, null, null);
             
-            Symbol s_to_feed = new Symbol();
-
-            s_to_feed.Id = Convert.ToInt32(arg1);
-            s_to_feed.Description = "";
-
-            List<Bid> bids_treated = new List<Bid>();
-            err = Commands.Get_from_xtb_stock_values_from_last_insert_for_symbol(ref Xtb_api_connector, ref configuration, ref MyDB, s_to_feed, ref bids_treated);
-            if (err.IsAnError)
-                return new Response(err, null, null, null);
-
-            return new Response(new Error(false, "Data for symbol " + s_to_feed.Id.ToString() + " (" + s_to_feed.Name + ") feeded"), bids_treated, null, null);
-        }
-
-        [HttpGet]
-        public Response Get_Data_For_Symbol(string arg1, string arg2, string arg3)
-        {
-            Error err;
-            Mysql MyDB = new Mysql();
-            Configuration configuration = new Configuration();
-            Data_api_configuration.LoadAPIConfigurationSettings(ref configuration);
-            
-            Symbol s_to_load = new Symbol();
-
-            s_to_load.Id = Convert.ToInt32(arg1);
-
             DateTime from = new DateTime();
-
+            DateTime now = DateTime.Now;
+            
             try
             {
-                from = DateTime.Parse(arg2);
+                string d = System.Text.Encoding.UTF8.GetString(System.Convert.FromBase64String(arg3));
+                from = DateTime.Parse(d);
             }
             catch
             {
-                return new Response(new Error(false, "Bad date format -> " + arg2), null, null, null);
+                return new Response(new Error(false, "Bad date format -> " + arg3), null, null, null);
             }
 
             if (from == new DateTime())
             {
-                return new Response(new Error(false, "Bad date format -> " + arg2), null, null, null);
-            }
-
-            DateTime to = new DateTime();
-
-            try
-            {
-                to = DateTime.Parse(arg3);
-            }
-            catch
-            {
                 return new Response(new Error(false, "Bad date format -> " + arg3), null, null, null);
             }
 
-            if (to == new DateTime())
+            if (from.Date > now.Date)
             {
-                return new Response(new Error(false, "Bad date format -> " + arg3), null, null, null);
+                return new Response(new Error(false, "from.Date > now.Date"), null, null, null);
             }
-
-            if (from.Date >= to.Date)
-            {
-                return new Response(new Error(false, "from.Date >= to.Date"), null, null, null);
-            }
-
+            
             List<Bid> bids = new List<Bid>();
-
-            err = Commands.Get_from_db_stock_values_between_two_date_for_symbol(ref configuration, ref MyDB, s_to_load, from, to, ref bids);
-            if (err.IsAnError)
-                return new Response(err, null, null, null);
-
-            return new Response(new Error(false, "Data for symbol " + s_to_load.Id.ToString() + " (" + s_to_load.Name + ") loaded"), bids, null, null);
-        }
-
-        [HttpGet]
-        public Response Set_Calculation(string arg1, string arg2)
-        {
-            Error err;
-            Mysql MyDB = new Mysql();
-            Configuration configuration = new Configuration();
-            Data_api_configuration.LoadAPIConfigurationSettings(ref configuration);
-            
-            Bid bid_to_update = new Bid();
-            List<Bid> bids_to_update = new List<Bid>();
-
-            bid_to_update.Id = Convert.ToInt32(arg1);
-            bid_to_update.Calculations = System.Text.Encoding.UTF8.GetString(System.Convert.FromBase64String(arg2));
-
-            bids_to_update.Add(bid_to_update);
-
-            err = Commands.Update_db_stock_values_calculation(ref configuration, ref MyDB, ref bids_to_update);
+            err = Commands.Get_stock_values_from_xtb(ref Xtb_api_connector, ref configuration, ref MyDB, arg2, ref bids, from);
             if (err.IsAnError)
                 return new Response(err, null, null, null);
             
-            return new Response(new Error(false, "This bid calculation has been updated"), bids_to_update, null, null);
+            return new Response(new Error(false, "Data for symbol " + arg2 + " retrieved"), bids, null, null);
         }
-        
+
+
         [HttpGet]
         public Response Get_Open_Trades()
         {
@@ -193,21 +134,6 @@ namespace DataAPI.Controllers
 
             return new Response(new Error(false, ""), null, null, trades);
         }
-
-        [HttpGet]
-        public Response Get_Symbols_Status()
-        {
-            Error err = new Error();
-            List<Symbol> symbol_list = new List<Symbol>();
-            Mysql MyDB = new Mysql();
-            Configuration configuration = new Configuration();
-            Data_api_configuration.LoadAPIConfigurationSettings(ref configuration);
-            
-            err = Commands.Load_all_symbols_status(ref configuration, ref MyDB, ref symbol_list);
-            if (err.IsAnError)
-                return new Response(err, null, null, null);
-
-            return new Response(new Error(false, ""), null, symbol_list, null);
-        }
+        
     }
 }
