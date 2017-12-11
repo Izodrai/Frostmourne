@@ -72,62 +72,7 @@ namespace DataAPI
             {
                 return new Error(true, "Error reading app settings Server : " + e.Message);
             }
-
-            //////////////////////////////////////////////////
-            // Load de l'host et mdp mysql suivant l'environnement
-            //////////////////////////////////////////////////
-
-            try
-            {
-                Config.Mysql_host = WebConfigurationManager.AppSettings["Mysql_host"];
-            }
-            catch (ConfigurationErrorsException e)
-            {
-                return new Error(true, "Error reading app settings Mysql_host : " + e.Message);
-            }
-            try
-            {
-                Config.Mysql_pwd = WebConfigurationManager.AppSettings["Mysql_pwd"];
-            }
-            catch (ConfigurationErrorsException e)
-            {
-                return new Error(true, "Error reading app settings Mysql_pwd : " + e.Message);
-            }
-            try
-            {
-                Config.Mysql_port = WebConfigurationManager.AppSettings["Mysql_port"];
-            }
-            catch (ConfigurationErrorsException e)
-            {
-                return new Error(true, "Error reading app settings Mysql_port : " + e.Message);
-            }
-
-            //////////////////////////////////////////////////
-            // Load du login mysql
-            //////////////////////////////////////////////////
-
-            try
-            {
-                Config.Mysql_login = WebConfigurationManager.AppSettings["Mysql_login"];
-            }
-            catch (ConfigurationErrorsException e)
-            {
-                return new Error(true, "Error reading app settings Mysql_login : " + e.Message);
-            }
-
-            //////////////////////////////////////////////////
-            // Load de la base de données
-            //////////////////////////////////////////////////
-
-            try
-            {
-                Config.Mysql_database = WebConfigurationManager.AppSettings["Mysql_database"];
-            }
-            catch (ConfigurationErrorsException e)
-            {
-                return new Error(true, "Error reading app settings Mysql_database : " + e.Message);
-            }
-
+            
             Log.GreenInfo("Configuration loaded");
             Log.JumpLine();
 

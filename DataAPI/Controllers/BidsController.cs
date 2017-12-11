@@ -1,7 +1,6 @@
 ﻿using DataAPI.Models;
 using Frostmourne_basics;
 using Frostmourne_basics.Commands;
-using Frostmourne_basics.Dbs;
 using System;
 using System.Collections.Generic;
 using System.Web.Http;
@@ -22,7 +21,7 @@ namespace DataAPI.Controllers
             if (!Token_validation.TokenValid(ref configuration, arg1))
                 return new Response(new Error(true, "bad token"), null, null, null);
 
-            DateTime now = DateTime.Now.ToUniversalTime();
+            DateTime now = DateTime.Now;
             TimeSpan tsFrom = TimeSpan.Zero;
 
             try
@@ -44,13 +43,13 @@ namespace DataAPI.Controllers
                 return new Response(new Error(false, "from.Date > now.Date"), null, null, null);
             
             List<Bid> bids = new List<Bid>();
-            err = Commands.Get_stock_values_from_xtb(ref Xtb_api_connector, ref configuration, arg2, ref bids, ref tsFrom);
+            err = Commands.Get_stock_values_from_xtb(ref Xtb_api_connector, ref configuration, arg2, ref bids, Convert.ToInt64(arg3));
             if (err.IsAnError)
                 return new Response(err, null, null, null);
 
-            return new Response(new Error(false, "Data for symbol " + arg2 + " retrieved from " + from + " (UTC) to " + now + " (UTC)"), bids, null, null);
+            return new Response(new Error(false, "Data for symbol " + arg2 + " retrieved from " + from + " to " + now), bids, null, null);
         }
-
+        /*
         [HttpGet]
         public Response Get_Open_Trades(string arg1)
         {
@@ -146,6 +145,6 @@ namespace DataAPI.Controllers
 
             return new Response(new Error(false, ""), null, null, trades);
         }
-        
+        */
     }
 }
