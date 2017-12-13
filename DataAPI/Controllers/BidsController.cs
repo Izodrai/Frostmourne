@@ -11,7 +11,7 @@ namespace DataAPI.Controllers
     public partial class BidsController : ApiController
     {
         [HttpGet]
-        public Response Get_Xtb_Bids(string arg1, string arg2, string arg3)
+        public Response Get_Xtb_Bids(string arg1, string arg2, string arg3, string arg4, string arg5)
         {
             Error err;
             SyncAPIConnector Xtb_api_connector = null;
@@ -21,20 +21,23 @@ namespace DataAPI.Controllers
             if (!Token_validation.TokenValid(ref configuration, arg1))
                 return new Response(new Error(true, "bad token"), null, null, null);
 
+            configuration.Xtb_login = arg2;
+            configuration.Xtb_pwd = arg3;
+
             DateTime now = DateTime.Now;
             TimeSpan tsFrom = TimeSpan.Zero;
 
             try
             {
-                tsFrom = TimeSpan.FromSeconds(Convert.ToInt64(arg3));
+                tsFrom = TimeSpan.FromSeconds(Convert.ToInt64(arg5));
             }
             catch
             {
-                return new Response(new Error(false, "Bad timespan format 1 -> " + arg3), null, null, null);
+                return new Response(new Error(false, "Bad timespan format 1 -> " + arg5), null, null, null);
             }
 
             if (tsFrom == TimeSpan.Zero)
-                return new Response(new Error(false, "Bad timespan format 2 -> " + arg3), null, null, null);
+                return new Response(new Error(false, "Bad timespan format 2 -> " + arg5), null, null, null);
             
             DateTime from = new DateTime(1970, 1, 1).Add(tsFrom);
             tsFrom = tsFrom.Subtract(new TimeSpan(0, 0, 1));
@@ -43,11 +46,11 @@ namespace DataAPI.Controllers
                 return new Response(new Error(false, "from.Date > now.Date"), null, null, null);
             
             List<Bid> bids = new List<Bid>();
-            err = Commands.Get_stock_values_from_xtb(ref Xtb_api_connector, ref configuration, arg2, ref bids, Convert.ToInt64(arg3));
+            err = Commands.Get_stock_values_from_xtb(ref Xtb_api_connector, ref configuration, arg4, ref bids, Convert.ToInt64(arg5));
             if (err.IsAnError)
                 return new Response(err, null, null, null);
 
-            return new Response(new Error(false, "Data for symbol " + arg2 + " retrieved from " + from + " to " + now), bids, null, null);
+            return new Response(new Error(false, "Data for symbol " + arg4 + " retrieved from " + from + " to " + now), bids, null, null);
         }
         /*
         [HttpGet]

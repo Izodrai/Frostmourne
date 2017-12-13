@@ -35,32 +35,6 @@ namespace DataAPI
             }
 
             //////////////////////////////////////////////////
-            // Load de l'id de l'utilisateur
-            //////////////////////////////////////////////////
-
-            try
-            {
-                Config.Xtb_login = WebConfigurationManager.AppSettings["Xtb_login"];
-            }
-            catch (ConfigurationErrorsException e)
-            {
-                return new Error(true, "Error reading app settings xtb_login : " + e.Message);
-            }
-
-            //////////////////////////////////////////////////
-            // Load du mot de passe de l'utilisateur
-            //////////////////////////////////////////////////
-
-            try
-            {
-                Config.Xtb_pwd = WebConfigurationManager.AppSettings["xtb_pwd"];
-            }
-            catch (ConfigurationErrorsException e)
-            {
-                return new Error(true, "Error reading app settings UserPwd : " + e.Message);
-            }
-
-            //////////////////////////////////////////////////
             // Load du type de connexion aux serveurs (demo ou real uniquement)
             //////////////////////////////////////////////////
 
