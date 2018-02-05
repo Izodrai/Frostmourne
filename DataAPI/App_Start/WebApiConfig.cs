@@ -16,8 +16,8 @@ namespace DataAPI
 
             config.Routes.MapHttpRoute(
                 name: "ActionApi",
-                routeTemplate: "api/{controller}/{action}/{arg1}/{arg2}/{arg3}/{arg4}/{arg5}/{arg6}/{arg7}",
-                defaults: new { arg1 = RouteParameter.Optional, arg2 = RouteParameter.Optional, arg3 = RouteParameter.Optional, arg4 = RouteParameter.Optional, arg5 = RouteParameter.Optional, arg6 = RouteParameter.Optional, arg7 = RouteParameter.Optional }
+                routeTemplate: "api/{controller}/{action}/{xtb_id}/{xtb_log}/{arg1}/{arg2}/{arg3}/",
+                defaults: new { xtb_id = RouteParameter.Optional, xtb_log = RouteParameter.Optional, arg1 = RouteParameter.Optional, arg2 = RouteParameter.Optional, arg3 = RouteParameter.Optional }
             );
         }
     }
