@@ -11,26 +11,26 @@ namespace DataAPI.Controllers
     public partial class BidsController : ApiController
     {
         [HttpGet]
-        public Response Get_Xtb_Bids(string xtb_id, string xtb_log, string arg1, string arg2, string arg3)
+        public Response Get_Xtb_Bids(string xtb_id, string xtb_log, string xtb_env, string arg1, string arg2)
         {
             Error err;
             SyncAPIConnector Xtb_api_connector = null;
-            Configuration configuration = new Configuration(xtb_id, xtb_log, arg1);
+            Configuration configuration = new Configuration(xtb_id, xtb_log, xtb_env);
             
             DateTime now = DateTime.Now;
             TimeSpan tsFrom = TimeSpan.Zero;
 
             try
             {
-                tsFrom = TimeSpan.FromSeconds(Convert.ToInt64(arg3));
+                tsFrom = TimeSpan.FromSeconds(Convert.ToInt64(arg2));
             }
             catch
             {
-                return new Response(new Error(false, "Bad timespan format 1 -> " + arg3), null, null, null);
+                return new Response(new Error(false, "Bad timespan format 1 -> " + arg2), null, null, null);
             }
 
             if (tsFrom == TimeSpan.Zero)
-                return new Response(new Error(false, "Bad timespan format 2 -> " + arg3), null, null, null);
+                return new Response(new Error(false, "Bad timespan format 2 -> " + arg2), null, null, null);
             
             DateTime from = new DateTime(1970, 1, 1).Add(tsFrom);
             tsFrom = tsFrom.Subtract(new TimeSpan(0, 0, 1));
@@ -39,24 +39,20 @@ namespace DataAPI.Controllers
                 return new Response(new Error(false, "from.Date > now.Date"), null, null, null);
             
             List<Bid> bids = new List<Bid>();
-            err = Commands.Get_stock_values_from_xtb(ref Xtb_api_connector, ref configuration, arg2, ref bids, Convert.ToInt64(arg3));
+            err = Commands.Get_stock_values_from_xtb(ref Xtb_api_connector, ref configuration, arg1, ref bids, Convert.ToInt64(arg2));
             if (err.IsAnError)
                 return new Response(err, null, null, null);
                 
-            return new Response(new Error(false, "Data for symbol " + arg2 + " retrieved from " + from + " to " + now), bids, null, null);
+            return new Response(new Error(false, "Data for symbol " + arg1 + " retrieved from " + from + " to " + now), bids, null, null);
         }
-        /*
+        
         [HttpGet]
-        public Response Get_Open_Trades(string token, string arg2, string arg3)
+        public Response Get_Open_Trades(string xtb_id, string xtb_log, string xtb_env)
         {
             Error err;
             SyncAPIConnector Xtb_api_connector = null;
-            Configuration configuration = new Configuration();
-            Data_api_configuration.LoadAPIConfigurationSettings(ref configuration);
+            Configuration configuration = new Configuration(xtb_id, xtb_log, xtb_env);
 
-            if (!Token_validation.TokenValid(ref configuration, token))
-                return new Response(new Error(true, "bad token"), null, null, null);
-            
             List<Trade> trades = new List<Trade>();
             
             err = Commands.Get_open_trades_from_xtb(ref Xtb_api_connector, ref configuration, ref trades);
@@ -64,21 +60,14 @@ namespace DataAPI.Controllers
                 return new Response(err, null, null, null);
 
             return new Response(new Error(false, ""), null, null, trades);
-        }*/
-        /*
+        }
+        
         [HttpGet]
-        public Response Open_Trade(string arg1, string arg2, string arg3, string arg4, string arg5, string arg6, string arg7)
+        public Response Open_Trade(string xtb_id, string xtb_log, string xtb_env, string arg1, string arg2, string arg3, string arg4)
         {
             Error err;
             SyncAPIConnector Xtb_api_connector = null;
-            Configuration configuration = new Configuration();
-            Data_api_configuration.LoadAPIConfigurationSettings(ref configuration);
-
-            if (!Token_validation.TokenValid(ref configuration, arg1))
-                return new Response(new Error(true, "bad token"), null, null, null);
-
-            configuration.Xtb_login = arg2;
-            configuration.Xtb_pwd = arg3;
+            Configuration configuration = new Configuration(xtb_id, xtb_log, xtb_env);
             
             List<Trade> trades = new List<Trade>();
             
@@ -87,18 +76,18 @@ namespace DataAPI.Controllers
 
             try
             {
-                symbol.Name = arg2;
+                symbol.Name = arg1;
                 trade.Symbol = symbol;
-                trade.Trade_type = Convert.ToInt32(arg5);
-                trade.Volume = Convert.ToDouble(arg6);
-                trade.Opened_reason = System.Text.Encoding.UTF8.GetString(System.Convert.FromBase64String(arg7));
+                trade.Trade_type = Convert.ToInt32(arg2);
+                trade.Volume = Convert.ToDouble(arg3);
+                trade.Opened_reason = System.Text.Encoding.UTF8.GetString(System.Convert.FromBase64String(arg4));
             }
             catch (Exception e)
             {
                 return new Response(new Error(true, e.Message), null, null, null);
             }
             
-            err = Commands.Open_trade_xtb(ref Xtb_api_connector, ref configuration, arg2, ref trade);
+            err = Commands.Open_trade_xtb(ref Xtb_api_connector, ref configuration, symbol, ref trade);
             if (err.IsAnError)
                 return new Response(err, null, null, null);
             
@@ -108,25 +97,21 @@ namespace DataAPI.Controllers
         }
         
         [HttpGet]
-        public Response Close_Trade(string arg1, string arg2, string arg3, string arg4)
+        public Response Close_Trade(string xtb_id, string xtb_log, string xtb_env, string arg1, string arg2, string arg3)
         {
             Error err;
             SyncAPIConnector Xtb_api_connector = null;
-            Configuration configuration = new Configuration();
-            Data_api_configuration.LoadAPIConfigurationSettings(ref configuration);
-
-            if (!Token_validation.TokenValid(ref configuration, arg1))
-                return new Response(new Error(true, "bad token"), null, null, null);
+            Configuration configuration = new Configuration(xtb_id, xtb_log, xtb_env);
 
             Trade trade_to_close = new Trade();
             Symbol symbol = new Symbol();
 
             try
             {
-                symbol.Name = arg3;
+                symbol.Name = arg1;
                 trade_to_close.Symbol = symbol;
                 trade_to_close.Xtb_order_id_1 = Convert.ToInt32(arg2);
-                trade_to_close.Closed_reason = System.Text.Encoding.UTF8.GetString(System.Convert.FromBase64String(arg4));
+                trade_to_close.Closed_reason = System.Text.Encoding.UTF8.GetString(System.Convert.FromBase64String(arg3));
             }
             catch (Exception e)
             {
@@ -143,6 +128,6 @@ namespace DataAPI.Controllers
 
             return new Response(new Error(false, ""), null, null, trades);
         }
-        */
+        
     }
 }
